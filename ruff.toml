@@ -1,0 +1,16 @@
+select = ["ALL"]
+ignore = [
+    "SIM208",
+    "TID253", # maybe
+    "T201",
+    "ANN001",
+    "UP007",
+]
+
+target-version = "py312"
+
+[flake8-tidy-imports.banned-api]
+"os.path".msg = "Use pathlib instead."
+
+[lint.pydocstyle]
+convention = "google"
