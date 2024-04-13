@@ -5,6 +5,8 @@ import * as Location from "expo-location";
 import { Button } from "react-native-elements";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { SerachAddress } from "./SearchAddress";
+import { useStatues } from "../api/statues";
+import { StatueItem } from "../types/statues";
 
 const brnoRegion = {
   latitude: 49.1951,
@@ -13,9 +15,14 @@ const brnoRegion = {
   longitudeDelta: 0.0421,
 };
 
-export const Map = () => {
+type MapProps = {
+  onSelectStatue: (stateu: StatueItem) => void;
+};
+
+export function Map({ onSelectStatue }: MapProps) {
   const [currentLocation, setCurrentLocation] = useState<any>(brnoRegion);
   const [initialRegion, setInitialRegion] = useState<Region>(brnoRegion);
+  const statues = useStatues();
 
   // const getCurrentLocation = useCallback(() => {
   //   const getLocation = async () => {
@@ -46,7 +53,7 @@ export const Map = () => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={initialRegion}
-        onRegionChange={(region) => console.log(region)}
+        //onRegionChange={(region) => console.log(region)}
         customMapStyle={customGoogleMapStyle}
         zoomControlEnabled={false}
       >
@@ -59,6 +66,16 @@ export const Map = () => {
             title="Your Location"
           />
         )}
+        {statues.map((statue) => (
+          <Marker
+            key={statue.id}
+            coordinate={{
+              latitude: statue.lat,
+              longitude: statue.lng,
+            }}
+            onPress={() => onSelectStatue(statue)}
+          />
+        ))}
       </MapView>
       <View style={styles.search}>
         <SerachAddress
@@ -74,7 +91,7 @@ export const Map = () => {
       </View>
     </>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

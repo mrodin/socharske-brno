@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-elements";
 import { Map } from "../components/Map";
 import { CollectionButton } from "../components/CollectionButton";
 import { MenuButton } from "../components/MenuButton";
@@ -10,7 +9,11 @@ export const Main = () => {
 
   return (
     <>
-      <Map />
+      <Map
+        onSelectStatue={(item) => {
+          console.log("Selected statue", item);
+        }}
+      />
       <View style={styles.leftDrawerButton}>
         <MenuButton onPress={() => setShowLeftDrawer(true)} />
       </View>
