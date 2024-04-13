@@ -1,4 +1,4 @@
-export type StatueItem = {
+export type Statue = {
   author: string;
   category: string;
   code: number;

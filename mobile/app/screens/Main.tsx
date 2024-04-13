@@ -1,17 +1,21 @@
-import React from "react";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Map } from "../components/Map";
 import { CollectionButton } from "../components/CollectionButton";
 import { MenuButton } from "../components/MenuButton";
+import { StatueDetail } from "../components/StatueDetail";
+import { Statue } from "../types/statues";
 
 export const Main = () => {
-  const [showLeftDrawer, setShowLeftDrawer] = React.useState(false);
+  const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
+  const [showLeftDrawer, setShowLeftDrawer] = useState(false);
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Map
-        onSelectStatue={(item) => {
-          console.log("Selected statue", item);
+        onSelectStatue={(statue) => {
+          setSelectedStatue(statue);
         }}
       />
       <View style={styles.leftDrawerButton}>
@@ -20,7 +24,9 @@ export const Main = () => {
       <View style={styles.collectionButton}>
         <CollectionButton onPress={() => {}} />
       </View>
-    </>
+
+      {selectedStatue && <StatueDetail statue={selectedStatue} />}
+    </GestureHandlerRootView>
   );
 };
 
