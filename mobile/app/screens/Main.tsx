@@ -25,7 +25,12 @@ export const Main = () => {
         <CollectionButton onPress={() => {}} />
       </View>
 
-      {selectedStatue && <StatueDetail statue={selectedStatue} />}
+      {selectedStatue && (
+        <StatueDetail
+          statue={selectedStatue}
+          onClose={() => setSelectedStatue(null)}
+        />
+      )}
     </GestureHandlerRootView>
   );
 };
