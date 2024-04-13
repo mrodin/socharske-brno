@@ -1,13 +1,30 @@
-import React from 'react'
-import MapView from 'react-native-maps'
-import { StyleSheet, View } from 'react-native'
+import React from 'react';
+import MapView, {Marker} from 'react-native-maps';
+import { StyleSheet, View } from 'react-native';
 
-export function Map() {
-  return (
-    <View style={styles.container}>
-      <MapView style={styles.map} />
-    </View>
-  )
+
+const brnoRegion = {
+    latitude: 49.1951,
+    longitude: 16.6068,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+}
+
+export const Map = () => {
+    return (
+        <View style={styles.container}>
+            <MapView style={styles.map} initialRegion={brnoRegion} zoomControlEnabled>
+                <Marker
+                    coordinate={{
+                        latitude: 49.1951,
+                        longitude: 16.6068,
+                    }}
+                    title={"Brno"}
+                    description={"This is a marker in Brno"}
+                />
+            </MapView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

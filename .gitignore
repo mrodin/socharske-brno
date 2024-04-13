@@ -6,3 +6,7 @@
 
 # python
 .venv
+
+#idea
+.idea
+socharske-brno.iml
