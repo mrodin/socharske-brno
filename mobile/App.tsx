@@ -1,8 +1,5 @@
-import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { useState } from "react";
+import { StyleSheet } from "react-native";
 import { Main } from "./app/screens/Main";
-import { User } from "./app/screens/User";
 
 export default function App() {
   return <Main />;

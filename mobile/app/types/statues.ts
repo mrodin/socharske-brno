@@ -1,0 +1,22 @@
+export type StatueItem = {
+  author: string;
+  category: string;
+  code: number;
+  created_at: string;
+  description: string;
+  district: string;
+  house_number: string;
+  id: number;
+  lat: number;
+  lng: number;
+  material: string;
+  name: string;
+  street: string;
+  street_number: string;
+  style: string;
+  type: string;
+  url_3d: string;
+  url_catalog: string;
+  url_wiki: string;
+  year: string;
+};
