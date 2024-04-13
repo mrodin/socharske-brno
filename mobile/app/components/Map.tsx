@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { StyleSheet, View } from "react-native";
 import * as Location from "expo-location";
-import { Button } from "react-native-elements";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { SerachAddress } from "./SearchAddress";
 import { useStatues } from "../api/statues";
-import { StatueItem } from "../types/statues";
+import { Statue } from "../types/statues";
+import { StatueDetail } from "./StatueDetail";
 
 const brnoRegion = {
   latitude: 49.1951,
@@ -16,7 +16,7 @@ const brnoRegion = {
 };
 
 type MapProps = {
-  onSelectStatue: (stateu: StatueItem) => void;
+  onSelectStatue: (stateu: Statue) => void;
 };
 
 export function Map({ onSelectStatue }: MapProps) {
