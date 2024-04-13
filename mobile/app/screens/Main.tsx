@@ -6,6 +6,7 @@ import { CollectionButton } from "../components/CollectionButton";
 import { MenuButton } from "../components/MenuButton";
 import { StatueDetail } from "../components/StatueDetail";
 import { Statue } from "../types/statues";
+import { User } from "./User";
 
 export const Main = () => {
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
@@ -24,6 +25,8 @@ export const Main = () => {
       <View style={styles.collectionButton}>
         <CollectionButton onPress={() => {}} />
       </View>
+
+      {showLeftDrawer && <User onClose={() => setShowLeftDrawer(false)} />}
 
       {selectedStatue && (
         <StatueDetail

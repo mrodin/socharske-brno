@@ -25,7 +25,7 @@ export function SerachAddress({ onSelect }: Props) {
       fetchDetails={true}
       nearbyPlacesAPI="GoogleReverseGeocoding"
       query={{
-        key: "AIzaSyA8TDSZH7TMUjO4t2KI_ThDgTD1_CsdMts",
+        key: process.env.EXPO_PUBLIC_API_URL,
         language: "cs-CZ",
         types: "geocode",
       }}

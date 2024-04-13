@@ -1,8 +1,13 @@
 import { StyleSheet } from "react-native";
 import { Main } from "./app/screens/Main";
+import { UserSessionProvider } from "./app/providers/UserSession";
 
 export default function App() {
-  return <Main />;
+  return (
+    <UserSessionProvider>
+      <Main />
+    </UserSessionProvider>
+  );
 }
 
 const styles = StyleSheet.create({

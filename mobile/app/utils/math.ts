@@ -1,4 +1,5 @@
 import { Coordinate } from "../types/common";
+import { Statue } from "../types/statues";
 
 function degreesToRadians(degrees: number): number {
   return (degrees * Math.PI) / 180;
@@ -25,10 +26,11 @@ function calculateDistance(
 }
 
 export function sortByDistanceFromPoint(
-  coordinates: Coordinate[],
+  coordinates: Statue[],
   referencePoint: Coordinate
-): Coordinate[] {
-  coordinates.sort((a, b) => {
+): Statue[] {
+  const nextSort = [...coordinates];
+  nextSort.sort((a, b) => {
     const distanceToA = calculateDistance(
       referencePoint.lat,
       referencePoint.lng,
@@ -41,7 +43,8 @@ export function sortByDistanceFromPoint(
       b.lat,
       b.lng
     );
+
     return distanceToA - distanceToB;
   });
-  return coordinates;
+  return nextSort;
 }
