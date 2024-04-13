@@ -1,13 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
+import {useState} from "react";
+import {Map} from "./app/screens/Map";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  const [screen, setScreen] = useState('home');
+
+  if (screen === 'home') {
+    return (
+        <View style={styles.container}>
+          <Text>Sochařské brno app!</Text>
+          <StatusBar style="auto" />
+          <Button title="Map" onPress={() => setScreen('map')} />
+        </View>
+    );
+  } else if (screen === 'map') {
+    return <Map />;
+  }
 }
 
 const styles = StyleSheet.create({
