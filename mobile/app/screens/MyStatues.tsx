@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
@@ -6,12 +6,16 @@ import { Title } from "../components/Title";
 import { Label } from "../components/Label";
 import { theme } from "../utils/theme";
 import { MyStatueEntry } from "../components/MyStatueEntry";
+import { UndiscoveredStatue } from "../components/UndiscoveredStatue";
+import { FoundStatuesContext } from "../providers/FoundStatues";
 
 type MyStatuesProps = {
   onClose: () => void;
 };
 
 export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
+  const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
+
   return (
     <SafeAreaView>
       <View style={{ gap: 30 }}>
@@ -25,6 +29,7 @@ export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
             stroke={1}
             strokeColor={theme.greyLight}
             backgroundColor={theme.greyLight}
+            fontColor={theme.white}
           >
             3 ulovené sochy
           </Label>
@@ -34,7 +39,10 @@ export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
         </View>
         <View style={styles.row}>
           <Title>Zbývá ulovit</Title>
-          <Label>3 ulovené sochy</Label>
+          <Label>5 zbývá</Label>
+        </View>
+        <View style={styles.entries}>
+          <UndiscoveredStatue />
         </View>
       </View>
     </SafeAreaView>

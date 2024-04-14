@@ -4,9 +4,10 @@ import { theme } from "../utils/theme";
 
 type LabelProps = {
   children: ReactNode;
-  backgroundColor: string;
-  stroke: number;
-  strokeColor: string;
+  backgroundColor?: string;
+  stroke?: number;
+  strokeColor?: string;
+  fontColor?: string;
 };
 
 export const Label: FC<LabelProps> = ({
@@ -14,6 +15,7 @@ export const Label: FC<LabelProps> = ({
   backgroundColor = "transparent",
   stroke = 1,
   strokeColor = theme.grey,
+  fontColor = theme.grey,
 }) => (
   <View
     style={{
@@ -25,6 +27,6 @@ export const Label: FC<LabelProps> = ({
       paddingVertical: 12,
     }}
   >
-    <Text style={{ fontSize: 12, color: theme.white }}>{children}</Text>
+    <Text style={{ fontSize: 12, color: fontColor }}>{children}</Text>
   </View>
 );
