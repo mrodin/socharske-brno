@@ -217,6 +217,8 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     position: "relative",
     backgroundColor: theme.grey,
+    borderTopLeftRadius: HANDLE_BORDER_RADIUS,
+    borderTopRightRadius: HANDLE_BORDER_RADIUS,
   },
   imageOverlay: {
     position: "absolute",
