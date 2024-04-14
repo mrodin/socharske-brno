@@ -17,13 +17,13 @@ import { sortByDistanceFromPoint } from "../utils/math";
 import { FoundStatuesContext } from "../providers/FoundStatues";
 
 const brnoRegion = {
-  latitude: 49.1951,
-  longitude: 16.6068,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
+  latitude: 49.1759324,
+  longitude: 16.5630407,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
 };
 
-const maxNearestStatues = 5;
+const maxNearestStatues = 20;
 
 type MapProps = {
   onSelectStatue: (stateu: Statue) => void;
@@ -37,8 +37,8 @@ export function Map({ onSelectStatue }: MapProps) {
 
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues, {
-      lat: currentLocation.latitude,
-      lng: currentLocation.longitude,
+      lat: brnoRegion.latitude,
+      lng: brnoRegion.longitude,
     });
     return allNearest.slice(0, maxNearestStatues);
   }, [currentLocation, statues]);
@@ -51,19 +51,19 @@ export function Map({ onSelectStatue }: MapProps) {
         return;
       }
 
-      Location.watchPositionAsync(
-        { accuracy: Location.Accuracy.High, timeInterval: 1000 },
-        (newLocation) => {
-          setCurrentLocation(newLocation.coords);
+      // Location.watchPositionAsync(
+      //   { accuracy: Location.Accuracy.High, timeInterval: 1000 },
+      //   (newLocation) => {
+      //     setCurrentLocation(newLocation.coords);
 
-          setInitialRegion({
-            latitude: newLocation.coords.latitude,
-            longitude: newLocation.coords.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          });
-        }
-      );
+      //     setInitialRegion({
+      //       latitude: newLocation.coords.latitude,
+      //       longitude: newLocation.coords.longitude,
+      //       latitudeDelta: 0.005,
+      //       longitudeDelta: 0.005,
+      //     });
+      //   }
+      // );
     })();
   }, []);
 
