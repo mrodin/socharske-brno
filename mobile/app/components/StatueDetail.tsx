@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useContext, useRef, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Text,
@@ -44,6 +51,12 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
     setIsLoading(false);
     setAlreadyCollected(true);
   };
+
+  useEffect(() => {
+    if (statueIds.includes(id)) {
+      setAlreadyCollected(true);
+    }
+  }, [statueIds, id]);
 
   return (
     <BottomSheet
