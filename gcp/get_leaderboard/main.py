@@ -11,6 +11,7 @@ class LeaderboardEntry(TypedDict):
     """One entry in the leaderboard."""
 
     id: str  # UUID might be a better type
+    username: str
     score: float
 
 
@@ -33,8 +34,14 @@ def get_leaderboard(request: flask.Request) -> list[LeaderboardEntry]:
     for entry in data.data:
         profile_id, value = entry["profile_id"], entry["value"]
         profile_score[profile_id] = profile_score.get(profile_id, 0) + value
+    data = supabase.table("profiles").select("id", "username").execute()
 
     leaderboard = [
-        LeaderboardEntry(id=k, score=v) for k, v in profile_score.items()
+        LeaderboardEntry(
+            id=entry["id"],
+            username=entry["username"],
+            score=profile_score[entry["id"]],
+        )
+        for entry in data.data
     ]
     return sorted(leaderboard, key=itemgetter("score"), reverse=True)
