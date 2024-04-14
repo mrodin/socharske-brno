@@ -20,7 +20,7 @@ export const Main = () => {
   }
 
   if (route === "myStatues") {
-    return <MyStatues />;
+    return <MyStatues onClose={() => setRoute("map")} />;
   }
 
   return (
