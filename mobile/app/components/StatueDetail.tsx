@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
@@ -11,7 +10,8 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Statue } from "../types/statues";
 import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
-import { useCollectStatue, useCollectedStatue } from "../api/statues";
+import { UserPhotos } from "./UserPhotos";
+import { useCollectStatue } from "../api/statues";
 import { FoundStatuesContext } from "../providers/FoundStatues";
 
 type StatueDetailProps = {
@@ -99,19 +99,12 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
               Zjistit více v internetové encyklopedii
             </Text>
           </TouchableOpacity>
-
-          <UserPhotos />
         </View>
+        <UserPhotos />
       </BottomSheetView>
     </BottomSheet>
   );
 };
-
-const UserPhotos: FC = () => (
-  <View>
-    <Text>Fotky dalších lovců</Text>
-  </View>
-);
 
 type LabelValueProps = {
   label: string;
@@ -146,7 +139,6 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
   },
   contentContainer: {
-    padding: 24,
     backgroundColor: theme.grey,
     height: "100%",
   },
@@ -166,6 +158,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   layout: {
+    padding: 24,
     flexDirection: "column",
     gap: 24,
   },
@@ -180,6 +173,15 @@ const styles = StyleSheet.create({
   titleLayout: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  userPhotos: {
+    padding: 24,
+    backgroundColor: "white",
+  },
+  userPhotosText: {
+    color: theme.grey,
+    fontSize: 24,
+    fontWeight: "600",
   },
   value: {
     color: theme.white,
