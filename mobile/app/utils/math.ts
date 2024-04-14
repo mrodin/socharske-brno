@@ -5,7 +5,7 @@ function degreesToRadians(degrees: number): number {
   return (degrees * Math.PI) / 180;
 }
 
-function calculateDistance(
+export function calculateDistance(
   lat1: number,
   lng1: number,
   lat2: number,

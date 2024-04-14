@@ -3,25 +3,29 @@ import { Image, Text, StyleSheet, View } from "react-native";
 import { theme } from "../utils/theme";
 import Svg, { Path } from "react-native-svg";
 
-export const MyStatueEntry: FC = () => (
-  <View style={styles.entry}>
-    <Image
-      source={require("../../assets/images/pepe.jpeg")}
-      style={styles.avatar}
-    />
-    <Text style={styles.text}>Spravedlnost</Text>
-    <Svg width={10} height={18} viewBox="0 0 10 18" fill="none">
-      <Path
-        d="M1 17L9 9L1 1"
-        stroke="#FEFBFB"
-        stroke-width="2"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </Svg>
-  </View>
-);
+type MyStatueEntryProps = {
+  name: string;
+  thumbnail: string;
+};
+
+export const MyStatueEntry: FC<MyStatueEntryProps> = ({ name, thumbnail }) => {
+  return (
+    <View style={styles.entry}>
+      <Image source={{ uri: thumbnail }} style={styles.avatar} />
+      <Text style={styles.text}>{name}</Text>
+      <Svg width={10} height={18} viewBox="0 0 10 18" fill="none">
+        <Path
+          d="M1 17L9 9L1 1"
+          stroke="#FEFBFB"
+          stroke-width="2"
+          stroke-miterlimit="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </Svg>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   avatar: {

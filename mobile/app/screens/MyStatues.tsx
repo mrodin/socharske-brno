@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
 import { Title } from "../components/Title";
@@ -8,6 +8,7 @@ import { theme } from "../utils/theme";
 import { MyStatueEntry } from "../components/MyStatueEntry";
 import { UndiscoveredStatue } from "../components/UndiscoveredStatue";
 import { FoundStatuesContext } from "../providers/FoundStatues";
+import statues from "../data/statues.json";
 
 type MyStatuesProps = {
   onClose: () => void;
@@ -16,35 +17,57 @@ type MyStatuesProps = {
 export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
   const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
 
+  const foundStatues = statues.filter((statue) =>
+    statueIds.includes(statue.id)
+  );
+
+  const undicoveredStatues = statues.filter(
+    (statue) => !statueIds.includes(statue.id)
+  );
+
   return (
     <SafeAreaView>
-      <View style={{ gap: 30 }}>
-        <View style={styles.row}>
-          <BackToMapButton onClose={onClose} />
-          <UserTag />
+      <ScrollView>
+        <View style={{ gap: 30 }}>
+          <View style={styles.row}>
+            <BackToMapButton onClose={onClose} />
+            <UserTag />
+          </View>
+          <View style={styles.row}>
+            <Title>Moje sochy</Title>
+            <Label
+              stroke={1}
+              strokeColor={theme.greyLight}
+              backgroundColor={theme.greyLight}
+              fontColor={theme.white}
+            >
+              3 ulovené sochy
+            </Label>
+          </View>
+          <View style={styles.entries}>
+            {foundStatues.map((statue) => (
+              <MyStatueEntry
+                key={statue.id}
+                name={statue.name}
+                thumbnail={statue.imgthumbnail}
+              />
+            ))}
+          </View>
+          <View style={styles.row}>
+            <Title>Zbývá ulovit</Title>
+            <Label>5 zbývá</Label>
+          </View>
+          <View style={styles.entries}>
+            {undicoveredStatues.map((statue) => (
+              <UndiscoveredStatue
+                key={statue.id}
+                lat={statue.lat}
+                lng={statue.lng}
+              />
+            ))}
+          </View>
         </View>
-        <View style={styles.row}>
-          <Title>Moje sochy</Title>
-          <Label
-            stroke={1}
-            strokeColor={theme.greyLight}
-            backgroundColor={theme.greyLight}
-            fontColor={theme.white}
-          >
-            3 ulovené sochy
-          </Label>
-        </View>
-        <View style={styles.entries}>
-          <MyStatueEntry />
-        </View>
-        <View style={styles.row}>
-          <Title>Zbývá ulovit</Title>
-          <Label>5 zbývá</Label>
-        </View>
-        <View style={styles.entries}>
-          <UndiscoveredStatue />
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -52,6 +75,7 @@ export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
 const styles = StyleSheet.create({
   entries: {
     paddingHorizontal: 24,
+    gap: 16,
   },
   row: {
     paddingHorizontal: 24,
