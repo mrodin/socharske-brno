@@ -41,7 +41,7 @@ export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
               backgroundColor={theme.greyLight}
               fontColor={theme.white}
             >
-              3 ulovené sochy
+              {`${foundStatues.length} ulovené sochy`}
             </Label>
           </View>
           <View style={styles.entries}>
@@ -55,7 +55,7 @@ export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
           </View>
           <View style={styles.row}>
             <Title>Zbývá ulovit</Title>
-            <Label>5 zbývá</Label>
+            <Label>{`${undicoveredStatues.length} zbývá`}</Label>
           </View>
           <View style={styles.entries}>
             {undicoveredStatues.map((statue) => (
