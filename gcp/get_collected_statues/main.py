@@ -6,8 +6,8 @@ from supabase import Client, create_client
 
 
 @functions_framework.http
-def statue_collected(request: flask.Request) -> str:
-    """Collect a statue."""
+def get_collected_statues(request: flask.Request) -> list[int] | str:
+    """Get all statues collected by a user."""
     supabase_url, supabase_key = (
         os.environ.get("SUPABASE_URL"),
         os.environ.get("SUPABASE_KEY"),
@@ -26,26 +26,11 @@ def statue_collected(request: flask.Request) -> str:
     if not data.count:
         return "User does not exist!"
 
-    statue_id = request.json["statue_id"]
-    data = (
-        supabase.table("statues")
-        .select("*", count="exact")
-        .eq("id", statue_id)
-        .execute()
-    )
-    if not data.count:
-        return "Statue does not exist!"
     data = (
         supabase.table("profile_statue_collected")
-        .select("*", count="exact")
+        .select("statue_id", count="exact")
         .eq("profile_id", profile_id)
-        .eq("statue_id", statue_id)
         .execute()
     )
-    if data.count:
-        return "Statue already collected by user!"
-    supabase.table("profile_statue_collected").insert(
-        {"profile_id": profile_id, "statue_id": statue_id},
-    ).execute()
 
-    return "OK"
+    return [statue["statue_id"] for statue in data.data]
