@@ -1,31 +1,21 @@
 import { FC } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Text, StyleSheet, View } from "react-native";
 import { theme } from "../utils/theme";
-import Svg, { Path } from "react-native-svg";
-import { Text } from "./Text";
 
-type MyStatueEntryProps = {
+type WinnerProps = {
   name: string;
-  thumbnail: string;
+  score: string;
+  thumbnail: any;
 };
 
-export const MyStatueEntry: FC<MyStatueEntryProps> = ({ name, thumbnail }) => {
+export const Winner: FC<WinnerProps> = ({ name, thumbnail, score }) => {
   return (
     <View style={styles.entry}>
-      <Image source={{ uri: thumbnail }} style={styles.avatar} />
+      <Image source={thumbnail} style={styles.avatar} />
       <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
         {name}
       </Text>
-      <Svg width={10} height={18} viewBox="0 0 10 18" fill="none">
-        <Path
-          d="M1 17L9 9L1 1"
-          stroke="#FEFBFB"
-          stroke-width="2"
-          stroke-miterlimit="10"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </Svg>
+      <Text>{`${score} b`}</Text>
     </View>
   );
 };
