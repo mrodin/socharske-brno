@@ -69,3 +69,21 @@ export const useFoundStateuIds = (): [number[], () => void] => {
 
   return [foundStatues, refresh];
 };
+
+export const userLeaderBoard = () => {
+  const [leaderBoard, setLeaderBoard] = React.useState<LeaderBoardEntry[]>([]);
+  const fetchLeaderBoard = useCallback(() => {
+    console.log("fetching leaderboard", leaderBoard);
+    return fetch(
+      "https://europe-west3-socharske-brno.cloudfunctions.net/get_leaderboard"
+    )
+      .then((response) => response.json())
+      .then((data) => setLeaderBoard(data));
+  }, []);
+
+  useCallback(() => {
+    fetchLeaderBoard();
+  }, [fetchLeaderBoard]);
+
+  return leaderBoard;
+};
