@@ -1,4 +1,12 @@
-import React, { FC, useCallback, useContext, useRef } from "react";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Text,
   StyleSheet,
@@ -22,7 +30,9 @@ type StatueDetailProps = {
 export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
-  const collectStateu = useCollectStatue();
+  const collectStatue = useCollectStatue();
+  const [isLoading, setIsLoading] = useState(false);
+  const [alreadyCollected, setAlreadyCollected] = useState(false);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -34,26 +44,50 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
 
   const { name, description, author, year, material, type, id } = statue;
 
-  const alreadyCollected = statueIds.includes(id);
+  const handleCollect = async () => {
+    setIsLoading(true);
+    await collectStatue(id);
+    refreshStateuIds();
+    setIsLoading(false);
+    setAlreadyCollected(true);
+  };
+
+  useEffect(() => {
+    if (statueIds.includes(id)) {
+      setAlreadyCollected(true);
+    }
+  }, [statueIds, id]);
 
   return (
     <BottomSheet
       ref={bottomSheetRef}
       onChange={handleSheetChanges}
-      snapPoints={["40%", "95%"]}
+      snapPoints={["55%", "95%"]}
       backgroundStyle={{
         borderTopLeftRadius: HANDLE_BORDER_RADIUS,
         borderTopRightRadius: HANDLE_BORDER_RADIUS,
       }}
       handleComponent={() => (
         <ImageBackground
-          source={require("../../assets/images/spravedlnost.png")}
+          source={{ uri: statue.img1 }}
           style={styles.image}
           imageStyle={{
             borderTopLeftRadius: HANDLE_BORDER_RADIUS,
             borderTopRightRadius: HANDLE_BORDER_RADIUS,
           }}
         >
+          <LinearGradient
+            colors={[
+              "rgba(0, 0, 0, .64)",
+              "rgba(0, 0, 0, 0)",
+              "rgba(0, 0, 0, 0)",
+              "rgba(0, 0, 0, .64)",
+            ]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            locations={[0, 0.15, 0.85, 1]}
+            style={styles.imageOverlay}
+          />
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Svg width={24} height={24} viewBox="0 0 32 50">
               <Path
@@ -69,36 +103,62 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
         <View style={styles.layout}>
           <View style={styles.titleLayout}>
             <Text style={styles.title}>{name}</Text>
-            <TouchableOpacity style={styles.collectButton}>
-              <Text
-                style={{ color: theme.white, fontWeight: "bold" }}
-                onPress={() => collectStateu(id)?.then(refreshStateuIds)}
-              >
-                {alreadyCollected ? "Uloveno" : "Ulov sochu"}
-              </Text>
-            </TouchableOpacity>
           </View>
 
           {description && <Text style={styles.text}>{description}</Text>}
 
-          <View style={styles.attributesLayout}>
-            {author && <LabelValue label="Autor" value={author} />}
-            {year && <LabelValue label="Rok vzniku" value={year} />}
-            {material && <LabelValue label="Materiál" value={material} />}
-            {type && <LabelValue label="Typ" value={type} />}
-          </View>
-
-          <TouchableOpacity style={styles.wikiLink}>
-            <Svg width={17} height={17} viewBox="0 0 17 17">
-              <Path
-                d="M12.75 7.66416C12.5621 7.66416 12.3819 7.73878 12.2491 7.87162C12.1163 8.00446 12.0416 8.18463 12.0416 8.37249V13.4583C12.0416 13.6462 11.967 13.8264 11.8342 13.9592C11.7013 14.092 11.5212 14.1667 11.3333 14.1667H3.54163C3.35376 14.1667 3.1736 14.092 3.04076 13.9592C2.90792 13.8264 2.83329 13.6462 2.83329 13.4583V5.66666C2.83329 5.47879 2.90792 5.29863 3.04076 5.16579C3.1736 5.03295 3.35376 4.95832 3.54163 4.95832H8.62746C8.81532 4.95832 8.99549 4.8837 9.12833 4.75086C9.26116 4.61802 9.33579 4.43785 9.33579 4.24999C9.33579 4.06213 9.26116 3.88196 9.12833 3.74912C8.99549 3.61628 8.81532 3.54166 8.62746 3.54166H3.54163C2.97804 3.54166 2.43754 3.76554 2.03902 4.16405C1.64051 4.56257 1.41663 5.10307 1.41663 5.66666V13.4583C1.41663 14.0219 1.64051 14.5624 2.03902 14.9609C2.43754 15.3594 2.97804 15.5833 3.54163 15.5833H11.3333C11.8969 15.5833 12.4374 15.3594 12.8359 14.9609C13.2344 14.5624 13.4583 14.0219 13.4583 13.4583V8.37249C13.4583 8.18463 13.3837 8.00446 13.2508 7.87162C13.118 7.73878 12.9378 7.66416 12.75 7.66416ZM15.5266 1.85582C15.4547 1.68274 15.3172 1.5452 15.1441 1.47332C15.059 1.43703 14.9675 1.41778 14.875 1.41666H10.625C10.4371 1.41666 10.2569 1.49128 10.1241 1.62412C9.99125 1.75696 9.91663 1.93713 9.91663 2.12499C9.91663 2.31285 9.99125 2.49302 10.1241 2.62586C10.2569 2.7587 10.4371 2.83332 10.625 2.83332H13.1679L5.87204 10.1221C5.80565 10.1879 5.75296 10.2663 5.71699 10.3526C5.68103 10.4389 5.66252 10.5315 5.66252 10.625C5.66252 10.7185 5.68103 10.8111 5.71699 10.8974C5.75296 10.9837 5.80565 11.0621 5.87204 11.1279C5.93789 11.1943 6.01623 11.247 6.10255 11.283C6.18887 11.3189 6.28145 11.3374 6.37496 11.3374C6.46847 11.3374 6.56105 11.3189 6.64737 11.283C6.73368 11.247 6.81203 11.1943 6.87788 11.1279L14.1666 3.83207V6.37499C14.1666 6.56285 14.2413 6.74302 14.3741 6.87586C14.5069 7.0087 14.6871 7.08332 14.875 7.08332C15.0628 7.08332 15.243 7.0087 15.3758 6.87586C15.5087 6.74302 15.5833 6.56285 15.5833 6.37499V2.12499C15.5822 2.03243 15.5629 1.94098 15.5266 1.85582Z"
-                fill="#D8483E"
-              />
-            </Svg>
-            <Text style={{ color: theme.redLight }}>
-              Zjistit více v internetové encyklopedii
+          <TouchableOpacity
+            disabled={alreadyCollected || isLoading}
+            onPress={handleCollect}
+            style={{
+              ...(alreadyCollected
+                ? styles.collectedLabel
+                : styles.collectButton),
+              ...(isLoading && { backgroundColor: theme.redDark }),
+            }}
+          >
+            <Text
+              style={{
+                color: alreadyCollected ? theme.red : theme.white,
+                fontWeight: "bold",
+                fontSize: 22,
+                textAlign: "center",
+              }}
+            >
+              {isLoading
+                ? "Loading..."
+                : alreadyCollected
+                  ? "Uloveno"
+                  : "Ulov sochu"}
             </Text>
           </TouchableOpacity>
+
+          <View style={styles.attributesLayout}>
+            <View style={styles.attributesLayout}>
+              {author && <LabelValue label="Autor" value={author} />}
+              {year && <LabelValue label="Rok vzniku" value={year} />}
+              {material && <LabelValue label="Materiál" value={material} />}
+              {type && <LabelValue label="Typ" value={type} />}
+            </View>
+
+            <TouchableOpacity style={styles.wikiLink}>
+              <Text
+                style={{
+                  color: theme.red,
+                  textDecorationColor: theme.red,
+                  textDecorationLine: "underline",
+                }}
+              >
+                Zjistit více v internetové encyklopedii
+              </Text>
+              <Svg width={17} height={17} viewBox="0 0 17 17">
+                <Path
+                  d="M12.75 7.66416C12.5621 7.66416 12.3819 7.73878 12.2491 7.87162C12.1163 8.00446 12.0416 8.18463 12.0416 8.37249V13.4583C12.0416 13.6462 11.967 13.8264 11.8342 13.9592C11.7013 14.092 11.5212 14.1667 11.3333 14.1667H3.54163C3.35376 14.1667 3.1736 14.092 3.04076 13.9592C2.90792 13.8264 2.83329 13.6462 2.83329 13.4583V5.66666C2.83329 5.47879 2.90792 5.29863 3.04076 5.16579C3.1736 5.03295 3.35376 4.95832 3.54163 4.95832H8.62746C8.81532 4.95832 8.99549 4.8837 9.12833 4.75086C9.26116 4.61802 9.33579 4.43785 9.33579 4.24999C9.33579 4.06213 9.26116 3.88196 9.12833 3.74912C8.99549 3.61628 8.81532 3.54166 8.62746 3.54166H3.54163C2.97804 3.54166 2.43754 3.76554 2.03902 4.16405C1.64051 4.56257 1.41663 5.10307 1.41663 5.66666V13.4583C1.41663 14.0219 1.64051 14.5624 2.03902 14.9609C2.43754 15.3594 2.97804 15.5833 3.54163 15.5833H11.3333C11.8969 15.5833 12.4374 15.3594 12.8359 14.9609C13.2344 14.5624 13.4583 14.0219 13.4583 13.4583V8.37249C13.4583 8.18463 13.3837 8.00446 13.2508 7.87162C13.118 7.73878 12.9378 7.66416 12.75 7.66416ZM15.5266 1.85582C15.4547 1.68274 15.3172 1.5452 15.1441 1.47332C15.059 1.43703 14.9675 1.41778 14.875 1.41666H10.625C10.4371 1.41666 10.2569 1.49128 10.1241 1.62412C9.99125 1.75696 9.91663 1.93713 9.91663 2.12499C9.91663 2.31285 9.99125 2.49302 10.1241 2.62586C10.2569 2.7587 10.4371 2.83332 10.625 2.83332H13.1679L5.87204 10.1221C5.80565 10.1879 5.75296 10.2663 5.71699 10.3526C5.68103 10.4389 5.66252 10.5315 5.66252 10.625C5.66252 10.7185 5.68103 10.8111 5.71699 10.8974C5.75296 10.9837 5.80565 11.0621 5.87204 11.1279C5.93789 11.1943 6.01623 11.247 6.10255 11.283C6.18887 11.3189 6.28145 11.3374 6.37496 11.3374C6.46847 11.3374 6.56105 11.3189 6.64737 11.283C6.73368 11.247 6.81203 11.1943 6.87788 11.1279L14.1666 3.83207V6.37499C14.1666 6.56285 14.2413 6.74302 14.3741 6.87586C14.5069 7.0087 14.6871 7.08332 14.875 7.08332C15.0628 7.08332 15.243 7.0087 15.3758 6.87586C15.5087 6.74302 15.5833 6.56285 15.5833 6.37499V2.12499C15.5822 2.03243 15.5629 1.94098 15.5266 1.85582Z"
+                  fill="#D8483E"
+                />
+              </Svg>
+            </TouchableOpacity>
+          </View>
         </View>
         <UserPhotos />
       </BottomSheetView>
@@ -130,7 +190,15 @@ const styles = StyleSheet.create({
     backgroundColor: theme.red,
     justifyContent: "center",
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 16,
+    borderRadius: 50,
+  },
+  collectedLabel: {
+    borderColor: theme.red,
+    borderWidth: 2,
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     borderRadius: 50,
   },
   container: {
@@ -147,6 +215,17 @@ const styles = StyleSheet.create({
     height: 220,
     alignItems: "flex-end",
     paddingTop: 12,
+    position: "relative",
+    backgroundColor: theme.grey,
+  },
+  imageOverlay: {
+    position: "absolute",
+    width: "100%",
+    height: 220,
+    top: 0,
+    left: 0,
+    borderTopLeftRadius: HANDLE_BORDER_RADIUS,
+    borderTopRightRadius: HANDLE_BORDER_RADIUS,
   },
   label: {
     color: theme.white,
@@ -188,11 +267,8 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   wikiLink: {
-    borderColor: theme.redLight,
-    borderWidth: 1,
-    borderRadius: 50,
-    padding: 8,
     flexDirection: "row",
+    justifyContent: "center",
     gap: 8,
   },
 });

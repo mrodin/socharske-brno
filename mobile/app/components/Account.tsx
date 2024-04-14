@@ -115,17 +115,6 @@ export default function Account({ session }: { session: Session }) {
       <View style={styles.verticallySpaced}>
         <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
       </View>
-      <View style={styles.verticallySpaced}>
-        <Button
-          title="Send Request"
-          onPress={() => {
-            console.log({
-              Authorization: `Bearer ${session?.access_token}`,
-              "Content-Type": "application/json",
-            });
-          }}
-        />
-      </View>
     </View>
   );
 }

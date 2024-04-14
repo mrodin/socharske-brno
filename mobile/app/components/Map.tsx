@@ -23,6 +23,8 @@ const brnoRegion = {
   longitudeDelta: 0.01,
 };
 
+const statueDetailOffset = 0.0011;
+
 const maxNearestStatues = 20;
 
 type MapProps = {
@@ -98,7 +100,15 @@ export function Map({ onSelectStatue }: MapProps) {
               latitude: statue.lat,
               longitude: statue.lng,
             }}
-            onPress={() => onSelectStatue(statue)}
+            onPress={() => {
+              onSelectStatue(statue);
+              setInitialRegion({
+                latitude: statue.lat - statueDetailOffset,
+                longitude: statue.lng,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005 - statueDetailOffset,
+              });
+            }}
           >
             <Image
               style={{ width: 40, height: 40 }}
