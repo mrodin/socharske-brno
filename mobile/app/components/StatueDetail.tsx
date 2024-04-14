@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useRef } from "react";
+import React, { FC, useCallback, useContext, useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Text,
@@ -23,7 +23,9 @@ type StatueDetailProps = {
 export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
-  const collectStateu = useCollectStatue();
+  const collectStatue = useCollectStatue();
+  const [isLoading, setIsLoading] = useState(false);
+  const [alreadyCollected, setAlreadyCollected] = useState(false);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -35,7 +37,13 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
 
   const { name, description, author, year, material, type, id } = statue;
 
-  const alreadyCollected = statueIds.includes(id);
+  const handleCollect = async () => {
+    setIsLoading(true);
+    await collectStatue(id);
+    refreshStateuIds();
+    setIsLoading(false);
+    setAlreadyCollected(true);
+  };
 
   return (
     <BottomSheet
@@ -48,7 +56,7 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
       }}
       handleComponent={() => (
         <ImageBackground
-          source={require("../../assets/images/spravedlnost.png")}
+          source={{ uri: statue.img1 }}
           style={styles.image}
           imageStyle={{
             borderTopLeftRadius: HANDLE_BORDER_RADIUS,
@@ -87,11 +95,14 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
           {description && <Text style={styles.text}>{description}</Text>}
 
           <TouchableOpacity
-            disabled={alreadyCollected}
-            onPress={() => collectStateu(id)?.then(refreshStateuIds)}
-            style={
-              alreadyCollected ? styles.collectedLabel : styles.collectButton
-            }
+            disabled={alreadyCollected || isLoading}
+            onPress={handleCollect}
+            style={{
+              ...(alreadyCollected
+                ? styles.collectedLabel
+                : styles.collectButton),
+              ...(isLoading && { backgroundColor: theme.redDark }),
+            }}
           >
             <Text
               style={{
@@ -101,7 +112,11 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
                 textAlign: "center",
               }}
             >
-              {alreadyCollected ? "Uloveno" : "Ulov sochu"}
+              {isLoading
+                ? "Loading..."
+                : alreadyCollected
+                  ? "Uloveno"
+                  : "Ulov sochu"}
             </Text>
           </TouchableOpacity>
 
@@ -188,6 +203,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     paddingTop: 12,
     position: "relative",
+    backgroundColor: theme.grey,
   },
   imageOverlay: {
     position: "absolute",
