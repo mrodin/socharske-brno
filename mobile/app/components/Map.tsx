@@ -1,13 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { StyleSheet, View, Image } from "react-native";
 import MapView from "react-native-map-clustering";
 import * as Location from "expo-location";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { SerachAddress } from "./SearchAddress";
-import { useStatues } from "../api/statues";
+import { useFoundStateuIds, useStatues } from "../api/statues";
 import { Statue } from "../types/statues";
 import { sortByDistanceFromPoint } from "../utils/math";
+import { FoundStatuesContext } from "../providers/FoundStatues";
 
 const brnoRegion = {
   latitude: 49.1951,
@@ -26,6 +33,7 @@ export function Map({ onSelectStatue }: MapProps) {
   const [currentLocation, setCurrentLocation] = useState<any>(brnoRegion);
   const [initialRegion, setInitialRegion] = useState<Region>(brnoRegion);
   const statues = useStatues();
+  const [foundStateuIds] = useContext(FoundStatuesContext);
 
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues, {
@@ -94,7 +102,11 @@ export function Map({ onSelectStatue }: MapProps) {
           >
             <Image
               style={{ width: 40, height: 40 }}
-              source={require("../../assets/uknown-state-marker.png")}
+              source={
+                foundStateuIds.includes(statue.id)
+                  ? require("../../assets/found-state-marker.png")
+                  : require("../../assets/uknown-state-marker.png")
+              }
             />
           </Marker>
         ))}
