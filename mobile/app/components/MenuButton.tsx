@@ -10,8 +10,6 @@ export function MenuButton({ onPress }: { onPress: () => void }) {
         style={{
           width: size,
           height: size,
-          backgroundColor: "#D9D9D9",
-          borderColor: "#3D3D3D",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -19,13 +17,20 @@ export function MenuButton({ onPress }: { onPress: () => void }) {
         }}
       >
         <Svg width={54} height={54} viewBox="0 0 54 54">
-          <Circle cx="27" cy="27" r="27" fill="none" />
+          <Circle
+            cx="27"
+            cy="27"
+            r="25"
+            fill="white"
+            stroke="#DE6E6A"
+            strokeWidth={2}
+          />
           <Line
             x1="15"
             y1="27.5"
             x2="39"
             y2="27.5"
-            stroke="#494949"
+            stroke="#DE6E6A"
             stroke-width="3"
           />
           <Line
@@ -33,7 +38,7 @@ export function MenuButton({ onPress }: { onPress: () => void }) {
             y1="34.5"
             x2="39"
             y2="34.5"
-            stroke="#494949"
+            stroke="#DE6E6A"
             stroke-width="3"
           />
           <Line
@@ -41,7 +46,7 @@ export function MenuButton({ onPress }: { onPress: () => void }) {
             y1="20.5"
             x2="39"
             y2="20.5"
-            stroke="#494949"
+            stroke="#DE6E6A"
             stroke-width="3"
           />
         </Svg>
