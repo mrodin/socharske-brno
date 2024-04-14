@@ -43,7 +43,7 @@ export const useFoundStateuIds = (): [number[], () => void] => {
   const [foundStatues, setFoundStatues] = React.useState<number[]>([]);
   const { session } = useContext(UserSessionContext);
 
-  const fetchFoundStatues = useCallback(() => {
+  const fetchFoundStatues = useCallback(async () => {
     if (!session) return;
     const token = session.access_token;
     return fetch(
@@ -63,11 +63,11 @@ export const useFoundStateuIds = (): [number[], () => void] => {
     fetchFoundStatues();
   }, [session]);
 
-  const refresh = useCallback(() => {
-    fetchFoundStatues();
+  useEffect(() => {
+    console.log("refrewsh update", Date.now());
   }, [fetchFoundStatues]);
 
-  return [foundStatues, refresh];
+  return [foundStatues, fetchFoundStatues];
 };
 
 export const useLeaderBoard = () => {
