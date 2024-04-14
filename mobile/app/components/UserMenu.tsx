@@ -14,9 +14,11 @@ export const UserMenu = () => (
 
 const styles = StyleSheet.create({
   avatar: {
-    width: 33,
-    height: 33,
+    width: 40,
+    height: 40,
     borderRadius: 50,
+    borderColor: theme.red,
+    borderWidth: 2,
   },
   layout: {
     flexDirection: "row",
