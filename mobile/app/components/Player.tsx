@@ -8,7 +8,7 @@ type WinnerProps = {
   thumbnail: any;
 };
 
-export const Winner: FC<WinnerProps> = ({ name, thumbnail, score }) => {
+export const Player: FC<WinnerProps> = ({ name, thumbnail, score }) => {
   return (
     <View style={styles.entry}>
       <Image source={thumbnail} style={styles.avatar} />
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: theme.red,
+    backgroundColor: theme.greyLight,
     borderRadius: 50,
     paddingLeft: 6,
     paddingRight: 12,
