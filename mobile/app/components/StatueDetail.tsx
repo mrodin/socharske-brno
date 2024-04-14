@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useRef } from "react";
+import React, { FC, useCallback, useContext, useRef } from "react";
 import {
   Text,
   StyleSheet,
@@ -11,6 +11,8 @@ import { Statue } from "../types/statues";
 import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { UserPhotos } from "./UserPhotos";
+import { useCollectStatue } from "../api/statues";
+import { FoundStatuesContext } from "../providers/FoundStatues";
 
 type StatueDetailProps = {
   onClose: () => void;
@@ -19,6 +21,8 @@ type StatueDetailProps = {
 
 export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
+  const collectStateu = useCollectStatue();
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -28,7 +32,9 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
     return null;
   }
 
-  const { name, description, author, year, material, type } = statue;
+  const { name, description, author, year, material, type, id } = statue;
+
+  const alreadyCollected = statueIds.includes(id);
 
   return (
     <BottomSheet
@@ -64,8 +70,11 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
           <View style={styles.titleLayout}>
             <Text style={styles.title}>{name}</Text>
             <TouchableOpacity style={styles.collectButton}>
-              <Text style={{ color: theme.white, fontWeight: "bold" }}>
-                Ulov sochu
+              <Text
+                style={{ color: theme.white, fontWeight: "bold" }}
+                onPress={() => collectStateu(id)?.then(refreshStateuIds)}
+              >
+                {alreadyCollected ? "Uloveno" : "Ulov sochu"}
               </Text>
             </TouchableOpacity>
           </View>

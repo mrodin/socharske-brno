@@ -9,17 +9,7 @@ import { Button } from "react-native-elements";
 import { UserSessionContext } from "../providers/UserSession";
 
 export function User({ onClose }: { onClose: () => void }) {
-  const { session, setSession } = useContext(UserSessionContext);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+  const { session } = useContext(UserSessionContext);
 
   return (
     <View
