@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
   },
   userMenu: {
     paddingLeft: 30,
-    paddingTop: 40,
-    paddingBottom: 23,
+    paddingTop: 35,
+    paddingBottom: 18,
   },
   menuItem: {
     paddingLeft: 30,
