@@ -45,6 +45,7 @@ export const Main = () => {
           onSelectStatue={(statue) => {
             setSelectedStatue(statue);
           }}
+          selectedStatue={selectedStatue}
         />
         <View style={styles.leftDrawerButton}>
           <MenuButton onPress={() => setShowLeftDrawer(true)} />

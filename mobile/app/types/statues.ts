@@ -20,4 +20,5 @@ export type Statue = {
   url_wiki: string | null;
   year: string | null;
   img1: string | undefined;
+  imgthumbnail: string;
 };

@@ -15,6 +15,7 @@ import { useFoundStateuIds, useStatues } from "../api/statues";
 import { Statue } from "../types/statues";
 import { sortByDistanceFromPoint } from "../utils/math";
 import { FoundStatuesContext } from "../providers/FoundStatues";
+import { theme } from "../utils/theme";
 
 const brnoRegion = {
   latitude: 49.1759324,
@@ -29,9 +30,10 @@ const maxNearestStatues = 20;
 
 type MapProps = {
   onSelectStatue: (stateu: Statue) => void;
+  selectedStatue: Statue | null;
 };
 
-export function Map({ onSelectStatue }: MapProps) {
+export function Map({ onSelectStatue, selectedStatue }: MapProps) {
   const [currentLocation, setCurrentLocation] = useState<any>(brnoRegion);
   const [initialRegion, setInitialRegion] = useState<Region>(brnoRegion);
   const statues = useStatues();
@@ -111,10 +113,19 @@ export function Map({ onSelectStatue }: MapProps) {
             }}
           >
             <Image
-              style={{ width: 40, height: 40 }}
+              style={[
+                selectedStatue?.id === statue.id
+                  ? { borderWidth: 2, borderColor: theme.red }
+                  : {},
+                foundStateuIds.includes(statue.id)
+                  ? styles.foundStateuMarker
+                  : styles.notFoundStatueMarker,
+              ]}
               source={
                 foundStateuIds.includes(statue.id)
-                  ? require("../../assets/found-state-marker.png")
+                  ? {
+                      uri: statue.imgthumbnail,
+                    }
                   : require("../../assets/uknown-state-marker.png")
               }
             />
@@ -156,4 +167,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  foundStateuMarker: { width: 60, height: 60, borderRadius: 30 },
+  notFoundStatueMarker: { width: 40, height: 40, borderRadius: 20 },
 });
