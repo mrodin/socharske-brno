@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Map } from "../components/Map";
@@ -9,10 +9,11 @@ import { DrawerNavigation } from "../components/DrawerNavigation";
 import { Statue } from "../types/statues";
 import { User } from "./User";
 import { MyStatues } from "./MyStatues";
+import { LeaderBoard } from "./LeaderBoard";
 
 type Routes =
   | "myStatues"
-  | "bestHunters"
+  | "leaderBoard"
   | "trophies"
   | "trails"
   | "photos"
@@ -31,6 +32,10 @@ export const Main = () => {
 
   if (route === "myStatues") {
     return <MyStatues onClose={() => setRoute("map")} />;
+  }
+
+  if (route === "leaderBoard") {
+    return <LeaderBoard onClose={() => setRoute("map")} />;
   }
 
   return (

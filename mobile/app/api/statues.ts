@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { Statue } from "../types/statues";
 import statues from "../data/statues.json";
 import { UserSessionContext } from "../providers/UserSession";
@@ -59,7 +59,7 @@ export const useFoundStateuIds = (): [number[], () => void] => {
       .then((data) => setFoundStatues(data));
   }, [session]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchFoundStatues();
   }, [session]);
 
@@ -70,10 +70,9 @@ export const useFoundStateuIds = (): [number[], () => void] => {
   return [foundStatues, refresh];
 };
 
-export const userLeaderBoard = () => {
+export const useLeaderBoard = () => {
   const [leaderBoard, setLeaderBoard] = React.useState<LeaderBoardEntry[]>([]);
   const fetchLeaderBoard = useCallback(() => {
-    console.log("fetching leaderboard", leaderBoard);
     return fetch(
       "https://europe-west3-socharske-brno.cloudfunctions.net/get_leaderboard"
     )
@@ -81,7 +80,7 @@ export const userLeaderBoard = () => {
       .then((data) => setLeaderBoard(data));
   }, []);
 
-  useCallback(() => {
+  useEffect(() => {
     fetchLeaderBoard();
   }, [fetchLeaderBoard]);
 

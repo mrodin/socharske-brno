@@ -9,7 +9,7 @@ type MenuEntry = {
 };
 const menuItems: MenuEntry[] = [
   { id: "myStatues", name: "Moje sochy" },
-  { id: "bestHunters", name: "Nejlepší lovci soch" },
+  { id: "leaderBoard", name: "Nejlepší lovci soch" },
   { id: "trophies", name: "Trofeje" },
   { id: "trails", name: "Sochařské stezky" },
   { id: "photos", name: "Foto soutěže" },
