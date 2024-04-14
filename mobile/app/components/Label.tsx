@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { theme } from "../utils/theme";
+import { Text } from "./Text";
 
 type LabelProps = {
   children: ReactNode;

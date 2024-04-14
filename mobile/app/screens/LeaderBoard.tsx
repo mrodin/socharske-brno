@@ -1,4 +1,5 @@
-import { View, Text, SafeAreaView } from "react-native";
+import { View, SafeAreaView } from "react-native";
+import { Text } from "../components/Text";
 import { Button } from "react-native-elements";
 import { useLeaderBoard } from "../api/statues";
 

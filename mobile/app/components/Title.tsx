@@ -1,5 +1,7 @@
 import { FC, ReactNode } from "react";
-import { Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { Text } from "./Text";
+
 import { theme } from "../utils/theme";
 
 type TitleProps = {

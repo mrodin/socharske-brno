@@ -1,5 +1,6 @@
 import { FC } from "react";
-import { Image, Text, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Text } from "./Text";
 import { theme } from "../utils/theme";
 import Svg, { Path } from "react-native-svg";
 import { calculateDistance } from "../utils/math";

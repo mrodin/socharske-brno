@@ -1,4 +1,6 @@
-import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
+import { StyleSheet, View, TouchableHighlight } from "react-native";
+
+import { Text } from "./Text";
 
 import { DrawerCloseButton } from "./DrawerCloseButton";
 import { UserMenu } from "./UserMenu";

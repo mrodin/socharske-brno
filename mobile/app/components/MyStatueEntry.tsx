@@ -1,7 +1,8 @@
 import { FC } from "react";
-import { Image, Text, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { theme } from "../utils/theme";
 import Svg, { Path } from "react-native-svg";
+import { Text } from "./Text";
 
 type MyStatueEntryProps = {
   name: string;
