@@ -6,6 +6,7 @@ import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
 import { Title } from "../components/Title";
 import { Winner } from "../components/Winner";
+import { Player } from "../components/Player";
 
 const AdamImage = require("../../assets/images/adam.jpeg");
 const KubaImage = require("../../assets/images/kuba.jpeg");
@@ -30,20 +31,29 @@ export function LeaderBoard({ onClose }: { onClose: () => void }) {
         <View style={styles.row}>
           <Title>Nejlepší lovci soch</Title>
         </View>
+        <View style={styles.entries}>
+          {users.map((user, index) => {
+            if (index === 0) {
+              return (
+                <Winner
+                  key={user.id}
+                  name={user.username}
+                  score={user.score.toFixed()}
+                  thumbnail={images[user.id]}
+                />
+              );
+            }
+            return (
+              <Player
+                key={user.id}
+                name={user.username}
+                score={user.score.toFixed()}
+                thumbnail={images[user.id]}
+              />
+            );
+          })}
+        </View>
       </View>
-      <Text>Leader board</Text>
-      {users.map((user) => {
-        return (
-          <>
-            <Winner
-              key={user.id}
-              name={user.username}
-              score={user.score.toFixed()}
-              thumbnail={images[user.id]}
-            />
-          </>
-        );
-      })}
     </SafeAreaView>
   );
 }
