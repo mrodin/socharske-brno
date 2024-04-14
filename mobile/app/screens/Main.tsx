@@ -23,10 +23,11 @@ type Routes =
   | "map";
 
 export const Main = () => {
-  const [route, setRoute] = useState<Routes>("map");
+  const [route, setRoute] = useState<Routes>("settings");
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [showLeftDrawer, setShowLeftDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { session } = useContext(UserSessionContext);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -34,6 +35,27 @@ export const Main = () => {
     }, 1000);
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    console.log("Session", !!session, Date.now());
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      setRoute("map");
+    }
+  }, [session === null, setRoute]);
+
+  if (loading) {
+    return (
+      <View style={{ width: "100%", height: "100%", position: "absolute" }}>
+        <Image
+          style={{ width: "100%", height: "100%", position: "absolute" }}
+          source={require("../../assets/intro.png")}
+        />
+      </View>
+    );
+  }
 
   if (route === "settings") {
     return <User onClose={() => setRoute("map")} />;
@@ -77,14 +99,6 @@ export const Main = () => {
               setShowLeftDrawer(false);
             }}
           />
-        )}
-        {loading && (
-          <View style={{ width: "100%", height: "100%", position: "absolute" }}>
-            <Image
-              style={{ width: "100%", height: "100%", position: "absolute" }}
-              source={require("../../assets/intro.png")}
-            />
-          </View>
         )}
       </GestureHandlerRootView>
     </>
