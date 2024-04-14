@@ -40,7 +40,7 @@ def get_leaderboard(request: flask.Request) -> list[LeaderboardEntry]:
         LeaderboardEntry(
             id=entry["id"],
             username=entry["username"],
-            score=profile_score[entry["id"]],
+            score=profile_score.get(entry["id"], 0),
         )
         for entry in data.data
     ]
