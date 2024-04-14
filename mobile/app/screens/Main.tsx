@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { StyleSheet, View, Image } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Map } from "../components/Map";
 import { CollectionButton } from "../components/CollectionButton";
@@ -10,6 +10,7 @@ import { Statue } from "../types/statues";
 import { User } from "./User";
 import { MyStatues } from "./MyStatues";
 import { LeaderBoard } from "./LeaderBoard";
+import { UserSessionContext } from "../providers/UserSession";
 
 type Routes =
   | "myStatues"
@@ -25,6 +26,14 @@ export const Main = () => {
   const [route, setRoute] = useState<Routes>("map");
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [showLeftDrawer, setShowLeftDrawer] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   if (route === "settings") {
     return <User onClose={() => setRoute("map")} />;
@@ -68,6 +77,14 @@ export const Main = () => {
               setShowLeftDrawer(false);
             }}
           />
+        )}
+        {loading && (
+          <View style={{ width: "100%", height: "100%", position: "absolute" }}>
+            <Image
+              style={{ width: "100%", height: "100%", position: "absolute" }}
+              source={require("../../assets/intro.png")}
+            />
+          </View>
         )}
       </GestureHandlerRootView>
     </>

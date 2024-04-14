@@ -47,7 +47,7 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
   const handleCollect = async () => {
     setIsLoading(true);
     await collectStatue(id);
-    refreshStateuIds();
+    await refreshStateuIds();
     setIsLoading(false);
     setAlreadyCollected(true);
   };
