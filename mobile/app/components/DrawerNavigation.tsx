@@ -16,7 +16,7 @@ const menuItems: MenuEntry[] = [
 ];
 
 const menuItems2: MenuEntry[] = [
-  { id: "layers", name: "Vsrtvy" },
+  { id: "layers", name: "Vrstvy" },
   { id: "settings", name: "Nastavení" },
 ];
 
