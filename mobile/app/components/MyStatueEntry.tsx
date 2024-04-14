@@ -12,7 +12,9 @@ export const MyStatueEntry: FC<MyStatueEntryProps> = ({ name, thumbnail }) => {
   return (
     <View style={styles.entry}>
       <Image source={{ uri: thumbnail }} style={styles.avatar} />
-      <Text style={styles.text}>{name}</Text>
+      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        {name}
+      </Text>
       <Svg width={10} height={18} viewBox="0 0 10 18" fill="none">
         <Path
           d="M1 17L9 9L1 1"
@@ -46,5 +48,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 22,
     color: theme.white,
+    maxWidth: 200,
   },
 });
