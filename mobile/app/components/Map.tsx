@@ -74,8 +74,7 @@ export function Map({ onSelectStatue, selectedStatue }: MapProps) {
   return (
     <>
       <MapView
-        // TODO: fix provider on iOS
-        // provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={initialRegion}
         //onRegionChange={(region) => console.log(region)}
