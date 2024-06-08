@@ -1,8 +1,10 @@
-import { StyleSheet, View, TouchableHighlight } from "react-native";
+import { StyleSheet, TouchableHighlight, View } from "react-native";
 
 import { Text } from "./Text";
 
+import { Region } from "react-native-maps";
 import { DrawerCloseButton } from "./DrawerCloseButton";
+import { SerachAddress } from "./SearchAddress";
 import { UserMenu } from "./UserMenu";
 
 type MenuEntry = {
@@ -22,61 +24,70 @@ const menuItems2: MenuEntry[] = [
   { id: "settings", name: "Nastavení" },
 ];
 
-function Menu({
-  items,
-  onSelect,
-}: {
+type MenuProps = {
   items: MenuEntry[];
   onSelect: (id: string) => void;
-}) {
-  return (
-    <>
-      {items.map((item) => (
-        <TouchableHighlight
-          key={item.id}
-          activeOpacity={1}
-          underlayColor="#F7E6E6"
-          onPress={() => onSelect(item.id)}
-        >
-          <View style={styles.menuItem}>
-            <Text style={styles.menuItemText}>{item.name}</Text>
-          </View>
-        </TouchableHighlight>
-      ))}
-    </>
-  );
-}
+};
 
-function Divider() {
-  return (
-    <View style={styles.divider}>
-      <View style={styles.dividerLine} />
-    </View>
-  );
-}
+const NavigationPagesList = ({ items, onSelect }: MenuProps) => (
+  <>
+    {items.map((item) => (
+      <TouchableHighlight
+        key={item.id}
+        activeOpacity={1}
+        underlayColor="#F7E6E6"
+        onPress={() => onSelect(item.id)}
+      >
+        <View style={styles.menuItem}>
+          <Text style={styles.menuItemText}>{item.name}</Text>
+        </View>
+      </TouchableHighlight>
+    ))}
+  </>
+);
 
-export function DrawerNavigation({
-  onClose,
-  onSelect,
-}: {
+const Divider = () => (
+  <View style={styles.divider}>
+    <View style={styles.dividerLine} />
+  </View>
+);
+
+type DrawerNavigationProps = {
   onClose: () => void;
   onSelect: (id: string) => void;
-}) {
-  return (
-    <View style={styles.wrap}>
-      <View style={styles.userMenu}>
-        <UserMenu />
-      </View>
-      <Divider />
-      <Menu items={menuItems} onSelect={onSelect} />
-      <Divider />
-      <Menu items={menuItems2} onSelect={onSelect} />
-      <View style={styles.closeButton}>
-        <DrawerCloseButton onPress={onClose} />
-      </View>
+  setInitialRegion: (region: Region) => void;
+};
+
+export const DrawerNavigation = ({
+  onClose,
+  onSelect,
+  setInitialRegion,
+}: DrawerNavigationProps) => (
+  <View style={styles.wrap}>
+    <View style={styles.userMenu}>
+      <UserMenu />
     </View>
-  );
-}
+    <View style={styles.search}>
+      <SerachAddress
+        onSelect={(coord) => {
+          setInitialRegion({
+            latitude: coord.lat,
+            longitude: coord.lng,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          });
+        }}
+      />
+    </View>
+    <Divider />
+    <NavigationPagesList items={menuItems} onSelect={onSelect} />
+    <Divider />
+    <NavigationPagesList items={menuItems2} onSelect={onSelect} />
+    <View style={styles.closeButton}>
+      <DrawerCloseButton onPress={onClose} />
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   wrap: {
@@ -120,5 +131,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 25,
     right: 25,
+  },
+  search: {
+    width: "100%",
+    paddingHorizontal: 20,
   },
 });

@@ -1,16 +1,25 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { styled } from "nativewind";
+import React, { useContext, useEffect, useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Map } from "../components/Map";
+import { Region } from "react-native-maps";
 import { CollectionButton } from "../components/CollectionButton";
+import { DrawerNavigation } from "../components/DrawerNavigation";
+import { Map } from "../components/Map";
 import { MenuButton } from "../components/MenuButton";
 import { StatueDetail } from "../components/StatueDetail";
-import { DrawerNavigation } from "../components/DrawerNavigation";
-import { Statue } from "../types/statues";
-import { User } from "./User";
-import { MyStatues } from "./MyStatues";
-import { LeaderBoard } from "./LeaderBoard";
 import { UserSessionContext } from "../providers/UserSession";
+import { Statue } from "../types/statues";
+import { LeaderBoard } from "./LeaderBoard";
+import { MyStatues } from "./MyStatues";
+import { User } from "./User";
+
+const brnoRegion = {
+  latitude: 49.1759324,
+  longitude: 16.5630407,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
+};
 
 type Routes =
   | "myStatues"
@@ -22,7 +31,10 @@ type Routes =
   | "settings"
   | "map";
 
+const StyledView = styled(View);
+
 export const Main = () => {
+  const [initialRegion, setInitialRegion] = useState<Region>(brnoRegion);
   const [route, setRoute] = useState<Routes>("settings");
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [showLeftDrawer, setShowLeftDrawer] = useState(false);
@@ -48,12 +60,12 @@ export const Main = () => {
 
   if (loading) {
     return (
-      <View style={{ width: "100%", height: "100%", position: "absolute" }}>
+      <StyledView tw="w-full h-full absolute">
         <Image
           style={{ width: "100%", height: "100%", position: "absolute" }}
           source={require("../../assets/intro.png")}
         />
-      </View>
+      </StyledView>
     );
   }
 
@@ -77,6 +89,8 @@ export const Main = () => {
             setSelectedStatue(statue);
           }}
           selectedStatue={selectedStatue}
+          initialRegion={initialRegion}
+          setInitialRegion={setInitialRegion}
         />
         <View style={styles.leftDrawerButton}>
           <MenuButton onPress={() => setShowLeftDrawer(true)} />
@@ -98,6 +112,7 @@ export const Main = () => {
               setRoute(route as Routes);
               setShowLeftDrawer(false);
             }}
+            setInitialRegion={setInitialRegion}
           />
         )}
       </GestureHandlerRootView>

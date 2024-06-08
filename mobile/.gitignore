@@ -36,3 +36,6 @@ yarn-error.*
 
 .idea
 socharske-brno.iml
+
+# ios
+ios/Podfile.lock

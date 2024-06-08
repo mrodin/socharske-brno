@@ -1,20 +1,13 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
-import { StyleSheet, View, Image } from "react-native";
-import MapView from "react-native-map-clustering";
 import * as Location from "expo-location";
-import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
-import { SerachAddress } from "./SearchAddress";
-import { useFoundStateuIds, useStatues } from "../api/statues";
-import { Statue } from "../types/statues";
-import { sortByDistanceFromPoint } from "../utils/math";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { Image, StyleSheet } from "react-native";
+import MapView from "react-native-map-clustering";
+import { Marker, Region } from "react-native-maps";
+import { useStatues } from "../api/statues";
 import { FoundStatuesContext } from "../providers/FoundStatues";
+import { Statue } from "../types/statues";
+import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
+import { sortByDistanceFromPoint } from "../utils/math";
 import { theme } from "../utils/theme";
 
 const brnoRegion = {
@@ -29,13 +22,19 @@ const statueDetailOffset = 0.0011;
 const maxNearestStatues = 20;
 
 type MapProps = {
+  initialRegion?: Region;
+  setInitialRegion: (region: Region) => void;
   onSelectStatue: (stateu: Statue) => void;
   selectedStatue: Statue | null;
 };
 
-export function Map({ onSelectStatue, selectedStatue }: MapProps) {
+export function Map({
+  initialRegion,
+  setInitialRegion,
+  onSelectStatue,
+  selectedStatue,
+}: MapProps) {
   const [currentLocation, setCurrentLocation] = useState<any>(brnoRegion);
-  const [initialRegion, setInitialRegion] = useState<Region>(brnoRegion);
   const statues = useStatues();
   const [foundStateuIds] = useContext(FoundStatuesContext);
 
@@ -74,7 +73,8 @@ export function Map({ onSelectStatue, selectedStatue }: MapProps) {
   return (
     <>
       <MapView
-        provider={PROVIDER_GOOGLE}
+        // TODO: fix provider on iOS
+        // provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={initialRegion}
         //onRegionChange={(region) => console.log(region)}
@@ -132,18 +132,6 @@ export function Map({ onSelectStatue, selectedStatue }: MapProps) {
           </Marker>
         ))}
       </MapView>
-      <View style={styles.search}>
-        <SerachAddress
-          onSelect={(coord) => {
-            setInitialRegion({
-              latitude: coord.lat,
-              longitude: coord.lng,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005,
-            });
-          }}
-        />
-      </View>
     </>
   );
 }
@@ -156,12 +144,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-  },
-  search: {
-    position: "absolute",
-    top: 30,
-    width: "100%",
-    padding: 20,
   },
   map: {
     width: "100%",
