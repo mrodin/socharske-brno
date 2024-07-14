@@ -1,16 +1,20 @@
 import { Image, StyleSheet, View } from "react-native";
 import { Text } from "./Text";
 import { theme } from "../utils/theme";
+import { UserAvatarContext } from "../providers/UserAvatar";
+import { useContext } from "react";
+import { UserInfoContext } from "../providers/UserInfo";
 
-export const UserMenu = () => (
-  <View style={styles.layout}>
-    <Image
-      source={require("../../assets/images/pepe.jpeg")}
-      style={styles.avatar}
-    />
-    <Text style={styles.name}>Petr Pololáník</Text>
-  </View>
-);
+export const UserMenu = () => {
+  const { url } = useContext(UserAvatarContext);
+  const { userInfo } = useContext(UserInfoContext);
+  return (
+    <View style={styles.layout}>
+      {url && <Image source={{ uri: url }} style={styles.avatar} />}
+      <Text style={styles.name}>{userInfo?.username}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   avatar: {

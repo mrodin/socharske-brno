@@ -63,10 +63,6 @@ export const useFoundStateuIds = (): [number[], () => void] => {
     fetchFoundStatues();
   }, [session]);
 
-  useEffect(() => {
-    console.log("refrewsh update", Date.now());
-  }, [fetchFoundStatues]);
-
   return [foundStatues, fetchFoundStatues];
 };
 

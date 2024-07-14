@@ -3,6 +3,8 @@ import { UserSessionProvider } from "./app/providers/UserSession";
 import { FoundStatuesProvider } from "./app/providers/FoundStatues";
 import * as Font from "expo-font";
 import { useEffect } from "react";
+import { UserInfoProvider } from "./app/providers/UserInfo";
+import { UserAvatarProvider } from "./app/providers/UserAvatar";
 
 export default function App() {
   useEffect(() => {
@@ -12,9 +14,13 @@ export default function App() {
   }, []);
   return (
     <UserSessionProvider>
-      <FoundStatuesProvider>
-        <Main />
-      </FoundStatuesProvider>
+      <UserInfoProvider>
+        <UserAvatarProvider>
+          <FoundStatuesProvider>
+            <Main />
+          </FoundStatuesProvider>
+        </UserAvatarProvider>
+      </UserInfoProvider>
     </UserSessionProvider>
   );
 }

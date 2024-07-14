@@ -1,16 +1,21 @@
 import { Image, StyleSheet, View } from "react-native";
 import { Text } from "./Text";
 import { theme } from "../utils/theme";
+import { useContext } from "react";
+import { UserAvatarContext } from "../providers/UserAvatar";
+import { UserInfoContext } from "../providers/UserInfo";
 
-export const UserTag = () => (
-  <View style={styles.layout}>
-    <Image
-      source={require("../../assets/images/pepe.jpeg")}
-      style={styles.avatar}
-    />
-    <Text style={styles.name}>Petr Pololáník</Text>
-  </View>
-);
+export const UserTag = () => {
+  const { url } = useContext(UserAvatarContext);
+  const { userInfo } = useContext(UserInfoContext);
+
+  return (
+    <View style={styles.layout}>
+      {url && <Image source={{ uri: url }} style={styles.avatar} />}
+      <Text style={styles.name}>{userInfo?.username}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   avatar: {
