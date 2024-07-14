@@ -1,23 +1,16 @@
 import React from "react";
-import { TouchableHighlight, View } from "react-native";
+import { TouchableHighlight } from "react-native";
+
+import { View } from "./View";
 import Svg, { Path } from "react-native-svg";
 
 export function DrawerCloseButton({ onPress }: { onPress: () => void }) {
-  const size = 30;
+  const size = 32;
   return (
-    <TouchableHighlight onPress={onPress} style={{ borderRadius: size / 2 }}>
+    <TouchableHighlight onPress={onPress} style={{ borderRadius: size / 2  }} underlayColor="#DE4237">
       <View
-        style={{
-          width: size,
-          height: size,
-          backgroundColor: "#393939",
-          borderColor: "#3D3D3D",
-          borderWidth: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: size / 2,
-        }}
+        style={{ width: size, height: size }}
+        className="origin-top-left -rotate-180 justify-start items-center flex"
       >
         <Svg width={size} height={size} viewBox="0 0 30 30">
           <Path
