@@ -10,41 +10,32 @@ import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { sortByDistanceFromPoint } from "../utils/math";
 import { theme } from "../utils/theme";
 
-const brnoRegion = {
-  latitude: 49.1759324,
-  longitude: 16.5630407,
-  latitudeDelta: 0.01,
-  longitudeDelta: 0.01,
-};
-
 const statueDetailOffset = 0.0011;
 
 const maxNearestStatues = 20;
 
 type MapProps = {
-  initialRegion?: Region;
-  setInitialRegion: (region: Region) => void;
+  initialRegion: Region;
   onSelectStatue: (stateu: Statue) => void;
   selectedStatue: Statue | null;
 };
 
 export function Map({
   initialRegion,
-  setInitialRegion,
   onSelectStatue,
   selectedStatue,
 }: MapProps) {
-  const [currentLocation, setCurrentLocation] = useState<any>(brnoRegion);
+  const [activeMarkerLocation, setActiveMarkerLocation] = useState<any>(initialRegion);
   const statues = useStatues();
   const [foundStateuIds] = useContext(FoundStatuesContext);
 
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues, {
-      lat: brnoRegion.latitude,
-      lng: brnoRegion.longitude,
+      lat: initialRegion.latitude,
+      lng: initialRegion.longitude,
     });
     return allNearest.slice(0, maxNearestStatues);
-  }, [currentLocation, statues]);
+  }, [activeMarkerLocation, statues]);
 
   useEffect(() => {
     (async () => {
@@ -82,11 +73,11 @@ export function Map({
         zoomControlEnabled={false}
         clusterColor={"#DA1E27"}
       >
-        {currentLocation && (
+        {activeMarkerLocation && (
           <Marker
             coordinate={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
+              latitude: activeMarkerLocation.latitude,
+              longitude: activeMarkerLocation.longitude,
             }}
           >
             <Image
@@ -104,7 +95,7 @@ export function Map({
             }}
             onPress={() => {
               onSelectStatue(statue);
-              setInitialRegion({
+              setActiveMarkerLocation({
                 latitude: statue.lat - statueDetailOffset,
                 longitude: statue.lng,
                 latitudeDelta: 0.005,

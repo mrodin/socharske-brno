@@ -1,11 +1,4 @@
-import React from "react";
-import { Text as NativeText, TextProps } from "react-native";
+import { styled } from "nativewind";
+import { Text as NativeText } from "react-native";
 
-export const Text: React.FC<TextProps> = ({ style, ...props }) => (
-  <NativeText
-    style={[style, { fontFamily: "RethinkSans-Regular" }]}
-    {...props}
-  />
-);
-
-export default Text;
+export const Text = styled(NativeText);
