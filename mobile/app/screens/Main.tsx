@@ -46,10 +46,6 @@ export const Main = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Session", !!session, Date.now());
-  }, [session]);
-
-  useEffect(() => {
     if (session) {
       setRoute("map");
     }

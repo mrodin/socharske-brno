@@ -21,11 +21,7 @@ export function User({ onClose }: { onClose: () => void }) {
         height: "100%",
       }}
     >
-      {session && session.user ? (
-        <Account key={session.user.id} session={session} />
-      ) : (
-        <Auth />
-      )}
+      {session && session.user ? <Account key={session.user.id} /> : <Auth />}
       <View style={{ padding: 12 }}>
         {session && <Button onPress={onClose} title="Zavřít" />}
       </View>

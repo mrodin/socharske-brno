@@ -12,6 +12,7 @@
     "@expo/metro-runtime": "~3.2.1",
     "@gorhom/bottom-sheet": "^4.6.1",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-google-signin/google-signin": "^12.2.1",
     "@supabase/supabase-js": "^2.42.3",
     "babel-preset-expo": "^11.0.12",
     "expo": "^51.0.0",
@@ -34,7 +35,8 @@
     "react-native-reanimated": "~3.10.1",
     "react-native-svg": "15.2.0",
     "react-native-url-polyfill": "^2.0.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "expo-image-picker": "~15.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
