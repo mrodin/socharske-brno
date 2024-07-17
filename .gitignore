@@ -8,6 +8,7 @@
 .venv
 __pycache__
 
-#idea
+# editors
 .idea
+.vscode/*
 socharske-brno.iml

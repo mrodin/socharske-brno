@@ -1,84 +1,83 @@
-import React, { useCallback, useContext, useEffect } from "react";
 import { Statue } from "../types/statues";
-import statues from "../data/statues.json";
-import { UserSessionContext } from "../providers/UserSession";
 
-export const useStatues = () => {
-  const [statueItems, setStatueItems] = React.useState<Statue[]>(statues);
-
-  // React.useEffect(() => {
-  //   fetch("https://statues-get-all-5x4zcivk7a-ey.a.run.app")
-  //     .then((response) => response.json())
-  //     .then((data) => setStatueItems(data));
-  // }, []);
-
-  return statueItems;
-};
-
-export const useCollectStatue = () => {
-  const { session } = useContext(UserSessionContext);
-
-  const collect = useCallback(
-    (statueId: number) => {
-      if (!session) return;
-      const token = session.access_token;
-      return fetch(
-        "https://europe-west3-socharske-brno.cloudfunctions.net/statue_collected",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ statue_id: statueId }),
-        }
-      );
-    },
-    [session]
+export const getAllStatues = async (token: string): Promise<Statue[]> => {
+  const response = await fetch(
+    "https://europe-west3-socharske-brno.cloudfunctions.net/statues_get_all",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
   );
-  return collect;
+
+  if (!response.ok) {
+    throw new Error("Response to statues_get_all was not ok.");
+  }
+
+  return response.json();
 };
 
-export const useFoundStateuIds = (): [number[], () => void] => {
-  const [foundStatues, setFoundStatues] = React.useState<number[]>([]);
-  const { session } = useContext(UserSessionContext);
+export const getCollectedStatues = async (token: string): Promise<number[]> => {
+  const response = await fetch(
+    "https://europe-west3-socharske-brno.cloudfunctions.net/get_collected_statues",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
-  const fetchFoundStatues = useCallback(async () => {
-    if (!session) return;
-    const token = session.access_token;
-    return fetch(
-      "https://europe-west3-socharske-brno.cloudfunctions.net/get_collected_statues",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setFoundStatues(data));
-  }, [session]);
+  if (!response.ok) {
+    throw new Error("Response to get_collected_statues was not ok.");
+  }
 
-  useEffect(() => {
-    fetchFoundStatues();
-  }, [session]);
-
-  return [foundStatues, fetchFoundStatues];
+  return response.json();
 };
 
-export const useLeaderBoard = () => {
-  const [leaderBoard, setLeaderBoard] = React.useState<LeaderBoardEntry[]>([]);
-  const fetchLeaderBoard = useCallback(() => {
-    return fetch(
-      "https://europe-west3-socharske-brno.cloudfunctions.net/get_leaderboard"
-    )
-      .then((response) => response.json())
-      .then((data) => setLeaderBoard(data));
-  }, []);
+export const getLeaderboard = async (
+  token: string
+): Promise<LeaderBoardEntry[]> => {
+  const response = await fetch(
+    "https://europe-west3-socharske-brno.cloudfunctions.net/get_leaderboard",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
-  useEffect(() => {
-    fetchLeaderBoard();
-  }, [fetchLeaderBoard]);
+  if (!response.ok) {
+    throw new Error("Response to get_leaderboard was not ok.");
+  }
 
-  return leaderBoard;
+  return response.json();
+};
+
+export const collectStatue = async (
+  token: string,
+  statueId: number
+): Promise<string> => {
+  const response = await fetch(
+    "https://europe-west3-socharske-brno.cloudfunctions.net/statue_collected",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ statue_id: statueId }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Response to statue_collected was not ok.");
+  }
+
+  return response.json();
 };

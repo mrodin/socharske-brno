@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Text,
@@ -19,8 +12,7 @@ import { Statue } from "../types/statues";
 import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { UserPhotos } from "./UserPhotos";
-import { useCollectStatue } from "../api/statues";
-import { FoundStatuesContext } from "../providers/FoundStatues";
+import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 
 type StatueDetailProps = {
   onClose: () => void;
@@ -35,7 +27,8 @@ const cardBorderRadius = {
 
 export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
+  const { data: statueIds, refetch: refetchStateuIds } =
+    useGetCollectedStatues();
   const collectStatue = useCollectStatue();
   const [isLoading, setIsLoading] = useState(false);
   const [alreadyCollected, setAlreadyCollected] = useState(false);
@@ -74,8 +67,8 @@ export const StatueDetail: FC<StatueDetailProps> = ({ onClose, statue }) => {
 
   const handleCollect = async () => {
     setIsLoading(true);
-    await collectStatue(id);
-    await refreshStateuIds();
+    await collectStatue.mutate(id);
+    await refetchStateuIds();
     setIsLoading(false);
     setAlreadyCollected(true);
   };

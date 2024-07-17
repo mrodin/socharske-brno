@@ -1,14 +1,13 @@
 import * as Location from "expo-location";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Image, StyleSheet } from "react-native";
 import MapView from "react-native-map-clustering";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
-import { useStatues } from "../api/statues";
-import { FoundStatuesContext } from "../providers/FoundStatues";
 import { Statue } from "../types/statues";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { sortByDistanceFromPoint } from "../utils/math";
 import { theme } from "../utils/theme";
+import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 
 const statueDetailOffset = 0.0011;
 
@@ -27,11 +26,11 @@ export function Map({
 }: MapProps) {
   const [activeMarkerLocation, setActiveMarkerLocation] =
     useState<any>(initialRegion);
-  const statues = useStatues();
-  const [foundStateuIds] = useContext(FoundStatuesContext);
+  const { data: statues } = useGetAllStatues();
+  const { data: collectedStatueIds } = useGetCollectedStatues();
 
   const nearestStatues = useMemo(() => {
-    const allNearest = sortByDistanceFromPoint(statues, {
+    const allNearest = sortByDistanceFromPoint(statues ?? [], {
       lat: initialRegion.latitude,
       lng: initialRegion.longitude,
     });
@@ -107,12 +106,12 @@ export function Map({
               selectedStatue?.id === statue.id
                 ? { borderWidth: 2, borderColor: theme.red }
                 : {},
-              foundStateuIds.includes(statue.id)
+              collectedStatueIds.includes(statue.id)
                 ? styles.foundStateuMarker
                 : styles.notFoundStatueMarker,
             ]}
             source={
-              foundStateuIds.includes(statue.id)
+              collectedStatueIds.includes(statue.id)
                 ? {
                     uri: statue.imgthumbnail,
                   }

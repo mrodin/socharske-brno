@@ -1,5 +1,5 @@
 import { View, SafeAreaView, StyleSheet } from "react-native";
-import { useLeaderBoard } from "../api/statues";
+import { useGetLeaderboard } from "../api/queries";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
 import { Title } from "../primitives/Title";
@@ -17,7 +17,7 @@ const images: any = {
 };
 
 export function LeaderBoard({ onClose }: { onClose: () => void }) {
-  const users = useLeaderBoard();
+  const { data: leaderboard } = useGetLeaderboard();
 
   return (
     <SafeAreaView>
@@ -30,7 +30,7 @@ export function LeaderBoard({ onClose }: { onClose: () => void }) {
           <Title>Nejlepší lovci soch</Title>
         </View>
         <View style={styles.entries}>
-          {users.map((user, index) => {
+          {leaderboard.map((user, index) => {
             if (index === 0) {
               return (
                 <Winner
