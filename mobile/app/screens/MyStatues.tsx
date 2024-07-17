@@ -1,5 +1,5 @@
-import { FC, useContext } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { FC } from "react";
+import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
 import { Title } from "../primitives/Title";
@@ -7,22 +7,22 @@ import { Label } from "../primitives/Label";
 import { theme } from "../utils/theme";
 import { MyStatueEntry } from "../components/MyStatueEntry";
 import { UndiscoveredStatue } from "../components/UndiscoveredStatue";
-import { FoundStatuesContext } from "../providers/FoundStatues";
 import statues from "../data/statues.json";
+import { useGetCollectedStatues } from "../api/queries";
 
 type MyStatuesProps = {
   onClose: () => void;
 };
 
 export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
-  const [statueIds, refreshStateuIds] = useContext(FoundStatuesContext);
+  const { data: statueIds, isLoading } = useGetCollectedStatues();
 
   const foundStatues = statues.filter((statue) =>
-    statueIds.includes(statue.id)
+    statueIds?.includes(statue.id)
   );
 
   const undicoveredStatues = statues.filter(
-    (statue) => !statueIds.includes(statue.id)
+    (statue) => !statueIds?.includes(statue.id)
   );
 
   return (
