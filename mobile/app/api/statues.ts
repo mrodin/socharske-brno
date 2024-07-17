@@ -3,16 +3,44 @@ import { Statue } from "../types/statues";
 import statues from "../data/statues.json";
 import { UserSessionContext } from "../providers/UserSession";
 
-export const useStatues = () => {
-  const [statueItems, setStatueItems] = React.useState<Statue[]>(statues);
+export const fetchAllStatues = async (token: string): Promise<Statue[]> => {
+  const response = await fetch(
+    "https://europe-west3-socharske-brno.cloudfunctions.net/statues_get_all",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
-  // React.useEffect(() => {
-  //   fetch("https://statues-get-all-5x4zcivk7a-ey.a.run.app")
-  //     .then((response) => response.json())
-  //     .then((data) => setStatueItems(data));
-  // }, []);
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
 
-  return statueItems;
+  return response.json();
+};
+
+export const fetchCollectedStatues = async (
+  token: string
+): Promise<number[]> => {
+  const response = await fetch(
+    "https://europe-west3-socharske-brno.cloudfunctions.net/get_collected_statues",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
 };
 
 export const useCollectStatue = () => {
