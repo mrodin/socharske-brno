@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, AppState } from "react-native";
+import { Alert, AppState, ScrollView } from "react-native";
 import { supabase } from "../utils/supabase";
 import { Button } from "./Button";
 import { Text } from "../primitives/Text";
@@ -54,54 +54,56 @@ export const Auth = () => {
   };
 
   return (
-    <View className="h-full p-5 bg-my-gray">
-      <View className="gap-4 justify-self-center flex items-center mt-20">
-        <Text className="text-white text-[40px] text-center w-[200px] font-krona">
-          LOVCI SOCH
+    <View className="h-full p-5 bg-my-gray w-full">
+      <ScrollView automaticallyAdjustKeyboardInsets>
+        <View className="gap-4 justify-self-center flex items-center mt-20">
+          <Text className="text-white text-[40px] text-center w-[200px] font-krona">
+            LOVCI SOCH
+          </Text>
+          <Text className="text-white text-xl text-center w-[250px] mb-8">
+            Vydej se na dobrodružství a ulov si brněnské sochy
+          </Text>
+        </View>
+        <Text className="text-white text-xl text-center mb-4 font-krona">
+          PŘIHLÁSIT SE
         </Text>
-        <Text className="text-white text-xl text-center w-[250px] mb-8">
-          Vydej se na dobrodružství a ulov si brněnské sochy
-        </Text>
-      </View>
-      <Text className="text-white text-xl text-center mb-4 font-krona">
-        PŘIHLÁSIT SE
-      </Text>
-      <View className="gap-4">
-        <TextInput
-          onChangeText={(text) => setEmail(text)}
-          className="bg-white px-5 py-3 rounded-full border-none"
-          value={email}
-          placeholder="Email"
-          autoCapitalize={"none"}
-        />
-        <TextInput
-          placeholder="Heslo"
-          className="bg-white px-5 py-3 rounded-full border-none"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          autoCapitalize={"none"}
-          secureTextEntry={true}
-        />
-        <Button
-          onPress={() => signInWithEmail()}
-          title="Přihlásit se"
-          disabled={loading}
-          variant="primary"
-        />
-        <Button
-          onPress={() => signUpWithEmail()}
-          title="Vytvořit účet"
-          disabled={loading}
-          variant="secondary"
-        />
-        <Text className="text-white text-base text-center">Nebo přes</Text>
-        <Button icon={<AppleIcon />} title="Přihlásit se přes Apple" />
-        <Button
-          onPress={googleAuth}
-          icon={<GoogleIcon className="top-[2px]" />}
-          title="Přihlásit se přes Google"
-        />
-      </View>
+        <View className="gap-4">
+          <TextInput
+            onChangeText={(text) => setEmail(text)}
+            className="bg-white px-5 py-3 rounded-full border-none"
+            value={email}
+            placeholder="Email"
+            autoCapitalize={"none"}
+          />
+          <TextInput
+            placeholder="Heslo"
+            className="bg-white px-5 py-3 rounded-full border-none"
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            autoCapitalize={"none"}
+            secureTextEntry={true}
+          />
+          <Button
+            onPress={() => signInWithEmail()}
+            title="Přihlásit se"
+            disabled={loading}
+            variant="primary"
+          />
+          <Button
+            onPress={() => signUpWithEmail()}
+            title="Vytvořit účet"
+            disabled={loading}
+            variant="secondary"
+          />
+          <Text className="text-white text-base text-center">Nebo přes</Text>
+          <Button icon={<AppleIcon />} title="Přihlásit se přes Apple" />
+          <Button
+            onPress={googleAuth}
+            icon={<GoogleIcon className="top-[2px]" />}
+            title="Přihlásit se přes Google"
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
