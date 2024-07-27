@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, View, AppState } from "react-native";
+import { Alert, AppState } from "react-native";
 import { supabase } from "../utils/supabase";
-import { Button, Input } from "react-native-elements";
-import GoogleAuth from "./GoogleAuth";
+import { Button } from "./Button";
+import { Text } from "../primitives/Text";
+import { View } from "../primitives/View";
+import AppleIcon from "../icons/AppleIcon";
+import GoogleIcon from "../icons/GoogleIcon";
+import { TextInput } from "../primitives/TextInput";
+import { googleAuth } from "../utils/googleAuth";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -16,7 +21,7 @@ AppState.addEventListener("change", (state) => {
   }
 });
 
-export function Auth() {
+export const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,60 +54,56 @@ export function Auth() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input
-          label="Jméno"
-          leftIcon={{ type: "font-awesome", name: "envelope" }}
+    <View className="h-full p-5 bg-my-gray">
+      <View className="gap-4 justify-self-center flex items-center mt-20">
+        <Text className="text-white text-[40px] text-center w-[200px] font-krona">
+          LOVCI SOCH
+        </Text>
+        <Text className="text-white text-xl text-center w-[250px] mb-8">
+          Vydej se na dobrodružství a ulov si brněnské sochy
+        </Text>
+      </View>
+      <Text className="text-white text-xl text-center mb-4 font-krona">
+        PŘIHLÁSIT SE
+      </Text>
+      <View className="gap-4">
+        <TextInput
           onChangeText={(text) => setEmail(text)}
+          className="bg-white px-5 py-3 rounded-full border-none"
           value={email}
-          placeholder="email@address.com"
+          placeholder="Email"
           autoCapitalize={"none"}
         />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Heslo"
-          leftIcon={{ type: "font-awesome", name: "lock" }}
+        <TextInput
+          placeholder="Heslo"
+          className="bg-white px-5 py-3 rounded-full border-none"
           onChangeText={(text) => setPassword(text)}
           value={password}
-          secureTextEntry={true}
-          placeholder="Password"
           autoCapitalize={"none"}
+          secureTextEntry={true}
         />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <GoogleAuth />
-      </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
-          title="Sign in"
-          disabled={loading}
           onPress={() => signInWithEmail()}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Button
-          title="Sign up"
+          title="Přihlásit se"
           disabled={loading}
+          variant="primary"
+        />
+        <Button
           onPress={() => signUpWithEmail()}
+          title="Vytvořit účet"
+          disabled={loading}
+          variant="secondary"
+        />
+        <Text className="text-white text-base text-center">Nebo přes</Text>
+        <Button icon={<AppleIcon />} title="Přihlásit se přes Apple" />
+        <Button
+          onPress={() => {
+            googleAuth();
+          }}
+          icon={<GoogleIcon className="top-[2px]" />}
+          title="Přihlásit se přes Google"
         />
       </View>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: "stretch",
-  },
-  mt20: {
-    marginTop: 20,
-  },
-});
+};

@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableHighlight } from "react-native";
 
-import { View } from "./View";
-import { Text } from "./Text";
+import { View } from "../primitives/View";
+import { Text } from "../primitives/Text";
 
 import { Region } from "react-native-maps";
 import { DrawerCloseButton } from "./DrawerCloseButton";
@@ -38,10 +38,12 @@ const NavigationPagesList = ({ items, onSelect }: MenuProps) => (
         activeOpacity={1}
         underlayColor="#DE4237"
         onPress={() => onSelect(item.id)}
-        style={{width: "100%"}}
+        style={{ width: "100%" }}
       >
         <View className="w-full px-[25px] py-[15px] flex justify-start items-start">
-          <Text className="text-gray-200 text-xl font-normal leading-snug">{item.name}</Text>
+          <Text className="text-gray-200 text-xl font-normal leading-snug">
+            {item.name}
+          </Text>
         </View>
       </TouchableHighlight>
     ))}
@@ -49,7 +51,7 @@ const NavigationPagesList = ({ items, onSelect }: MenuProps) => (
 );
 
 const Divider = () => (
-  <View className="w-[80%] h-[0px] mx-[25px] border border-neutral-600"/>
+  <View className="w-[80%] h-[0px] mx-[25px] border border-neutral-600" />
 );
 
 type DrawerNavigationProps = {
@@ -85,4 +87,3 @@ export const DrawerNavigation = ({
     <NavigationPagesList items={menuItems2} onSelect={onSelect} />
   </View>
 );
-
