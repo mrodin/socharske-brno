@@ -3,7 +3,7 @@ import { Path, SvgProps } from "react-native-svg";
 import { forwardRef } from "react";
 import { Svg } from "../primitives/Svg";
 
-const GoogleIcon = (
+const SvgComponent = (
   props: SvgProps & { className: string },
   ref: React.Ref<any>
 ) => (
@@ -14,5 +14,4 @@ const GoogleIcon = (
     />
   </Svg>
 );
-const ForwardRef = forwardRef(GoogleIcon);
-export default ForwardRef;
+export const GoogleIcon = forwardRef(SvgComponent);

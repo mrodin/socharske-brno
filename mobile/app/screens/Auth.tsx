@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Alert, AppState, ScrollView } from "react-native";
 import { supabase } from "../utils/supabase";
-import { Button } from "./Button";
+import { Button } from "../components/Button";
 import { Text } from "../primitives/Text";
 import { View } from "../primitives/View";
-import AppleIcon from "../icons/AppleIcon";
-import GoogleIcon from "../icons/GoogleIcon";
-import { TextInput } from "../primitives/TextInput";
+import { AppleIcon } from "../icons/AppleIcon";
+import { GoogleIcon } from "../icons/GoogleIcon";
 import { googleAuth } from "../utils/googleAuth";
+import { StyledInput } from "../components/StyledInput";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -33,7 +33,7 @@ export const Auth = () => {
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) Alert.alert("Špatné heslo nebo email");
     setLoading(false);
   };
 
@@ -48,15 +48,14 @@ export const Auth = () => {
     });
 
     if (error) Alert.alert(error.message);
-    if (!session)
-      Alert.alert("Please check your inbox for email verification!");
+    if (!session) Alert.alert("Zkontrolujte si email a potvrďte registraci");
     setLoading(false);
   };
 
   return (
     <View className="h-full p-5 bg-my-gray w-full">
       <ScrollView automaticallyAdjustKeyboardInsets>
-        <View className="gap-4 justify-self-center flex items-center mt-20">
+        <View className="gap-4 justify-self-center flex items-center mt-10">
           <Text className="text-white text-[40px] text-center w-[200px] font-krona">
             LOVCI SOCH
           </Text>
@@ -68,16 +67,14 @@ export const Auth = () => {
           PŘIHLÁSIT SE
         </Text>
         <View className="gap-4">
-          <TextInput
+          <StyledInput
             onChangeText={(text) => setEmail(text)}
-            className="bg-white px-5 py-3 rounded-full border-none"
             value={email}
             placeholder="Email"
             autoCapitalize={"none"}
           />
-          <TextInput
+          <StyledInput
             placeholder="Heslo"
-            className="bg-white px-5 py-3 rounded-full border-none"
             onChangeText={(text) => setPassword(text)}
             value={password}
             autoCapitalize={"none"}

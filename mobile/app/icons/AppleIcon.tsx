@@ -11,5 +11,4 @@ const SvgComponent = (props: SvgProps, ref: React.Ref<any>) => (
     />
   </Svg>
 );
-const ForwardRef = forwardRef(SvgComponent);
-export default ForwardRef;
+export const AppleIcon = forwardRef(SvgComponent);

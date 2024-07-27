@@ -10,8 +10,9 @@ import { UserSessionContext } from "../providers/UserSession";
 import { Statue } from "../types/statues";
 import { LeaderBoard } from "./LeaderBoard";
 import { MyStatues } from "./MyStatues";
-import { User } from "./User";
 import { Region } from "react-native-maps";
+import { Auth } from "./Auth";
+import { Account } from "./Account";
 
 type Routes =
   | "myStatues"
@@ -23,12 +24,12 @@ type Routes =
   | "settings"
   | "map";
 
-  const brnoRegion: Region = {
-    latitude: 49.1759324,
-    longitude: 16.5630407,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  };
+const brnoRegion: Region = {
+  latitude: 49.1759324,
+  longitude: 16.5630407,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
+};
 
 export const Main = () => {
   const [route, setRoute] = useState<Routes>("settings");
@@ -62,8 +63,12 @@ export const Main = () => {
     );
   }
 
+  if (!session) {
+    return <Auth />;
+  }
+
   if (route === "settings") {
-    return <User onClose={() => setRoute("map")} />;
+    return <Account onClickBack={() => setRoute("map")} />;
   }
 
   if (route === "myStatues") {
