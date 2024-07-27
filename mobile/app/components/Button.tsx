@@ -6,6 +6,22 @@ import { Text } from "../primitives/Text";
 
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
+const touchableStyle =
+  "text-center rounded-full p-2 gap-x-2 justify-center flex-row ";
+const textStyle = "text-center text-base ";
+
+const toucbleStyleExtenstion = {
+  primary: "bg-red-500",
+  secondary: "border-solid border-2 border-red-500",
+  regular: "bg-white",
+};
+
+const textStyleExtension = {
+  primary: "text-white",
+  secondary: "text-red-500",
+  regular: "",
+};
+
 export const Button = ({
   title,
   icon,
@@ -16,24 +32,13 @@ export const Button = ({
   icon?: React.ReactNode;
   variant?: "primary" | "secondary" | "regular";
 } & ButtonProps) => {
-  let touchableStyle =
-    "text-center rounded-full p-2 gap-x-2 justify-center flex-row ";
-  let textStyle = "text-center text-base";
-
-  if (variant === "primary") {
-    touchableStyle += " bg-red-500";
-    textStyle += " text-white";
-  } else if (variant === "secondary") {
-    touchableStyle += " border-solid border-2 border-red-500";
-    textStyle += " text-red-500";
-  } else {
-    touchableStyle += " bg-white";
-  }
-
   return (
-    <StyledTouchableOpacity className={touchableStyle} {...props}>
+    <StyledTouchableOpacity
+      className={touchableStyle + toucbleStyleExtenstion[variant]}
+      {...props}
+    >
       {icon}
-      <Text className={textStyle}>{title}</Text>
+      <Text className={textStyle + textStyleExtension[variant]}>{title}</Text>
     </StyledTouchableOpacity>
   );
 };

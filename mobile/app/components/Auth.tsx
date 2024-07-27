@@ -26,7 +26,7 @@ export const Auth = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function signInWithEmail() {
+  const signInWithEmail = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
@@ -35,9 +35,9 @@ export const Auth = () => {
 
     if (error) Alert.alert(error.message);
     setLoading(false);
-  }
+  };
 
-  async function signUpWithEmail() {
+  const signUpWithEmail = async () => {
     setLoading(true);
     const {
       data: { session },
@@ -51,7 +51,7 @@ export const Auth = () => {
     if (!session)
       Alert.alert("Please check your inbox for email verification!");
     setLoading(false);
-  }
+  };
 
   return (
     <View className="h-full p-5 bg-my-gray">
@@ -97,9 +97,7 @@ export const Auth = () => {
         <Text className="text-white text-base text-center">Nebo přes</Text>
         <Button icon={<AppleIcon />} title="Přihlásit se přes Apple" />
         <Button
-          onPress={() => {
-            googleAuth();
-          }}
+          onPress={googleAuth}
           icon={<GoogleIcon className="top-[2px]" />}
           title="Přihlásit se přes Google"
         />
