@@ -10,6 +10,7 @@ export default function App() {
   useEffect(() => {
     Font.loadAsync({
       "RethinkSans-Regular": require("./assets/fonts/RethinkSans-VariableFont_wght.ttf"),
+      "KronaOne-Regular": require("./assets/fonts/KronaOne-Regular.ttf"),
     });
   }, []);
   return (

@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.kulturnilenochodi.socharske-brno"
@@ -36,6 +34,7 @@
           "iosUrlScheme": "com.googleusercontent.apps.865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c"
         }
       ]
-    ]
+    ],
+    "scheme": "myapp"
   }
 }

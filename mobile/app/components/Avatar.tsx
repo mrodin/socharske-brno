@@ -1,8 +1,17 @@
 import { useState, useContext } from "react";
 import { supabase } from "../utils/supabase";
-import { StyleSheet, View, Alert, Image, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  Image,
+  Pressable as PresaableNative,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { UserAvatarContext } from "../providers/UserAvatar";
+import { styled } from "nativewind";
+
+const Pressable = styled(PresaableNative);
 
 interface Props {
   size: number;
@@ -67,7 +76,7 @@ export default function Avatar({ size = 150, onUpload }: Props) {
   }
 
   return (
-    <View>
+    <Pressable onPress={uploadAvatar} disabled={uploading}>
       {url ? (
         <Image
           source={{ uri: url }}
@@ -77,20 +86,13 @@ export default function Avatar({ size = 150, onUpload }: Props) {
       ) : (
         <View style={[avatarSize, styles.avatar, styles.noImage]} />
       )}
-      <View>
-        <Button
-          title={uploading ? "Uploading ..." : "Upload"}
-          onPress={uploadAvatar}
-          disabled={uploading}
-        />
-      </View>
-    </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   avatar: {
-    borderRadius: 5,
+    borderRadius: 999,
     overflow: "hidden",
     maxWidth: "100%",
   },

@@ -1,10 +1,10 @@
 import { View, SafeAreaView, StyleSheet } from "react-native";
-import { Text } from "../components/Text";
+import { Text } from "../primitives/Text";
 import { Button } from "react-native-elements";
 import { useLeaderBoard } from "../api/statues";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
-import { Title } from "../components/Title";
+import { Title } from "../primitives/Title";
 import { Winner } from "../components/Winner";
 import { Player } from "../components/Player";
 
