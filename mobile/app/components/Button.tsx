@@ -1,7 +1,5 @@
 import React from "react";
 import { TouchableOpacityProps } from "react-native";
-
-import { styled } from "nativewind";
 import { Text } from "../primitives/Text";
 import { TouchableOpacity } from "../primitives/TouchableOpacity";
 
@@ -9,7 +7,7 @@ const touchableStyle =
   "border-solid border-2 text-center rounded-full gap-x-2 justify-center flex-row items-center ";
 const textStyle = "text-center text-base leading-[48px] ";
 
-const toucbleStyleExtenstion = {
+const touchableStyleExtenstion = {
   primary: "bg-red-500 border-red-500",
   secondary: "border-red-500",
   regular: "bg-white border-transparent",
@@ -33,7 +31,7 @@ export const Button = ({
 } & TouchableOpacityProps) => {
   return (
     <TouchableOpacity
-      className={touchableStyle + toucbleStyleExtenstion[variant]}
+      className={touchableStyle + touchableStyleExtenstion[variant]}
       {...props}
     >
       {icon}
