@@ -66,9 +66,11 @@ export const DrawerNavigation = ({
   setOriginRegion,
 }: DrawerNavigationProps) => (
   <View className="absolute left-0 bottom-0 min-w-[80%] max-w-[90%] bg-neutral-700 rounded-tr-[30px] justify-start items-start gap-2 inline-flex">
-    <View className="w-full px-[25px] py-[18px] border-b-2 border-neutral-500 justify-between items-center flex flex-row">
-      <UserMenu />
-      <DrawerCloseButton onPress={onClose} />
+    <View>
+      <View className="w-full px-[25px] py-[18px] border-b-2 border-neutral-500 justify-between items-center flex flex-row ">
+        <UserMenu />
+        <DrawerCloseButton onPress={onClose} />
+      </View>
     </View>
     <View className="w-full pl-[10px] pr-[25px] pt-[20px] pb-1.5 flex">
       <SerachAddress
