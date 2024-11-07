@@ -2,7 +2,7 @@ import * as Location from "expo-location";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Image, StyleSheet } from "react-native";
 import MapView from "react-native-map-clustering";
-import { Marker, Region } from "react-native-maps";
+import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useStatues } from "../api/statues";
 import { FoundStatuesContext } from "../providers/FoundStatues";
 import { Statue } from "../types/statues";
@@ -25,7 +25,8 @@ export function Map({
   onSelectStatue,
   selectedStatue,
 }: MapProps) {
-  const [activeMarkerLocation, setActiveMarkerLocation] = useState<any>(initialRegion);
+  const [activeMarkerLocation, setActiveMarkerLocation] =
+    useState<any>(initialRegion);
   const statues = useStatues();
   const [foundStateuIds] = useContext(FoundStatuesContext);
 
@@ -64,8 +65,7 @@ export function Map({
   return (
     <>
       <MapView
-        // TODO: fix provider on iOS
-        // provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={initialRegion}
         //onRegionChange={(region) => console.log(region)}
