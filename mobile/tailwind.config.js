@@ -5,7 +5,14 @@ module.exports = {
     "./app/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'my-gray': '#393939'
+      },
+      fontFamily: {
+        krona: ["KronaOne-Regular"]
+      }
+    },
   },
   plugins: [],
 };
