@@ -63,67 +63,65 @@ export function Map({
   }, []);
 
   return (
-    <>
-      <MapView
-        provider={PROVIDER_GOOGLE}
-        style={styles.map}
-        region={initialRegion}
-        //onRegionChange={(region) => console.log(region)}
-        customMapStyle={customGoogleMapStyle}
-        zoomControlEnabled={false}
-        clusterColor={"#DA1E27"}
-      >
-        {activeMarkerLocation && (
-          <Marker
-            coordinate={{
-              latitude: activeMarkerLocation.latitude,
-              longitude: activeMarkerLocation.longitude,
-            }}
-          >
-            <Image
-              style={{ width: 40, height: 40 }}
-              source={require("../../assets/current-location-marker.png")}
-            />
-          </Marker>
-        )}
-        {nearestStatues.map((statue) => (
-          <Marker
-            key={statue.id}
-            coordinate={{
-              latitude: statue.lat,
+    <MapView
+      provider={PROVIDER_GOOGLE}
+      style={styles.map}
+      region={initialRegion}
+      //onRegionChange={(region) => console.log(region)}
+      customMapStyle={customGoogleMapStyle}
+      zoomControlEnabled={false}
+      clusterColor={"#DA1E27"}
+    >
+      {activeMarkerLocation && (
+        <Marker
+          coordinate={{
+            latitude: activeMarkerLocation.latitude,
+            longitude: activeMarkerLocation.longitude,
+          }}
+        >
+          <Image
+            style={{ width: 40, height: 40 }}
+            source={require("../../assets/current-location-marker.png")}
+          />
+        </Marker>
+      )}
+      {nearestStatues.map((statue) => (
+        <Marker
+          key={statue.id}
+          coordinate={{
+            latitude: statue.lat,
+            longitude: statue.lng,
+          }}
+          onPress={() => {
+            onSelectStatue(statue);
+            setActiveMarkerLocation({
+              latitude: statue.lat - statueDetailOffset,
               longitude: statue.lng,
-            }}
-            onPress={() => {
-              onSelectStatue(statue);
-              setActiveMarkerLocation({
-                latitude: statue.lat - statueDetailOffset,
-                longitude: statue.lng,
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005 - statueDetailOffset,
-              });
-            }}
-          >
-            <Image
-              style={[
-                selectedStatue?.id === statue.id
-                  ? { borderWidth: 2, borderColor: theme.red }
-                  : {},
-                foundStateuIds.includes(statue.id)
-                  ? styles.foundStateuMarker
-                  : styles.notFoundStatueMarker,
-              ]}
-              source={
-                foundStateuIds.includes(statue.id)
-                  ? {
-                      uri: statue.imgthumbnail,
-                    }
-                  : require("../../assets/uknown-state-marker.png")
-              }
-            />
-          </Marker>
-        ))}
-      </MapView>
-    </>
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005 - statueDetailOffset,
+            });
+          }}
+        >
+          <Image
+            style={[
+              selectedStatue?.id === statue.id
+                ? { borderWidth: 2, borderColor: theme.red }
+                : {},
+              foundStateuIds.includes(statue.id)
+                ? styles.foundStateuMarker
+                : styles.notFoundStatueMarker,
+            ]}
+            source={
+              foundStateuIds.includes(statue.id)
+                ? {
+                    uri: statue.imgthumbnail,
+                  }
+                : require("../../assets/uknown-state-marker.png")
+            }
+          />
+        </Marker>
+      ))}
+    </MapView>
   );
 }
 

@@ -1,12 +1,11 @@
 import { useState, useContext } from "react";
 import { supabase } from "../utils/supabase";
-import {
-  StyleSheet,
-  View,
-  Alert,
-  Image,
-  Pressable as PresaableNative,
-} from "react-native";
+import { Alert } from "react-native";
+import { Image } from "../primitives/Image";
+import { View } from "../primitives/View";
+import { Button } from "./Button";
+import { Pressable as PresaableNative } from "react-native";
+
 import * as ImagePicker from "expo-image-picker";
 import { UserAvatarContext } from "../providers/UserAvatar";
 import { styled } from "nativewind";
@@ -18,9 +17,8 @@ interface Props {
   onUpload: (filePath: string) => void;
 }
 
-export default function Avatar({ size = 150, onUpload }: Props) {
+export default function Avatar({ size, onUpload }: Props) {
   const [uploading, setUploading] = useState(false);
-  const avatarSize = { height: size, width: size };
   const { url } = useContext(UserAvatarContext);
 
   async function uploadAvatar() {
@@ -76,35 +74,22 @@ export default function Avatar({ size = 150, onUpload }: Props) {
   }
 
   return (
-    <Pressable onPress={uploadAvatar} disabled={uploading}>
-      {url ? (
-        <Image
-          source={{ uri: url }}
-          accessibilityLabel="Avatar"
-          style={[avatarSize, styles.avatar, styles.image]}
-        />
-      ) : (
-        <View style={[avatarSize, styles.avatar, styles.noImage]} />
-      )}
-    </Pressable>
+    <View className="flex justify-center items-center">
+      <Pressable
+        onPress={uploadAvatar}
+        disabled={uploading}
+        style={{ width: size, height: size }}
+        className="flex justify-start items-start bg-gray-light rounded-full"
+      >
+        {url && (
+          <Image
+            source={{ uri: url }}
+            accessibilityLabel="Avatar"
+            style={{ width: size, height: size }}
+            className="object-cover rounded-full"
+          />
+        )}
+      </Pressable>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  avatar: {
-    borderRadius: 999, // 100% not working in React Native
-    overflow: "hidden",
-    maxWidth: "100%",
-  },
-  image: {
-    objectFit: "cover",
-    paddingTop: 0,
-  },
-  noImage: {
-    backgroundColor: "#333",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "rgb(200, 200, 200)",
-    borderRadius: 5,
-  },
-});

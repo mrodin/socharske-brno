@@ -1,12 +1,12 @@
-import { StyleSheet, TouchableHighlight } from "react-native";
-
-import { View } from "../primitives/View";
-import { Text } from "../primitives/Text";
+import { TouchableHighlight } from "react-native";
 
 import { Region } from "react-native-maps";
-import { DrawerCloseButton } from "./DrawerCloseButton";
+import { NavigationCloseButton } from "./NavigationCloseButton";
 import { SerachAddress } from "./SearchAddress";
-import { UserMenu } from "./UserMenu";
+import { UserMenu } from "../UserMenu";
+import { GpsButton } from "../GpsButton";
+import { View } from "../../primitives/View";
+import { Text } from "../../primitives/Text";
 
 type MenuEntry = {
   id: string;
@@ -41,7 +41,7 @@ const NavigationPagesList = ({ items, onSelect }: MenuProps) => (
         style={{ width: "100%" }}
       >
         <View className="w-full px-[25px] py-[15px] flex justify-start items-start">
-          <Text className="text-gray-200 text-xl font-normal leading-snug">
+          <Text className="text-gray-pale text-xl font-normal leading-snug">
             {item.name}
           </Text>
         </View>
@@ -65,14 +65,14 @@ export const DrawerNavigation = ({
   onSelect,
   setOriginRegion,
 }: DrawerNavigationProps) => (
-  <View className="absolute left-0 bottom-0 min-w-[80%] max-w-[90%] bg-neutral-700 rounded-tr-[30px] justify-start items-start gap-2 inline-flex">
-    <View>
-      <View className="w-full px-[25px] py-[18px] border-b-2 border-neutral-500 justify-between items-center flex flex-row ">
+  <View className="absolute left-0 bottom-0 pb-6 min-w-[80%] max-w-[90%] bg-neutral-700 rounded-tr-[30px] justify-start items-start inline-flex">
+    <View className="w-full border-b-2 border-neutral-500 justify-between items-center flex flex-row">
+      <View className="px-[25px] py-[18px]">
         <UserMenu />
-        <DrawerCloseButton onPress={onClose} />
       </View>
+      <NavigationCloseButton onPress={onClose} />
     </View>
-    <View className="w-full pl-[10px] pr-[25px] pt-[20px] pb-1.5 flex">
+    <View className="w-full px-[25px] pt-[25px] pb-1.5 flex flex-row">
       <SerachAddress
         onSelect={(coord) => {
           setOriginRegion({
@@ -83,6 +83,7 @@ export const DrawerNavigation = ({
           });
         }}
       />
+      <GpsButton />
     </View>
     <NavigationPagesList items={menuItems} onSelect={onSelect} />
     <Divider />
