@@ -1,13 +1,12 @@
-import { StyleSheet, TouchableHighlight } from "react-native";
-
-import { View } from "../View";
-import { Text } from "../Text";
+import { TouchableHighlight } from "react-native";
 
 import { Region } from "react-native-maps";
 import { NavigationCloseButton } from "./NavigationCloseButton";
 import { SerachAddress } from "./SearchAddress";
 import { UserMenu } from "../UserMenu";
 import { GpsButton } from "../GpsButton";
+import { View } from "../../primitives/View";
+import { Text } from "../../primitives/Text";
 
 type MenuEntry = {
   id: string;

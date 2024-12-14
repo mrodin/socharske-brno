@@ -1,10 +1,10 @@
 import { useState, useContext } from "react";
 import { supabase } from "../utils/supabase";
 import { Alert } from "react-native";
-import { Image } from "./Image";
-import { View } from "./View";
+import { Image } from "../primitives/Image";
+import { View } from "../primitives/View";
 import { Button } from "./Button";
-import { Pressable as PresaableNative} from "react-native";
+import { Pressable as PresaableNative } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
 import { UserAvatarContext } from "../providers/UserAvatar";
@@ -76,7 +76,7 @@ export default function Avatar({ size, onUpload }: Props) {
   return (
     <View className="flex justify-center items-center">
       <Pressable
-        onPress={uploadAvatar} 
+        onPress={uploadAvatar}
         disabled={uploading}
         style={{ width: size, height: size }}
         className="flex justify-start items-start bg-gray-light rounded-full"
@@ -89,33 +89,7 @@ export default function Avatar({ size, onUpload }: Props) {
             className="object-cover rounded-full"
           />
         )}
-      </View>
-      {
-        <Button
-          title={uploading ? "Nahrávám..." : "Změnit"}
-          onPress={uploadAvatar}
-          disabled={uploading}
-        />
-      }
+      </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  avatar: {
-    borderRadius: 5,
-    overflow: "hidden",
-    maxWidth: "100%",
-  },
-  image: {
-    objectFit: "cover",
-    paddingTop: 0,
-  },
-  noImage: {
-    backgroundColor: "#333",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "rgb(200, 200, 200)",
-    borderRadius: 5,
-  },
-});

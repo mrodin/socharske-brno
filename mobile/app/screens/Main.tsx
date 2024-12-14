@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View } from "../components/View";
+import { View } from "../primitives/View";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { CollectionButton } from "../components/CollectionButton";
 import { DrawerNavigation } from "../components/navigation/DrawerNavigation";
@@ -12,7 +12,8 @@ import { LeaderBoard } from "./LeaderBoard";
 import { MyStatues } from "./MyStatues";
 import { Region } from "react-native-maps";
 import { LoadingScreen } from "./LoadingScreen";
-import { Auth } from "../components/Auth";
+import { Account } from "./Account";
+import { Auth } from "./Auth";
 
 type Routes =
   | "myStatues"

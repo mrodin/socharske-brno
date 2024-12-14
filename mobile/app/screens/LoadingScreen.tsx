@@ -1,5 +1,5 @@
-import { View } from "../components/View";
-import { Text } from "../components/Text";
+import { View } from "../primitives/View";
+
 import Svg, { Path } from "react-native-svg";
 
 export const LoadingScreen = () => (

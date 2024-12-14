@@ -1,8 +1,8 @@
 import React from "react";
 import { TouchableHighlight } from "./TouchableHighlight";
 import Svg, { Path } from "react-native-svg";
-import { View } from "./View";
-import { Text } from "./Text";
+import { View } from "../primitives/View";
+import { Text } from "../primitives/Text";
 
 export function CollectionButton({ onPress }: { onPress: () => void }) {
   return (
