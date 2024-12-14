@@ -92,7 +92,7 @@ export default function Avatar({ size = 150, onUpload }: Props) {
 
 const styles = StyleSheet.create({
   avatar: {
-    borderRadius: 999,
+    borderRadius: 999, // 100% not working in React Native
     overflow: "hidden",
     maxWidth: "100%",
   },
