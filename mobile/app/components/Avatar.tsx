@@ -4,8 +4,13 @@ import { Alert } from "react-native";
 import { Image } from "./Image";
 import { View } from "./View";
 import { Button } from "./Button";
+import { Pressable as PresaableNative} from "react-native";
+
 import * as ImagePicker from "expo-image-picker";
 import { UserAvatarContext } from "../providers/UserAvatar";
+import { styled } from "nativewind";
+
+const Pressable = styled(PresaableNative);
 
 interface Props {
   size: number;
@@ -70,7 +75,9 @@ export default function Avatar({ size, onUpload }: Props) {
 
   return (
     <View className="flex justify-center items-center">
-      <View
+      <Pressable
+        onPress={uploadAvatar} 
+        disabled={uploading}
         style={{ width: size, height: size }}
         className="flex justify-start items-start bg-gray-light rounded-full"
       >
@@ -93,3 +100,22 @@ export default function Avatar({ size, onUpload }: Props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  avatar: {
+    borderRadius: 5,
+    overflow: "hidden",
+    maxWidth: "100%",
+  },
+  image: {
+    objectFit: "cover",
+    paddingTop: 0,
+  },
+  noImage: {
+    backgroundColor: "#333",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "rgb(200, 200, 200)",
+    borderRadius: 5,
+  },
+});

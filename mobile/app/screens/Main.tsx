@@ -10,7 +10,6 @@ import { UserSessionContext } from "../providers/UserSession";
 import { Statue } from "../types/statues";
 import { LeaderBoard } from "./LeaderBoard";
 import { MyStatues } from "./MyStatues";
-import { User } from "./User";
 import { Region } from "react-native-maps";
 import { LoadingScreen } from "./LoadingScreen";
 import { Auth } from "../components/Auth";
@@ -62,7 +61,7 @@ export const Main = () => {
   }
 
   if (route === "settings") {
-    return <User onClose={() => setRoute("map")} />;
+    return <Account onClickBack={() => setRoute("map")} />;
   }
 
   if (route === "myStatues") {

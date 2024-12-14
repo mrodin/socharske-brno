@@ -17,8 +17,12 @@ module.exports = {
         "gray-pale": "#EBEBEB",
         "gray-paler": "#FDF2F2",
         "gray-palest": "#FBFBFB",
+      },
+            fontFamily: {
+        krona: ["KronaOne-Regular"]
       }
     },
+
   },
   plugins: [],
 };
