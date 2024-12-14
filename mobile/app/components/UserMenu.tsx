@@ -11,7 +11,7 @@ export const UserMenu = () => {
   const { userInfo } = useContext(UserInfoContext);
   return (
     <View className="flex flex-row justify-center items-center gap-[15px]">
-      <View className="w-[47px] h-[47px] justify-start items-start flex">
+      <View className="w-[47px] h-[47px] justify-start items-start flex  bg-gray-light rounded-[25px]">
         {url && (
           <Image
             source={{ uri: url }}
@@ -19,7 +19,7 @@ export const UserMenu = () => {
           />
         )}
       </View>
-      <Text className="text-gray-200 text-[22px] font-bold leading-snug">
+      <Text className="text-gray-pale text-[22px] font-bold leading-snug">
         {userInfo?.username}
       </Text>
     </View>

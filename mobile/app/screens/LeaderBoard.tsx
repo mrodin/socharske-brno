@@ -1,6 +1,4 @@
 import { View, SafeAreaView, StyleSheet } from "react-native";
-import { Text } from "../components/Text";
-import { Button } from "react-native-elements";
 import { useLeaderBoard } from "../api/statues";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";

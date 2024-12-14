@@ -1,9 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { supabase } from "../utils/supabase";
-import { StyleSheet, View } from "react-native";
-import { Button, Input } from "react-native-elements";
+import { StyleSheet } from "react-native";
+import { Button } from "react-native-elements";
 import Avatar from "./Avatar";
+import { Input } from "../primitives/Input";
 import { UserInfoContext } from "../providers/UserInfo";
+import { View } from "./View";
 
 export default function Account() {
   const { userInfo, updateProfile, loading } = useContext(UserInfoContext);
@@ -16,18 +18,7 @@ export default function Account() {
   }, [userInfo]);
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={userInfo.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Username"
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-        />
-      </View>
-
+    <View className="w-ful h-full bg-gray px-8">
       <View>
         <Avatar
           size={200}
@@ -38,8 +29,14 @@ export default function Account() {
           }}
         />
       </View>
+      <View className="flex gap-y-4">
+        <Input label="E-mail" value={userInfo.email} disabled />
+        <Input
+          label="Uživatelské jméno"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+        />
 
-      <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
           title={loading ? "Loading ..." : "Update"}
           onPress={() =>
@@ -49,26 +46,8 @@ export default function Account() {
           }
           disabled={loading}
         />
-      </View>
-
-      <View style={styles.verticallySpaced}>
         <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: "stretch",
-  },
-  mt20: {
-    marginTop: 20,
-  },
-});

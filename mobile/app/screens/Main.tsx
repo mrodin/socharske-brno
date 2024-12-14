@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { View } from "../components/View";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { CollectionButton } from "../components/CollectionButton";
-import { DrawerNavigation } from "../components/DrawerNavigation";
+import { DrawerNavigation } from "../components/navigation/DrawerNavigation";
 import { Map } from "../components/Map";
-import { MenuButton } from "../components/MenuButton";
+import { NavigationOpenButton } from "../components/navigation/NavigationOpenButton";
 import { StatueDetail } from "../components/StatueDetail";
 import { UserSessionContext } from "../providers/UserSession";
 import { Statue } from "../types/statues";
@@ -12,6 +12,8 @@ import { LeaderBoard } from "./LeaderBoard";
 import { MyStatues } from "./MyStatues";
 import { User } from "./User";
 import { Region } from "react-native-maps";
+import { LoadingScreen } from "./LoadingScreen";
+import { Auth } from "../components/Auth";
 
 type Routes =
   | "myStatues"
@@ -23,19 +25,19 @@ type Routes =
   | "settings"
   | "map";
 
-  const brnoRegion: Region = {
-    latitude: 49.1759324,
-    longitude: 16.5630407,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  };
+const brnoRegion: Region = {
+  latitude: 49.1759324,
+  longitude: 16.5630407,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
+};
 
 export const Main = () => {
   const [route, setRoute] = useState<Routes>("settings");
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [showLeftDrawer, setShowLeftDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { session } = useContext(UserSessionContext);
+  const { session, isAuthentizating } = useContext(UserSessionContext);
   const [orginRegion, setOrginRegion] = useState<any>(brnoRegion);
 
   useEffect(() => {
@@ -52,14 +54,11 @@ export const Main = () => {
   }, [session === null, setRoute]);
 
   if (loading) {
-    return (
-      <View style={{ width: "100%", height: "100%", position: "absolute" }}>
-        <Image
-          style={{ width: "100%", height: "100%", position: "absolute" }}
-          source={require("../../assets/intro.png")}
-        />
-      </View>
-    );
+    return <LoadingScreen />;
+  }
+
+  if (!isAuthentizating && !session) {
+    return <Auth />;
   }
 
   if (route === "settings") {
@@ -84,12 +83,10 @@ export const Main = () => {
           }}
           selectedStatue={selectedStatue}
         />
-        <View style={styles.leftDrawerButton}>
-          <MenuButton onPress={() => setShowLeftDrawer(true)} />
-        </View>
-        <View style={styles.myStatuesButton}>
+        <View className="absolute top-[60px] w-full flex items-center">
           <CollectionButton onPress={() => setRoute("myStatues")} />
         </View>
+        <NavigationOpenButton onPress={() => setShowLeftDrawer(true)} />
 
         {selectedStatue && (
           <StatueDetail
@@ -111,16 +108,3 @@ export const Main = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  myStatuesButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-  },
-  leftDrawerButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-  },
-});

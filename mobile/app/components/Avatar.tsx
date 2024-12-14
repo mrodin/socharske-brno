@@ -1,6 +1,9 @@
 import { useState, useContext } from "react";
 import { supabase } from "../utils/supabase";
-import { StyleSheet, View, Alert, Image, Button } from "react-native";
+import { Alert } from "react-native";
+import { Image } from "./Image";
+import { View } from "./View";
+import { Button } from "./Button";
 import * as ImagePicker from "expo-image-picker";
 import { UserAvatarContext } from "../providers/UserAvatar";
 
@@ -9,9 +12,8 @@ interface Props {
   onUpload: (filePath: string) => void;
 }
 
-export default function Avatar({ size = 150, onUpload }: Props) {
+export default function Avatar({ size, onUpload }: Props) {
   const [uploading, setUploading] = useState(false);
-  const avatarSize = { height: size, width: size };
   const { url } = useContext(UserAvatarContext);
 
   async function uploadAvatar() {
@@ -67,42 +69,27 @@ export default function Avatar({ size = 150, onUpload }: Props) {
   }
 
   return (
-    <View>
-      {url ? (
-        <Image
-          source={{ uri: url }}
-          accessibilityLabel="Avatar"
-          style={[avatarSize, styles.avatar, styles.image]}
-        />
-      ) : (
-        <View style={[avatarSize, styles.avatar, styles.noImage]} />
-      )}
-      <View>
+    <View className="flex justify-center items-center">
+      <View
+        style={{ width: size, height: size }}
+        className="flex justify-start items-start bg-gray-light rounded-full"
+      >
+        {url && (
+          <Image
+            source={{ uri: url }}
+            accessibilityLabel="Avatar"
+            style={{ width: size, height: size }}
+            className="object-cover rounded-full"
+          />
+        )}
+      </View>
+      {
         <Button
-          title={uploading ? "Uploading ..." : "Upload"}
+          title={uploading ? "Nahrávám..." : "Změnit"}
           onPress={uploadAvatar}
           disabled={uploading}
         />
-      </View>
+      }
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  avatar: {
-    borderRadius: 5,
-    overflow: "hidden",
-    maxWidth: "100%",
-  },
-  image: {
-    objectFit: "cover",
-    paddingTop: 0,
-  },
-  noImage: {
-    backgroundColor: "#333",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "rgb(200, 200, 200)",
-    borderRadius: 5,
-  },
-});

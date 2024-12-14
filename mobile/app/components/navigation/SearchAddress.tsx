@@ -1,6 +1,6 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { theme } from "../utils/theme";
+import { theme } from "../../utils/theme";
 
 interface Props {
   onSelect: (details: { lat: number; lng: number }) => void;
@@ -9,8 +9,8 @@ interface Props {
 export function SerachAddress({ onSelect }: Props) {
   return (
     <GooglePlacesAutocomplete
-      placeholder="Search"
-      onPress={(data, details = null) => {
+      placeholder="Hledat adresu..."
+      onPress={(data, details) => {
         if (details?.geometry.location) {
           onSelect({
             lat: details.geometry.location.lat,
@@ -19,7 +19,7 @@ export function SerachAddress({ onSelect }: Props) {
         }
       }}
       textInputProps={{
-        placeholderTextColor: theme.redPale,
+        placeholderTextColor: theme.grey,
         returnKeyType: "search",
       }}
       fetchDetails={true}
@@ -31,11 +31,16 @@ export function SerachAddress({ onSelect }: Props) {
       }}
       styles={{
         textInput: {
-          backgroundColor: "#393939B3",
-          borderRadius: 25,
-          height: 38,
-          color: theme.redPale,
+          flex: 1,
+          backgroundColor: theme.greyLight,
+          borderTopLeftRadius: 23,
+          borderBottomLeftRadius: 23,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          color: theme.redPaler,
           fontSize: 16,
+          height: 46,
+          paddingHorizontal: 17,
         },
         row: {
           backgroundColor: "#393939B3",
@@ -48,7 +53,7 @@ export function SerachAddress({ onSelect }: Props) {
           borderRadius: 15,
         },
         description: {
-          color: theme.redPale,
+          color: theme.redPaler,
         },
         textInputContainer: {},
         poweredContainer: {
