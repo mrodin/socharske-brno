@@ -1,14 +1,14 @@
 import { useState, useContext } from "react";
-import { supabase } from "../utils/supabase";
 import { Alert } from "react-native";
 import { Image } from "../primitives/Image";
 import { View } from "../primitives/View";
-import { Button } from "./Button";
 import { Pressable as PresaableNative } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-import { UserAvatarContext } from "../providers/UserAvatar";
 import { styled } from "nativewind";
+import { uploadAvatar } from "../api/avatar";
+import { UserInfoContext } from "../providers/UserInfo";
+import { UserSessionContext } from "../providers/UserSession";
 
 const Pressable = styled(PresaableNative);
 
@@ -19,18 +19,23 @@ interface Props {
 
 export default function Avatar({ size, onUpload }: Props) {
   const [uploading, setUploading] = useState(false);
-  const { url } = useContext(UserAvatarContext);
+  const { userInfo } = useContext(UserInfoContext);
+  const { session } = useContext(UserSessionContext);
 
-  async function uploadAvatar() {
+  async function handleClickUploadAvatar() {
     try {
+      if (!session) return;
+
       setUploading(true);
+
+      const token = session.access_token;
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images, // Restrict to only images
         allowsMultipleSelection: false, // Can only select one image
         allowsEditing: true, // Allows the user to crop / rotate their photo before uploading it
         quality: 1,
-        aspect: [1, 1], // Square aspect ratior
+        aspect: [1, 1], // Square aspect ratio
         exif: false, // We don't want nor need that data.
       });
 
@@ -45,23 +50,8 @@ export default function Avatar({ size, onUpload }: Props) {
         throw new Error("No image uri!"); // Realistically, this should never happen, but just in case...
       }
 
-      const arraybuffer = await fetch(image.uri).then((res) =>
-        res.arrayBuffer()
-      );
-
-      const fileExt = image.uri?.split(".").pop()?.toLowerCase() ?? "jpeg";
-      const path = `${Date.now()}.${fileExt}`;
-      const { data, error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(path, arraybuffer, {
-          contentType: image.mimeType ?? "image/jpeg",
-        });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      onUpload(data.path);
+      const nextAvatarUrl = await uploadAvatar(image.uri, token);
+      onUpload(nextAvatarUrl);
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
@@ -76,14 +66,14 @@ export default function Avatar({ size, onUpload }: Props) {
   return (
     <View className="flex justify-center items-center">
       <Pressable
-        onPress={uploadAvatar}
+        onPress={handleClickUploadAvatar}
         disabled={uploading}
         style={{ width: size, height: size }}
         className="flex justify-start items-start bg-gray-light rounded-full"
       >
-        {url && (
+        {userInfo?.avatarUrl && (
           <Image
-            source={{ uri: url }}
+            source={{ uri: userInfo.avatarUrl }}
             accessibilityLabel="Avatar"
             style={{ width: size, height: size }}
             className="object-cover rounded-full"

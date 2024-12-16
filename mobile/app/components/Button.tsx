@@ -27,10 +27,12 @@ export const Button = ({
 }: {
   title: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
   variant?: "primary" | "secondary" | "regular";
 } & TouchableOpacityProps) => {
   return (
     <TouchableOpacity
+      disabled={props.disabled}
       className={touchableStyle + touchableStyleExtenstion[variant]}
       {...props}
     >
