@@ -68,16 +68,18 @@ export const Account = ({ onClickBack }: AccountProps) => {
             </View>
             <View>
               <View className="gap-3">
-                <Button
-                  variant="primary"
-                  title={loading ? "Ukládám ..." : "Uložit"}
-                  onPress={() =>
-                    updateProfile({
-                      username,
-                    })
-                  }
-                  disabled={loading}
-                />
+                {userInfo.username !== username && (
+                  <Button
+                    variant="primary"
+                    title={loading ? "Ukládám ..." : "Uložit"}
+                    onPress={() =>
+                      updateProfile({
+                        username,
+                      })
+                    }
+                    disabled={loading}
+                  />
+                )}
                 <Button
                   variant="secondary"
                   title="Odhlásit se"
