@@ -51,6 +51,13 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
           avatarUrl: data.avatar_url,
           email: session?.user?.email || "",
         });
+
+        if (session?.user.user_metadata?.avatar_url && !data.avatar_url) {
+          // set provider avatar_url if not set
+          await updateProfile({
+            avatar_url: session?.user.user_metadata.avatar_url,
+          });
+        }
       }
     } catch (error) {
       if (error instanceof Error) {
