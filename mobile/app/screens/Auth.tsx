@@ -53,7 +53,7 @@ export const Auth = () => {
   };
 
   return (
-    <View className="h-full p-5 bg-my-gray w-full">
+    <View className="h-full p-5 bg-gray w-full">
       <ScrollView automaticallyAdjustKeyboardInsets>
         <View className="gap-4 justify-self-center flex items-center mt-10">
           <Text className="text-white text-[40px] text-center w-[200px] font-krona">

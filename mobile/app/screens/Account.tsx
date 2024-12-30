@@ -23,7 +23,7 @@ export const Account = ({ onClickBack }: AccountProps) => {
   }, [userInfo]);
 
   return (
-    <View className="bg-my-gray h-full w-full p-5 pt-[20px]">
+    <View className="bg-gray h-full w-full p-5 pt-[20px]">
       <SafeAreaView>
         <ScrollView automaticallyAdjustKeyboardInsets>
           <TouchableOpacity onPress={onClickBack} className="z-[2] mb-4">
