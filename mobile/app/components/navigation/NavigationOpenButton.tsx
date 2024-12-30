@@ -1,7 +1,6 @@
 import React from "react";
-import { TouchableHighlight } from "../TouchableHighlight";
+import { TouchableHighlight, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { View } from "../../primitives/View";
 
 export const NavigationOpenButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableHighlight

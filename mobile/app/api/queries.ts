@@ -45,7 +45,7 @@ export const useGetCollectedStatues = () => {
   });
 };
 
-export const useGetLeaderboard = () => {
+export const useGetLeaderboard = (): { data: LeaderBoardEntry[] } => {
   const session = useSession();
 
   return useQuery<LeaderBoardEntry[], Error>({

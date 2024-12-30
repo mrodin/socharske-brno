@@ -1,7 +1,6 @@
 import * as React from "react";
-import { Path, SvgProps } from "react-native-svg";
+import { Path, SvgProps, Svg } from "react-native-svg";
 import { forwardRef } from "react";
-import { Svg } from "../primitives/Svg";
 
 const SvgComponent = (props: SvgProps, ref: React.Ref<any>) => (
   <Svg width={18} height={23} ref={ref} {...props}>

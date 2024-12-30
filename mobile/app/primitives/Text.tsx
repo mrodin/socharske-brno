@@ -1,4 +1,10 @@
-import { styled } from "nativewind";
-import { Text as NativeText } from "react-native";
+import { remapProps } from "nativewind";
+import { Text as NativeText, TextStyle } from "react-native";
+import { StyledComponentProps } from "../types/common";
+import { FC } from "react";
 
-export const Text = styled(NativeText);
+const Text: FC<StyledComponentProps<TextStyle>> = ({ style, ...props }) => {
+  return <NativeText style={style} {...props} />;
+};
+
+remapProps(Text, { className: "style" });

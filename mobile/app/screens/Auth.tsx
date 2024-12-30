@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Alert, AppState, ScrollView } from "react-native";
+import { Alert, AppState, ScrollView, Text, View } from "react-native";
 import { supabase } from "../utils/supabase";
 import { Button } from "../components/Button";
-import { Text } from "../primitives/Text";
-import { View } from "../primitives/View";
 import { AppleIcon } from "../icons/AppleIcon";
 import { GoogleIcon } from "../icons/GoogleIcon";
 import { googleAuth } from "../utils/googleAuth";

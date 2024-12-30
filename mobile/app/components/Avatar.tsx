@@ -1,16 +1,11 @@
 import { useState, useContext } from "react";
-import { Alert } from "react-native";
-import { Image } from "../primitives/Image";
-import { View } from "../primitives/View";
-import { Pressable as PresaableNative } from "react-native";
+import { supabase } from "../utils/supabase";
+import { Alert, View, Image, Pressable } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-import { styled } from "nativewind";
 import { uploadAvatar } from "../api/avatar";
 import { UserInfoContext } from "../providers/UserInfo";
 import { UserSessionContext } from "../providers/UserSession";
-
-const Pressable = styled(PresaableNative);
 
 interface Props {
   size: number;

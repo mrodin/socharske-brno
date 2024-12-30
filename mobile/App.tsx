@@ -7,6 +7,8 @@ import { Main } from "./app/screens/Main";
 import { UserSessionProvider } from "./app/providers/UserSession";
 import { UserInfoProvider } from "./app/providers/UserInfo";
 import { UserAvatarProvider } from "./app/providers/UserAvatar";
+import "./global.css";
+import "./app/primitives";
 
 export default function App() {
   const queryClient = new QueryClient();

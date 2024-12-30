@@ -2,13 +2,16 @@ import { useState, useEffect, useContext } from "react";
 import { supabase } from "../utils/supabase";
 import Avatar from "../components/Avatar";
 import { UserInfoContext } from "../providers/UserInfo";
-import { Text } from "../primitives/Text";
-import { View } from "../primitives/View";
 import { StyledInput } from "../components/StyledInput";
 import { Button } from "../components/Button";
 import { ArrowLeft } from "../icons/ArrowLeft";
-import { TouchableOpacity } from "../primitives/TouchableOpacity";
-import { SafeAreaView, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
 type AccountProps = { onClickBack: () => void };
 

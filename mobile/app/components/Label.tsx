@@ -1,7 +1,6 @@
 import { FC, ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
 import { theme } from "../utils/theme";
-import { Text } from "./Text";
+import { View, Text } from "react-native";
 
 type LabelProps = {
   children: ReactNode;
@@ -19,15 +18,8 @@ export const Label: FC<LabelProps> = ({
   fontColor = theme.grey,
 }) => (
   <View
-    style={{
-      backgroundColor,
-      borderWidth: stroke,
-      borderColor: strokeColor,
-      borderRadius: 50,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-    }}
+    className={`border-[${strokeColor}] border-[${stroke}px] bg-[${backgroundColor}] rounded-full px-4 py-2`}
   >
-    <Text style={{ fontSize: 12, color: fontColor }}>{children}</Text>
+    <Text className={`text-[12px] text-[${fontColor}]`}>{children}</Text>
   </View>
 );

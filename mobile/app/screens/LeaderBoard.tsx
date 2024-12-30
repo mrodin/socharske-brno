@@ -2,7 +2,7 @@ import { View, SafeAreaView, StyleSheet } from "react-native";
 import { useGetLeaderboard } from "../api/queries";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
-import { Title } from "../primitives/Title";
+import { Title } from "../components/Title";
 import { Winner } from "../components/Winner";
 import { Player } from "../components/Player";
 

@@ -1,28 +1,28 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./App.{js,jsx,ts,tsx}",
-    "./app/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./App.{js,jsx,ts,tsx}", "./app/**/*.{js,jsx,ts,tsx}"],
+  presets: [require("nativewind/preset")],
   theme: {
     extend: {
       colors: {
-        primary: "#DF4237",
-        "primary-paler": "#FDF2F2",
-        "primary-palest": "#FEFBFB",
-        black: "1F1F1F",
+        "gray-darker": "#292929",
         gray: "#393939",
         "gray-light": "#6B6B6B",
-        "grey-lightest": "#D1D1D1",
         "gray-pale": "#EBEBEB",
-        "gray-paler": "#FDF2F2",
-        "gray-palest": "#FBFBFB",
+        "red-dark": "#6A1B15",
+        red: "#D5232A",
+        "red-light": "#DF4237",
+        "red-lighter": "#E66762",
+        "red-lightest": "#ED9791",
+        "red-pale": "#FAE3E3",
+        "red-paler": "#FDF2F2",
+        "red-palest": "#FEFBFB",
+        white: "#FFFFFF",
       },
-            fontFamily: {
-        krona: ["KronaOne-Regular"]
-      }
+      fontFamily: {
+        krona: ["KronaOne-Regular"],
+      },
     },
-
   },
   plugins: [],
 };

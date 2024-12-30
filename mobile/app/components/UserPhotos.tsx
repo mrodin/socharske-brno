@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { StyleSheet, View } from "react-native";
-import { Text } from "../primitives/Text";
+import { StyleSheet, View, Text } from "react-native";
 import { theme } from "../utils/theme";
 import Svg, { Path } from "react-native-svg";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableHighlight } from "../TouchableHighlight";
+import { TouchableHighlight } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 export const NavigationCloseButton = ({ onPress }: { onPress: () => void }) => {
