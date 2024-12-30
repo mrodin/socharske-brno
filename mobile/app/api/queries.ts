@@ -3,12 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { UserSessionContext } from "../providers/UserSession";
 import { Statue } from "../types/statues";
-import {
-  collectStatue,
-  getAllStatues,
-  getCollectedStatues,
-  getLeaderboard,
-} from "./statues";
+import { fetchWithAuth } from "../utils/api";
 
 const useSession = () => {
   const { session } = useContext(UserSessionContext);
@@ -25,7 +20,12 @@ export const useGetAllStatues = () => {
 
   return useQuery<Statue[], Error>({
     queryKey: ["statues"],
-    queryFn: () => getAllStatues(session.access_token),
+    queryFn: () =>
+      fetchWithAuth(
+        "https://europe-west3-socharske-brno.cloudfunctions.net/statues_get_all",
+        session.access_token,
+        { method: "GET" }
+      ),
     initialData: [],
   });
 };
@@ -35,7 +35,12 @@ export const useGetCollectedStatues = () => {
 
   return useQuery<number[], Error>({
     queryKey: ["collectedStatues"],
-    queryFn: () => getCollectedStatues(session.access_token),
+    queryFn: () =>
+      fetchWithAuth(
+        "https://europe-west3-socharske-brno.cloudfunctions.net/get_collected_statues",
+        session.access_token,
+        { method: "GET" }
+      ),
     initialData: [],
   });
 };
@@ -45,7 +50,12 @@ export const useGetLeaderboard = () => {
 
   return useQuery<LeaderBoardEntry[], Error>({
     queryKey: ["leaderboard"],
-    queryFn: () => getLeaderboard(session.access_token),
+    queryFn: () =>
+      fetchWithAuth(
+        "https://europe-west3-socharske-brno.cloudfunctions.net/get_leaderboard",
+        session.access_token,
+        { method: "GET" }
+      ),
     initialData: [],
   });
 };
@@ -56,7 +66,11 @@ export const useCollectStatue = () => {
 
   return useMutation({
     mutationFn: (statueId: number) =>
-      collectStatue(session.access_token, statueId),
+      fetchWithAuth(
+        "https://europe-west3-socharske-brno.cloudfunctions.net/statue_collected",
+        session.access_token,
+        { method: "POST", body: { statue_id: statueId } }
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["statues", "collectedStatues", "leaderboard"],
