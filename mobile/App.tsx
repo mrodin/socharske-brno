@@ -1,8 +1,10 @@
-import { Main } from "./app/screens/Main";
-import { UserSessionProvider } from "./app/providers/UserSession";
 import * as Font from "expo-font";
 import { useEffect } from "react";
+import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { Main } from "./app/screens/Main";
+import { UserSessionProvider } from "./app/providers/UserSession";
 import { UserInfoProvider } from "./app/providers/UserInfo";
 import { UserAvatarProvider } from "./app/providers/UserAvatar";
 
