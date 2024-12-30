@@ -5,6 +5,8 @@ import functions_framework
 from google.cloud import storage
 from supabase import Client, create_client
 
+STORAGE_URL = "https://storage.googleapis.com/"
+
 
 @functions_framework.http
 def upload_avatar(request: flask.Request) -> list[int] | str:
@@ -43,8 +45,11 @@ def upload_avatar(request: flask.Request) -> list[int] | str:
         # Create a unique filename to avoid collisions
         blob = bucket.blob(f"{os.urandom(20).hex()}.jpg")
 
-        if data.data[0]["avatar_url"]:
-            # Delete previous avatar
+        # Delete previous uploaded avatar if it exists
+        # Database contains link to the avatar on auth provider (Google, Facebook)
+        if data.data[0]["avatar_url"] and data.data[0]["avatar_url"].startswith(
+            STORAGE_URL
+        ):
             file_name = data.data[0]["avatar_url"].split("/")[-1]
             bucket.delete_blob(file_name)
 
@@ -52,7 +57,7 @@ def upload_avatar(request: flask.Request) -> list[int] | str:
         blob.upload_from_file(file)
 
         # Use direct public URL - bucket must be configured for public access
-        url = f"https://storage.googleapis.com/{bucket.name}/{blob.name}"
+        url = f"{STORAGE_URL}/{bucket.name}/{blob.name}"
 
         return {"message": "File uploaded successfully", "url": url}, 200
 

@@ -14,7 +14,7 @@ export const uploadAvatar = async (imageUri: string, token: string) => {
     uri: manipulatedImage.uri,
     type: "image/jpeg",
     name: "avatar.jpg",
-  } as any);
+  } as unknown as Blob);
 
   const response = await fetch(
     "https://us-central1-socharske-brno.cloudfunctions.net/upload_avatar",
