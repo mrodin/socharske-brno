@@ -1,8 +1,6 @@
 import React from "react";
-import { TouchableHighlight } from "./TouchableHighlight";
 import Svg, { Path } from "react-native-svg";
-import { View } from "../primitives/View";
-import { Text } from "../primitives/Text";
+import { View, Text, TouchableHighlight } from "react-native";
 
 export function CollectionButton({ onPress }: { onPress: () => void }) {
   return (
@@ -11,7 +9,7 @@ export function CollectionButton({ onPress }: { onPress: () => void }) {
       className="w-80 shadow-lg backdrop-blur-md rounded-[38px] opacity-80 bg-gray"
     >
       <View className="flex flex-row gap-x-4 items-center justify-center py-[11px] px-[25px] box-border">
-        <Text className="pt-1 leading-[22px] text-[22px] text-gray-pale">
+        <Text className="pt-1 leading-[22px] text-[22px] text-gray-pale ">
           Ulov svou první sochu!
         </Text>
         <View className="flex flex-row items-start justify-start">

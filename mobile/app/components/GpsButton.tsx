@@ -1,5 +1,5 @@
 import Svg, { Path } from "react-native-svg";
-import { View } from "../primitives/View";
+import { View } from "react-native";
 
 export const GpsButton = () => {
   return (

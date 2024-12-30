@@ -1,7 +1,4 @@
-import { StyleSheet } from "react-native";
-import { Image } from "../primitives/Image";
-import { View } from "../primitives/View";
-import { Text } from "../primitives/Text";
+import { View, Text, Image } from "react-native";
 import { UserAvatarContext } from "../providers/UserAvatar";
 import { useContext } from "react";
 import { UserInfoContext } from "../providers/UserInfo";

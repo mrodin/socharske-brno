@@ -2,13 +2,13 @@ import { FC } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 import { BackToMapButton } from "../components/BackToMapButton";
 import { UserTag } from "../components/UserTag";
-import { Title } from "../primitives/Title";
-import { Label } from "../primitives/Label";
-import { theme } from "../utils/theme";
+import { Title } from "../components/Title";
+import { Label } from "../components/Label";
 import { MyStatueEntry } from "../components/MyStatueEntry";
 import { UndiscoveredStatue } from "../components/UndiscoveredStatue";
 import statues from "../data/statues.json";
 import { useGetCollectedStatues } from "../api/queries";
+import { theme } from "../utils/theme";
 
 type MyStatuesProps = {
   onClose: () => void;

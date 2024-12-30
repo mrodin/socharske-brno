@@ -1,7 +1,6 @@
 import { FC } from "react";
-import { TouchableOpacity, StyleSheet, View } from "react-native";
+import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { Text } from "../primitives/Text";
 import { theme } from "../utils/theme";
 
 type BackToMapButtonProps = {

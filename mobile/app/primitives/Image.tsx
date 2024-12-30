@@ -1,4 +1,11 @@
-import { styled } from 'nativewind';
-import {Image as NativeImage} from 'react-native';
+import { remapProps } from "nativewind";
+import React, { FC } from "react";
+import { ImageProps, Image as NativeImage } from "react-native";
 
-export const Image = styled(NativeImage);
+const Image: FC<ImageProps> = ({ style, ...props }) => {
+  return <NativeImage style={style} {...props} />;
+};
+
+remapProps(Image, {
+  className: "style",
+});

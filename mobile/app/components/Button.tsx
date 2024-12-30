@@ -1,7 +1,5 @@
 import React from "react";
-import { TouchableOpacityProps } from "react-native";
-import { Text } from "../primitives/Text";
-import { TouchableOpacity } from "../primitives/TouchableOpacity";
+import { TouchableOpacityProps, Text, TouchableOpacity } from "react-native";
 
 const touchableStyle =
   "border-solid border-2 text-center rounded-full gap-x-2 justify-center flex-row items-center ";

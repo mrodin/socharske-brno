@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View } from "../primitives/View";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { CollectionButton } from "../components/CollectionButton";
 import { DrawerNavigation } from "../components/navigation/DrawerNavigation";
@@ -14,6 +13,7 @@ import { Region } from "react-native-maps";
 import { LoadingScreen } from "./LoadingScreen";
 import { Account } from "./Account";
 import { Auth } from "./Auth";
+import { View } from "react-native";
 
 type Routes =
   | "myStatues"

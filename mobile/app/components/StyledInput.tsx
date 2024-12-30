@@ -1,6 +1,5 @@
-import { InputProps } from "react-native-elements";
-import { Input } from "../primitives/Input";
-import { View } from "../primitives/View";
+import { View } from "react-native";
+import { Input, InputProps } from "react-native-elements";
 
 export const StyledInput = (props: InputProps & { className?: string }) => {
   return (
