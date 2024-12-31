@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { CollectionButton } from "../components/CollectionButton";
-import { DrawerNavigation } from "../components/navigation/DrawerNavigation";
 import { Map } from "../components/Map";
-import { NavigationOpenButton } from "../components/navigation/NavigationOpenButton";
 import { StatueDetail } from "../components/StatueDetail";
 import { UserSessionContext } from "../providers/UserSession";
 import { Statue } from "../types/statues";
@@ -14,6 +12,8 @@ import { LoadingScreen } from "./LoadingScreen";
 import { Account } from "./Account";
 import { Auth } from "./Auth";
 import { View } from "react-native";
+import { Navigation } from "../components/navigation/Navigation";
+import { SearchDrawer } from "../components/SearchDrawer";
 
 type Routes =
   | "myStatues"
@@ -35,10 +35,10 @@ const brnoRegion: Region = {
 export const Main = () => {
   const [route, setRoute] = useState<Routes>("settings");
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
-  const [showLeftDrawer, setShowLeftDrawer] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const [loading, setLoading] = useState(true);
   const { session, isAuthentizating } = useContext(UserSessionContext);
-  const [orginRegion, setOrginRegion] = useState<any>(brnoRegion);
+  const [orginRegion, setOrginRegion] = useState<Region>(brnoRegion);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -86,7 +86,6 @@ export const Main = () => {
         <View className="absolute top-[60px] w-full flex items-center">
           <CollectionButton onPress={() => setRoute("myStatues")} />
         </View>
-        <NavigationOpenButton onPress={() => setShowLeftDrawer(true)} />
 
         {selectedStatue && (
           <StatueDetail
@@ -94,16 +93,26 @@ export const Main = () => {
             onClose={() => setSelectedStatue(null)}
           />
         )}
-        {showLeftDrawer && (
-          <DrawerNavigation
-            setOriginRegion={setOrginRegion}
-            onClose={() => setShowLeftDrawer(false)}
-            onSelect={(route) => {
-              setRoute(route as Routes);
-              setShowLeftDrawer(false);
+
+        {showSearch && (
+          <SearchDrawer
+            onSelectLocation={({ lng, lat }) => {
+              setOrginRegion({
+                ...orginRegion,
+                latitude: lat,
+                longitude: lng,
+              });
+              setShowSearch(false);
             }}
+            onClose={() => setShowSearch(false)}
           />
         )}
+        <Navigation
+          onSearchOpen={() => setShowSearch(!showSearch)}
+          onSelect={(route) => {
+            setRoute(route as Routes);
+          }}
+        />
       </GestureHandlerRootView>
     </>
   );
