@@ -5,7 +5,7 @@ import functions_framework
 from google.cloud import storage
 from supabase import Client, create_client
 
-STORAGE_URL = "https://storage.googleapis.com/"
+STORAGE_URL = "https://storage.googleapis.com"
 
 
 @functions_framework.http
