@@ -1,55 +1,24 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Tabs } from "expo-router";
-import { FC } from "react";
+import { Navigation } from "@/components/navigation/Navigation";
+import { LoadingContext } from "@/providers/LoadingProvider";
+import { Tabs, TabList, TabTrigger, TabSlot } from "expo-router/ui";
+import { useContext } from "react";
 
-const TabLayout: FC = () => (
-  <Tabs screenOptions={{ tabBarActiveTintColor: "blue" }}>
-    <Tabs.Screen
-      name="index"
-      options={{
-        title: "Home",
-        tabBarIcon: ({ color }) => (
-          <FontAwesome size={28} name="home" color={color} />
-        ),
-      }}
-    />
-    <Tabs.Screen
-      name="search"
-      options={{
-        title: "Hledat",
-        tabBarIcon: ({ color }) => (
-          <FontAwesome size={28} name="search" color={color} />
-        ),
-      }}
-    />
-    <Tabs.Screen
-      name="my-statues"
-      options={{
-        title: "Moje sochy",
-        tabBarIcon: ({ color }) => (
-          <FontAwesome size={28} name="star" color={color} />
-        ),
-      }}
-    />
-    <Tabs.Screen
-      name="leaderboard"
-      options={{
-        title: "Leaderboard",
-        tabBarIcon: ({ color }) => (
-          <FontAwesome size={28} name="trophy" color={color} />
-        ),
-      }}
-    />
-    <Tabs.Screen
-      name="profile"
-      options={{
-        title: "Profil",
-        tabBarIcon: ({ color }) => (
-          <FontAwesome size={28} name="user" color={color} />
-        ),
-      }}
-    />
-  </Tabs>
-);
-
-export default TabLayout;
+// For now Tablist is hidden, since it's imposible to style it properly
+// You still need define route here to make it work
+// Navigation is fully styled and using router.push to navigate
+export default function Layout() {
+  const { loading } = useContext(LoadingContext);
+  return (
+    <Tabs>
+      <TabSlot />
+      {!loading && <Navigation />}
+      <TabList style={{ display: "none" }}>
+        <TabTrigger name="home" href="/" />
+        <TabTrigger name="leaderboard" href="/leaderboard" />
+        <TabTrigger name="my-statues" href="/my-statues" />
+        <TabTrigger name="profile" href="/profile" />
+        <TabTrigger name="search" href="/search" />
+      </TabList>
+    </Tabs>
+  );
+}
