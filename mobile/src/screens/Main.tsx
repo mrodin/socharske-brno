@@ -8,22 +8,14 @@ import { StatueDetail } from "../components/StatueDetail";
 import { UserSessionContext } from "../providers/UserSession";
 import { Statue } from "../types/statues";
 import { LeaderBoard } from "./LeaderBoard";
-import { MyStatues } from "./MyStatues";
 import { Region } from "react-native-maps";
 import { LoadingScreen } from "./LoadingScreen";
 import { Account } from "./Account";
 import { Auth } from "./Auth";
 import { View } from "react-native";
+import { useRouter } from "expo-router";
 
-type Routes =
-  | "myStatues"
-  | "leaderBoard"
-  | "trophies"
-  | "trails"
-  | "photos"
-  | "layers"
-  | "settings"
-  | "map";
+type Routes = "myStatues" | "leaderBoard" | "settings" | "map";
 
 const brnoRegion: Region = {
   latitude: 49.1759324,
@@ -33,6 +25,8 @@ const brnoRegion: Region = {
 };
 
 export const Main = () => {
+  const router = useRouter();
+
   const [route, setRoute] = useState<Routes>("settings");
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [showLeftDrawer, setShowLeftDrawer] = useState(false);
@@ -65,10 +59,6 @@ export const Main = () => {
     return <Account onClickBack={() => setRoute("map")} />;
   }
 
-  if (route === "myStatues") {
-    return <MyStatues onClose={() => setRoute("map")} />;
-  }
-
   if (route === "leaderBoard") {
     return <LeaderBoard onClose={() => setRoute("map")} />;
   }
@@ -84,7 +74,7 @@ export const Main = () => {
           selectedStatue={selectedStatue}
         />
         <View className="absolute top-[60px] w-full flex items-center">
-          <CollectionButton onPress={() => setRoute("myStatues")} />
+          <CollectionButton onPress={() => router.push("/my-statues")} />
         </View>
         <NavigationOpenButton onPress={() => setShowLeftDrawer(true)} />
 

@@ -13,15 +13,9 @@ type MenuEntry = {
 const menuItems: MenuEntry[] = [
   { id: "myStatues", name: "Moje sochy" },
   { id: "leaderBoard", name: "Nejlepší lovci soch" },
-  { id: "trophies", name: "Trofeje" },
-  { id: "trails", name: "Sochařské stezky" },
-  { id: "photos", name: "Foto soutěže" },
 ];
 
-const menuItems2: MenuEntry[] = [
-  { id: "layers", name: "Vrstvy" },
-  { id: "settings", name: "Nastavení" },
-];
+const menuItems2: MenuEntry[] = [{ id: "settings", name: "Nastavení" }];
 
 type MenuProps = {
   items: MenuEntry[];
