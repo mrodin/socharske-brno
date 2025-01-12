@@ -6,7 +6,7 @@ interface Props {
   onSelect: (details: { lat: number; lng: number }) => void;
 }
 
-export function SerachAddress({ onSelect }: Props) {
+export function SearchAddress({ onSelect }: Props) {
   return (
     <GooglePlacesAutocomplete
       placeholder="Hledat adresu..."

@@ -1,10 +1,12 @@
+import { FC } from "react";
 import { View, SafeAreaView, StyleSheet } from "react-native";
-import { useGetLeaderboard } from "../api/queries";
-import { BackToMapButton } from "../components/BackToMapButton";
-import { UserTag } from "../components/UserTag";
-import { Title } from "../components/Title";
-import { Winner } from "../components/Winner";
-import { Player } from "../components/Player";
+
+import { useGetLeaderboard } from "@/api/queries";
+import { BackToMapButton } from "@/components/BackToMapButton";
+import { Player } from "@/components/Player";
+import { Title } from "@/components/Title";
+import { UserTag } from "@/components/UserTag";
+import { Winner } from "@/components/Winner";
 
 const AdamImage = require("../../assets/images/adam.jpeg");
 const KubaImage = require("../../assets/images/kuba.jpeg");
@@ -16,7 +18,11 @@ const images: any = {
   "40379104-5e6a-4b79-a17b-54da5fd3d2a7": AdamImage,
 };
 
-export function LeaderBoard({ onClose }: { onClose: () => void }) {
+type LeaderBoardProps = {
+  onClose: () => void;
+};
+
+const LeaderBoard: FC<LeaderBoardProps> = ({ onClose }) => {
   const { data: leaderboard } = useGetLeaderboard();
 
   return (
@@ -54,7 +60,7 @@ export function LeaderBoard({ onClose }: { onClose: () => void }) {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   entries: {
@@ -68,3 +74,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default LeaderBoard;

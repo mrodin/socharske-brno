@@ -6,6 +6,7 @@ dotenv.config();
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "Lovci Soch",
+  scheme: "lovci-soch",
   slug: "lovci-soch",
   version: "1.0.0",
   owner: "kulturni-lenochodi",
@@ -45,4 +46,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   ],
+  experiments: {
+    typedRoutes: true,
+  },
 });

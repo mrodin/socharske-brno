@@ -1,10 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import { supabase } from "../utils/supabase";
-import Avatar from "../components/Avatar";
-import { UserInfoContext } from "../providers/UserInfo";
-import { StyledInput } from "../components/StyledInput";
-import { Button } from "../components/Button";
-import { ArrowLeft } from "../icons/ArrowLeft";
+import { useState, useEffect, useContext, FC } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -13,9 +7,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-type AccountProps = { onClickBack: () => void };
+import Avatar from "@/components/Avatar";
+import { Button } from "@/components/Button";
+import { StyledInput } from "@/components/StyledInput";
+import { ArrowLeft } from "@/icons/ArrowLeft";
+import { UserInfoContext } from "@/providers/UserInfo";
+import { supabase } from "@/utils/supabase";
 
-export const Account = ({ onClickBack }: AccountProps) => {
+type ProfileProps = { onClickBack: () => void };
+
+const Profile: FC<ProfileProps> = ({ onClickBack }) => {
   const { userInfo, updateProfile, loading } = useContext(UserInfoContext);
   const [username, setUsername] = useState("");
 
@@ -96,3 +97,5 @@ export const Account = ({ onClickBack }: AccountProps) => {
     </View>
   );
 };
+
+export default Profile;
