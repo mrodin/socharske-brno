@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 
-import { useGetCollectedStatues } from "@/api/queries";
+import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
 import { BackToMapButton } from "@/components/BackToMapButton";
 import { Label } from "@/components/Label";
 import { MyStatueEntry } from "@/components/MyStatueEntry";
@@ -9,22 +9,22 @@ import { Title } from "@/components/Title";
 import { UndiscoveredStatue } from "@/components/UndiscoveredStatue";
 import { UserTag } from "@/components/UserTag";
 import { theme } from "@/utils/theme";
-import statues from "@/data/statues.json";
 
 type MyStatuesProps = {
   onClose: () => void;
 };
 
 const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
-  const { data: statueIds } = useGetCollectedStatues();
+  const { data: statues } = useGetAllStatues();
+  const { data: collectedStatueIds } = useGetCollectedStatues();
 
   const foundStatues = statues.filter((statue) =>
-    statueIds?.includes(statue.id)
+    collectedStatueIds.includes(statue.id)
   );
 
-  const undicoveredStatues = statues.filter(
-    (statue) => !statueIds?.includes(statue.id)
-  );
+  const undicoveredStatues = statues
+    .filter((statue) => !collectedStatueIds.includes(statue.id))
+    .slice(0, 20);
 
   return (
     <SafeAreaView>

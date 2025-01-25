@@ -10,7 +10,7 @@ export type Statue = {
   lat: number;
   lng: number;
   material: string | null;
-  name: string | null;
+  name: string;
   street: string | null;
   street_number: string | null;
   style: string | null;
