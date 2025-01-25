@@ -132,9 +132,11 @@ export function Map() {
             ]}
             source={
               collectedStatueIds.includes(statue.id)
-                ? {
-                    uri: statue.imgthumbnail,
-                  }
+                ? // ? {
+                  //     uri: statue.imgthumbnail,
+                  //   }
+                  // TODO: martin.rodin: Replace with actual image
+                  require("../../assets/found-state-marker.png")
                 : require("../../assets/uknown-state-marker.png")
             }
           />
