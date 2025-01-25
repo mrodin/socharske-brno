@@ -1,21 +1,22 @@
 import { FC } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
-import { BackToMapButton } from "../components/BackToMapButton";
-import { UserTag } from "../components/UserTag";
-import { Title } from "../components/Title";
-import { Label } from "../components/Label";
-import { MyStatueEntry } from "../components/MyStatueEntry";
-import { UndiscoveredStatue } from "../components/UndiscoveredStatue";
-import statues from "../data/statues.json";
-import { useGetCollectedStatues } from "../api/queries";
-import { theme } from "../utils/theme";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+
+import { useGetCollectedStatues } from "@/api/queries";
+import { BackToMapButton } from "@/components/BackToMapButton";
+import { Label } from "@/components/Label";
+import { MyStatueEntry } from "@/components/MyStatueEntry";
+import { Title } from "@/components/Title";
+import { UndiscoveredStatue } from "@/components/UndiscoveredStatue";
+import { UserTag } from "@/components/UserTag";
+import { theme } from "@/utils/theme";
+import statues from "@/data/statues.json";
 
 type MyStatuesProps = {
   onClose: () => void;
 };
 
-export const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
-  const { data: statueIds, isLoading } = useGetCollectedStatues();
+const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
+  const { data: statueIds } = useGetCollectedStatues();
 
   const foundStatues = statues.filter((statue) =>
     statueIds?.includes(statue.id)
@@ -84,3 +85,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default MyStatues;
