@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserSessionProvider } from "@/providers/UserSession";
 import { UserInfoProvider } from "@/providers/UserInfo";
 import { UserAvatarProvider } from "@/providers/UserAvatar";
-import "@/primitives";
 import "../global.css";
 
 const queryClient = new QueryClient();

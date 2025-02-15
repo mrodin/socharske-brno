@@ -8,6 +8,7 @@ import { UserSessionContext } from "@/providers/UserSession";
 import { Auth } from "@/screens/Auth";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { Statue } from "@/types/statues";
+import { Redirect } from "expo-router";
 
 const brnoRegion: Region = {
   latitude: 49.1759324,
@@ -34,7 +35,7 @@ const Home: FC = () => {
   }
 
   if (!isAuthentizating && !session) {
-    return <Auth />;
+    return <Redirect href="/auth" />;
   }
 
   return (
