@@ -7,31 +7,43 @@ import {
 } from "react";
 import { Region } from "react-native-maps";
 
+const DEFAULT_ZOOM = 0.01;
+
 const brnoRegion: Region = {
   latitude: 49.1759324,
   longitude: 16.5630407,
-  latitudeDelta: 0.01,
-  longitudeDelta: 0.01,
+  latitudeDelta: DEFAULT_ZOOM,
+  longitudeDelta: DEFAULT_ZOOM,
 };
 
 export const LocationContext = createContext<{
-  originRegion: Region;
-  setOriginRegion: Dispatch<SetStateAction<Region>>;
+  initialRegion: Region;
+  activeRegion: Region;
+  setActiveRegion: Dispatch<SetStateAction<Region>>;
   zoom: number;
   setZoom: Dispatch<SetStateAction<number>>;
 }>({
-  originRegion: brnoRegion,
-  setOriginRegion: () => {},
-  zoom: 0.01,
+  initialRegion: brnoRegion,
+  activeRegion: brnoRegion,
+  setActiveRegion: () => {},
+  zoom: DEFAULT_ZOOM,
   setZoom: () => {},
 });
 
 export function LocationProvider({ children }: { children: ReactNode }) {
-  const [originRegion, setOriginRegion] = useState<Region>(brnoRegion);
-  const [zoom, setZoom] = useState<number>(0.01);
+  const [activeRegion, setActiveRegion] = useState<Region>(brnoRegion);
+  const [zoom, setZoom] = useState<number>(DEFAULT_ZOOM);
 
   return (
-    <LocationContext.Provider value={{ originRegion, setOriginRegion, zoom, setZoom }}>
+    <LocationContext.Provider
+      value={{
+        initialRegion: brnoRegion,
+        activeRegion,
+        setActiveRegion,
+        zoom,
+        setZoom,
+      }}
+    >
       {children}
     </LocationContext.Provider>
   );

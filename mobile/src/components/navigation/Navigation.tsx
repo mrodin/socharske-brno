@@ -52,6 +52,7 @@ type NaveigationButtonProps = {
   onPress: () => void;
 };
 
+//shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)]
 const NavigationButton: FC<NaveigationButtonProps> = ({
   label,
   icon,
@@ -65,7 +66,7 @@ const NavigationButton: FC<NaveigationButtonProps> = ({
       onPress={onPress}
     >
       {accent ? (
-        <View className="w-[68px] h-[68px] bg-red rounded-full flex justify-center items-center shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)]">
+        <View className="w-[68px] h-[68px] bg-red rounded-full flex justify-center items-center">
           {Icon && <Icon />}
         </View>
       ) : (

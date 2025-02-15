@@ -10,7 +10,7 @@ type SearchDrawerProps = {};
 
 export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
   const inputRef = React.useRef<GooglePlacesAutocompleteRef | null>(null);
-  const { setOriginRegion, zoom } = useContext(LocationContext);
+  const { setActiveRegion, zoom } = useContext(LocationContext);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -25,12 +25,10 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
             router.back();
           }}
           onSelect={({ lng, lat }) => {
-            setOriginRegion((originRegion) => ({
+            setActiveRegion((originRegion) => ({
               ...originRegion,
               latitude: lat,
               longitude: lng,
-              latitudeDelta: zoom,
-              longitudeDelta: zoom,
             }));
             router.push("/");
           }}

@@ -1,5 +1,5 @@
 import * as Location from "expo-location";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image, StyleSheet } from "react-native";
 import MapView from "react-native-map-clustering";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
@@ -15,20 +15,26 @@ const statueDetailOffset = 0.0011;
 const maxNearestStatues = 20;
 
 export function Map() {
-  const { originRegion, setOriginRegion } = useContext(LocationContext);
+  const mapRef = useRef<
+    | (MapView & {
+        animateToRegion: (region: Region, duration: number) => void;
+      })
+    | null
+  >(null);
+  const { initialRegion, activeRegion, setActiveRegion, zoom } =
+    useContext(LocationContext);
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
-  const [activeMarkerLocation, setActiveMarkerLocation] =
-    useState<any>(originRegion);
+  const [userLocation, setUserLocation] = useState<any>(initialRegion);
   const { data: statues } = useGetAllStatues();
   const { data: collectedStatueIds } = useGetCollectedStatues();
 
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues ?? [], {
-      lat: originRegion.latitude,
-      lng: originRegion.longitude,
+      lat: activeRegion.latitude,
+      lng: activeRegion.longitude,
     });
     return allNearest.slice(0, maxNearestStatues);
-  }, [activeMarkerLocation, statues]);
+  }, [userLocation, statues]);
 
   useEffect(() => {
     (async () => {
@@ -55,31 +61,49 @@ export function Map() {
   }, []);
 
   useEffect(() => {
-    console.log("originRegion", originRegion);
-  }, [originRegion]);
+    console.log("activeRegion", activeRegion);
+    if (mapRef.current) {
+      // mapRef.current.animateToRegion(
+      //   { ...activeRegion, latitudeDelta: 0.01, longitudeDelta: 0.01 },
+      //   1000
+      // );
+    }
+  }, [activeRegion]);
+
+  useEffect(() => {
+    console.log("map mounted");
+    return () => {
+      console.log("map unmounted");
+    };
+  }, []);
 
   return (
     <MapView
+      ref={mapRef}
       provider={PROVIDER_GOOGLE}
       style={styles.map}
-      region={originRegion}
-      onRegionChangeComplete={(region) => {
-        setOriginRegion({
-          latitude: region.latitude,
-          longitude: region.longitude,
-          latitudeDelta: originRegion.latitudeDelta,  // Keep existing zoom
-          longitudeDelta: originRegion.longitudeDelta  // Keep existing zoom
-        });
-      }}
+      initialRegion={initialRegion}
+      region={activeRegion}
+      // onRegionChangeComplete={(region) => {
+      //   setActiveRegion({
+      //     latitude: region.latitude,
+      //     longitude: region.longitude,
+      //     latitudeDelta: activeRegion.latitudeDelta, // Keep existing zoom
+      //     longitudeDelta: activeRegion.longitudeDelta, // Keep existing zoom
+      //   });
+      // }}
+      // onRegionChangeComplete={(region, details) =>
+      //   console.log("regionChange", region, details)
+      // }
       customMapStyle={customGoogleMapStyle}
       zoomControlEnabled={false}
       clusterColor={"#DA1E27"}
     >
-      {activeMarkerLocation && (
+      {userLocation && (
         <Marker
           coordinate={{
-            latitude: activeMarkerLocation.latitude,
-            longitude: activeMarkerLocation.longitude,
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
           }}
         >
           <Image
@@ -97,11 +121,11 @@ export function Map() {
           }}
           onPress={() => {
             setSelectedStatue(statue);
-            setActiveMarkerLocation({
-              latitude: statue.lat - statueDetailOffset,
+            setActiveRegion({
+              latitude: statue.lat,
               longitude: statue.lng,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005 - statueDetailOffset,
+              latitudeDelta: zoom,
+              longitudeDelta: zoom,
             });
           }}
         >
