@@ -1,6 +1,7 @@
 import * as Location from "expo-location";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image, StyleSheet } from "react-native";
+
 import MapView from "react-native-map-clustering";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { Statue } from "../types/statues";
@@ -21,17 +22,19 @@ export function Map() {
       })
     | null
   >(null);
-  const { initialRegion, activeRegion, setActiveRegion, zoom } =
+  const { initialRegion, searchRegion, setSearchRegion } =
     useContext(LocationContext);
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [userLocation, setUserLocation] = useState<any>(initialRegion);
   const { data: statues } = useGetAllStatues();
   const { data: collectedStatueIds } = useGetCollectedStatues();
 
+  const [region, setRegion] = useState<Region>(searchRegion);
+
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues ?? [], {
-      lat: activeRegion.latitude,
-      lng: activeRegion.longitude,
+      lat: searchRegion.latitude,
+      lng: searchRegion.longitude,
     });
     return allNearest.slice(0, maxNearestStatues);
   }, [userLocation, statues]);
@@ -61,21 +64,10 @@ export function Map() {
   }, []);
 
   useEffect(() => {
-    console.log("activeRegion", activeRegion);
     if (mapRef.current) {
-      // mapRef.current.animateToRegion(
-      //   { ...activeRegion, latitudeDelta: 0.01, longitudeDelta: 0.01 },
-      //   1000
-      // );
+      mapRef.current.animateToRegion({ ...searchRegion }, 1000);
     }
-  }, [activeRegion]);
-
-  useEffect(() => {
-    console.log("map mounted");
-    return () => {
-      console.log("map unmounted");
-    };
-  }, []);
+  }, [searchRegion]);
 
   return (
     <MapView
@@ -83,21 +75,18 @@ export function Map() {
       provider={PROVIDER_GOOGLE}
       style={styles.map}
       initialRegion={initialRegion}
-      region={activeRegion}
-      // onRegionChangeComplete={(region) => {
-      //   setActiveRegion({
-      //     latitude: region.latitude,
-      //     longitude: region.longitude,
-      //     latitudeDelta: activeRegion.latitudeDelta, // Keep existing zoom
-      //     longitudeDelta: activeRegion.longitudeDelta, // Keep existing zoom
-      //   });
-      // }}
-      // onRegionChangeComplete={(region, details) =>
-      //   console.log("regionChange", region, details)
-      // }
+      region={region}
+      onRegionChange={() => {
+        setRegion({
+          latitude: searchRegion.latitude,
+          longitude: searchRegion.longitude,
+          latitudeDelta: searchRegion.latitudeDelta, // Keep existing zoom
+          longitudeDelta: searchRegion.longitudeDelta, // Keep existing zoom
+        });
+      }}
       customMapStyle={customGoogleMapStyle}
       zoomControlEnabled={false}
-      clusterColor={"#DA1E27"}
+      clusterColor="#DA1E27"
     >
       {userLocation && (
         <Marker
@@ -121,12 +110,15 @@ export function Map() {
           }}
           onPress={() => {
             setSelectedStatue(statue);
-            setActiveRegion({
-              latitude: statue.lat,
-              longitude: statue.lng,
-              latitudeDelta: zoom,
-              longitudeDelta: zoom,
-            });
+            mapRef.current?.animateToRegion(
+              {
+                latitude: statue.lat,
+                longitude: statue.lng,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              },
+              1000
+            );
           }}
         >
           <Image

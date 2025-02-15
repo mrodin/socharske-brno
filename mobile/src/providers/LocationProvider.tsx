@@ -18,30 +18,24 @@ const brnoRegion: Region = {
 
 export const LocationContext = createContext<{
   initialRegion: Region;
-  activeRegion: Region;
-  setActiveRegion: Dispatch<SetStateAction<Region>>;
-  zoom: number;
-  setZoom: Dispatch<SetStateAction<number>>;
+  searchRegion: Region;
+  setSearchRegion: Dispatch<SetStateAction<Region>>;
 }>({
   initialRegion: brnoRegion,
-  activeRegion: brnoRegion,
-  setActiveRegion: () => {},
-  zoom: DEFAULT_ZOOM,
-  setZoom: () => {},
+  searchRegion: brnoRegion,
+  setSearchRegion: () => {},
 });
 
 export function LocationProvider({ children }: { children: ReactNode }) {
-  const [activeRegion, setActiveRegion] = useState<Region>(brnoRegion);
+  const [searchRegion, setSearchRegion] = useState<Region>(brnoRegion);
   const [zoom, setZoom] = useState<number>(DEFAULT_ZOOM);
 
   return (
     <LocationContext.Provider
       value={{
         initialRegion: brnoRegion,
-        activeRegion,
-        setActiveRegion,
-        zoom,
-        setZoom,
+        searchRegion,
+        setSearchRegion,
       }}
     >
       {children}
