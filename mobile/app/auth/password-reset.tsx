@@ -31,6 +31,8 @@ const PasswordReset = () => {
           refresh_token?: string;
         };
 
+        console.log(queryParams); // Keep for debugging
+
         if (queryParams.error_description) {
           Alert.alert("Něco se pokazilo: " + queryParams.error_description);
           router.push("/");
@@ -49,7 +51,6 @@ const PasswordReset = () => {
             await supabase.auth.refreshSession();
             Alert.alert("Jste přihlášen, nyní můžete změnit heslo");
             // Redirect to the profile page to change the password
-            router.push("/profile");
           } else {
             Alert.alert("Něco se pokazilo");
             router.push("/");

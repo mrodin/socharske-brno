@@ -20,7 +20,6 @@ const brnoRegion: Region = {
 const Home: FC = () => {
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [loading, setLoading] = useState(true);
-  const { session, isAuthentizating } = useContext(UserSessionContext);
   const [orginRegion, setOrginRegion] = useState<any>(brnoRegion);
 
   useEffect(() => {
@@ -32,10 +31,6 @@ const Home: FC = () => {
 
   if (loading) {
     return <LoadingScreen />;
-  }
-
-  if (!isAuthentizating && !session) {
-    return <Redirect href="/auth" />;
   }
 
   return (
