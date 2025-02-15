@@ -13,12 +13,14 @@ import { StyledInput } from "@/components/StyledInput";
 import { ArrowLeft } from "@/icons/ArrowLeft";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { supabase } from "@/utils/supabase";
+import { useRouter } from "expo-router";
 
 type ProfileProps = { onClickBack: () => void };
 
 const Profile: FC<ProfileProps> = ({ onClickBack }) => {
   const { userInfo, updateProfile, loading } = useContext(UserInfoContext);
   const [username, setUsername] = useState("");
+  const router = useRouter();
 
   if (!userInfo) return null;
 
@@ -87,7 +89,10 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
                 <Button
                   variant="secondary"
                   title="Odhlásit se"
-                  onPress={() => supabase.auth.signOut()}
+                  onPress={() => {
+                    supabase.auth.signOut();
+                    router.push("/");
+                  }}
                 />
               </View>
             </View>

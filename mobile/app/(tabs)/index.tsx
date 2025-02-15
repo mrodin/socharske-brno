@@ -8,6 +8,7 @@ import { UserSessionContext } from "@/providers/UserSession";
 import { Auth } from "@/screens/Auth";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { Statue } from "@/types/statues";
+import { Redirect } from "expo-router";
 
 const brnoRegion: Region = {
   latitude: 49.1759324,
@@ -19,7 +20,6 @@ const brnoRegion: Region = {
 const Home: FC = () => {
   const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
   const [loading, setLoading] = useState(true);
-  const { session, isAuthentizating } = useContext(UserSessionContext);
   const [orginRegion, setOrginRegion] = useState<any>(brnoRegion);
 
   useEffect(() => {
@@ -31,10 +31,6 @@ const Home: FC = () => {
 
   if (loading) {
     return <LoadingScreen />;
-  }
-
-  if (!isAuthentizating && !session) {
-    return <Auth />;
   }
 
   return (
