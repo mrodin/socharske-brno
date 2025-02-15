@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { Button } from "@/components/Button";
 
 import { StyledInput } from "@/components/StyledInput";
@@ -45,9 +45,11 @@ const AuthEmailSignIn = () => {
           autoCapitalize={"none"}
           secureTextEntry={true}
         />
-        <Text className="underline text-white text-right">
-          Zapomenuté heslo?
-        </Text>
+        <Pressable onPress={() => router.push("/auth/password-reset-request")}>
+          <Text className="underline text-white text-right">
+            Zapomenuté heslo?
+          </Text>
+        </Pressable>
         <Button
           variant="secondary"
           title="Přihlásit"
