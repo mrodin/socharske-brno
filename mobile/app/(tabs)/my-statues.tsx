@@ -2,7 +2,7 @@ import { FC } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
-import { BackToMapButton } from "@/components/BackToMapButton";
+import { RouteHeader } from "@/components/RouteHeader";
 import { Label } from "@/components/Label";
 import { MyStatueEntry } from "@/components/MyStatueEntry";
 import { Title } from "@/components/Title";
@@ -31,7 +31,7 @@ const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
       <ScrollView>
         <View style={{ gap: 30 }}>
           <View style={styles.row}>
-            <BackToMapButton onClose={onClose} />
+            <RouteHeader onClose={onClose} />
             <UserTag />
           </View>
           <View style={styles.row}>
