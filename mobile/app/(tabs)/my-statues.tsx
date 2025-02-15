@@ -2,14 +2,13 @@ import { FC } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
-import { BackToMapButton } from "@/components/BackToMapButton";
+import { RouteHeader } from "@/components/RouteHeader";
 import { Label } from "@/components/Label";
 import { MyStatueEntry } from "@/components/MyStatueEntry";
 import { Title } from "@/components/Title";
 import { UndiscoveredStatue } from "@/components/UndiscoveredStatue";
 import { UserTag } from "@/components/UserTag";
 import { theme } from "@/utils/theme";
-
 
 const MyStatues: FC = () => {
   const { data: statues } = useGetAllStatues();

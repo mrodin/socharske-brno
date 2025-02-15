@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { View, SafeAreaView, StyleSheet } from "react-native";
+import { View, SafeAreaView, ScrollView } from "react-native";
 
 import { useGetLeaderboard } from "@/api/queries";
-import { BackToMapButton } from "@/components/BackToMapButton";
+import { RouteHeader } from "@/components/RouteHeader";
 import { Player } from "@/components/Player";
 import { Title } from "@/components/Title";
 import { UserTag } from "@/components/UserTag";
@@ -19,44 +19,32 @@ const images: any = {
   "40379104-5e6a-4b79-a17b-54da5fd3d2a7": AdamImage,
 };
 
-type LeaderBoardProps = {};
-
-const LeaderBoard: FC<LeaderBoardProps> = () => {
+const LeaderBoard: FC = () => {
   const { data: leaderboard } = useGetLeaderboard();
 
   return (
-    <SafeAreaView>
-      <View className="gap-6">
-        <View className="flex flex-row justify-between items-center px-6">
-          <BackToMapButton onClose={() => router.push("/")} />
-          <UserTag />
-        </View>
-        <View className="flex flex-row justify-between items-center px-6">
-          <Title>Nejlepší lovci soch</Title>
-        </View>
-        <View className="gap-4 px-6">
-          {leaderboard.map((user, index) => {
-            if (index === 0) {
-              return (
-                <Winner
-                  key={user.id}
-                  name={user.username}
-                  score={user.score.toFixed()}
-                  thumbnail={images[user.id]}
-                />
-              );
-            }
-            return (
+    <SafeAreaView className="flex-1">
+      <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+        <View className="bg-gray flex-1 gap-8 px-6">
+          <RouteHeader route="Leaderboard" />
+
+          <Title className="text-gray-pale text-[20px] tracking-wide">
+            Nejlepší lovci soch
+          </Title>
+
+          <View className="gap-4">
+            {leaderboard.map((user, index) => (
               <Player
                 key={user.id}
+                isWinner={index === 0}
                 name={user.username}
                 score={user.score.toFixed()}
                 thumbnail={images[user.id]}
               />
-            );
-          })}
+            ))}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
