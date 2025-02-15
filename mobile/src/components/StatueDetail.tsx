@@ -35,48 +35,54 @@ const cardBorderRadius = {
   borderTopRightRadius: HANDLE_BORDER_RADIUS,
 };
 
-type StatueDetailProps = {
-  onClose: () => void;
-  statue: Statue | null;
-};
-
-export const StatueDetail: FC<StatueDetailProps> = () => {
+export const StatueDetail: FC = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { data: statueIds, refetch: refetchStateuIds } =
-    useGetCollectedStatues();
-  const collectStatue = useCollectStatue();
-  const [isLoading, setIsLoading] = useState(false);
-  const [alreadyCollected, setAlreadyCollected] = useState(false);
+
   const { selectedStatue, setSelectedStatue } = useContext(
     SelectedStatueContext
   );
 
-  if (!selectedStatue) {
-    return null;
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [alreadyCollected, setAlreadyCollected] = useState(false);
 
-  const { id, name } = statue;
+  const { data: statueIds, refetch: refetchStatueIds } =
+    useGetCollectedStatues();
+  const collectStatue = useCollectStatue();
 
   const handleCollect = async () => {
+    if (!selectedStatue) {
+      return undefined;
+    }
+
     setIsLoading(true);
-    await collectStatue.mutate(id);
-    await refetchStateuIds();
+    await collectStatue.mutate(selectedStatue.id);
+    await refetchStatueIds();
     setIsLoading(false);
     setAlreadyCollected(true);
   };
 
   useEffect(() => {
-    if (statueIds.includes(id)) {
-      setAlreadyCollected(true);
+    if (!selectedStatue) {
+      return undefined;
     }
-  }, [statueIds, id]);
+
+    if (statueIds.includes(selectedStatue.id)) {
+      setAlreadyCollected(true);
+    } else {
+      setAlreadyCollected(false);
+    }
+  }, [statueIds, selectedStatue]);
+
+  if (!selectedStatue) {
+    return null;
+  }
 
   return (
     <BottomSheet
       ref={bottomSheetRef}
       backgroundStyle={cardBorderRadius}
       enablePanDownToClose
-      onClose={onClose}
+      onClose={() => setSelectedStatue(null)}
       handleComponent={Handle}
       snapPoints={["73%", "100%"]}
     >
@@ -85,10 +91,12 @@ export const StatueDetail: FC<StatueDetailProps> = () => {
         contentContainerStyle={{ paddingBottom: 64 }}
       >
         <View className="gap-6">
-          <Text className="text-[22px] font-bold text-white">{name}</Text>
+          <Text className="text-[22px] font-bold text-white">
+            {selectedStatue.name}
+          </Text>
 
           {alreadyCollected ? (
-            <UnlockedStatueInfo statue={statue} />
+            <UnlockedStatueInfo statue={selectedStatue} />
           ) : (
             <View className="gap-6">
               <Text className="text-white">

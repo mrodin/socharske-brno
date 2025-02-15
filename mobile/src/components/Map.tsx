@@ -4,12 +4,12 @@ import { Image, StyleSheet } from "react-native";
 
 import MapView from "react-native-map-clustering";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
-import { Statue } from "../types/statues";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { sortByDistanceFromPoint } from "../utils/math";
 import { theme } from "../utils/theme";
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import { LocationContext } from "@/providers/LocationProvider";
+import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 const statueDetailOffset = 0.0011;
 
@@ -24,7 +24,10 @@ export function Map() {
   >(null);
   const { initialRegion, searchRegion, setSearchRegion } =
     useContext(LocationContext);
-  const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
+  const { selectedStatue, setSelectedStatue } = useContext(
+    SelectedStatueContext
+  );
+
   const [userLocation, setUserLocation] = useState<any>(initialRegion);
   const { data: statues } = useGetAllStatues();
   const { data: collectedStatueIds } = useGetCollectedStatues();
