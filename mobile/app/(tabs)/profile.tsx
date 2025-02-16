@@ -56,12 +56,7 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
             <View>
               <View className="gap-4 mb-8">
                 <View>
-                  <StyledInput
-                    label="Email"
-                    className="bg-white px-5 py-3 rounded-full border-none"
-                    value={userInfo.email}
-                    disabled
-                  />
+                  <StyledInput label="Email" value={userInfo.email} disabled />
                 </View>
                 <View>
                   <StyledInput
@@ -91,7 +86,6 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
                   title="Odhlásit se"
                   onPress={() => {
                     supabase.auth.signOut();
-                    router.push("/");
                   }}
                 />
               </View>
