@@ -7,6 +7,7 @@ import { Player } from "@/components/Player";
 import { Title } from "@/components/Title";
 import { UserTag } from "@/components/UserTag";
 import { Winner } from "@/components/Winner";
+import { router } from "expo-router";
 
 const AdamImage = require("../../assets/images/adam.jpeg");
 const KubaImage = require("../../assets/images/kuba.jpeg");
@@ -18,24 +19,22 @@ const images: any = {
   "40379104-5e6a-4b79-a17b-54da5fd3d2a7": AdamImage,
 };
 
-type LeaderBoardProps = {
-  onClose: () => void;
-};
+type LeaderBoardProps = {};
 
-const LeaderBoard: FC<LeaderBoardProps> = ({ onClose }) => {
+const LeaderBoard: FC<LeaderBoardProps> = () => {
   const { data: leaderboard } = useGetLeaderboard();
 
   return (
     <SafeAreaView>
-      <View style={{ gap: 30 }}>
-        <View style={styles.row}>
-          <BackToMapButton onClose={onClose} />
+      <View className="gap-6">
+        <View className="flex flex-row justify-between items-center px-6">
+          <BackToMapButton onClose={() => router.push("/")} />
           <UserTag />
         </View>
-        <View style={styles.row}>
+        <View className="flex flex-row justify-between items-center px-6">
           <Title>Nejlepší lovci soch</Title>
         </View>
-        <View style={styles.entries}>
+        <View className="gap-4 px-6">
           {leaderboard.map((user, index) => {
             if (index === 0) {
               return (
@@ -61,18 +60,5 @@ const LeaderBoard: FC<LeaderBoardProps> = ({ onClose }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  entries: {
-    paddingHorizontal: 24,
-    gap: 16,
-  },
-  row: {
-    paddingHorizontal: 24,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});
 
 export default LeaderBoard;
