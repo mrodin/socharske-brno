@@ -13,14 +13,13 @@ import { StyledInput } from "@/components/StyledInput";
 import { ArrowLeft } from "@/icons/ArrowLeft";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { supabase } from "@/utils/supabase";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 
 type ProfileProps = { onClickBack: () => void };
 
 const Profile: FC<ProfileProps> = ({ onClickBack }) => {
   const { userInfo, updateProfile, loading } = useContext(UserInfoContext);
   const [username, setUsername] = useState("");
-  const router = useRouter();
 
   if (!userInfo) return null;
 
@@ -32,7 +31,10 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
     <View className="bg-gray h-full w-full p-5 pt-[20px]">
       <SafeAreaView>
         <ScrollView automaticallyAdjustKeyboardInsets>
-          <TouchableOpacity onPress={onClickBack} className="z-[2] mb-4">
+          <TouchableOpacity
+            onPress={() => router.push("/")}
+            className="z-[2] mb-4"
+          >
             <ArrowLeft width={16} height={32} />
           </TouchableOpacity>
           <View className="gap-8">

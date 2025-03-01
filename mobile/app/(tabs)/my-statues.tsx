@@ -10,11 +10,8 @@ import { UndiscoveredStatue } from "@/components/UndiscoveredStatue";
 import { UserTag } from "@/components/UserTag";
 import { theme } from "@/utils/theme";
 
-type MyStatuesProps = {
-  onClose: () => void;
-};
 
-const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
+const MyStatues: FC = () => {
   const { data: statues } = useGetAllStatues();
   const { data: collectedStatueIds } = useGetCollectedStatues();
 
@@ -30,11 +27,11 @@ const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
     <SafeAreaView>
       <ScrollView>
         <View style={{ gap: 30 }}>
-          <View style={styles.row}>
-            <BackToMapButton onClose={onClose} />
+          <View className="flex flex-row justify-between items-center px-6">
+            <BackToMapButton onClose={() => router.push("/")} />
             <UserTag />
           </View>
-          <View style={styles.row}>
+          <View className="flex flex-row justify-between items-center px-6">
             <Title>Moje sochy</Title>
             <Label
               stroke={1}
@@ -45,7 +42,7 @@ const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
               {`${foundStatues.length} ulovené sochy`}
             </Label>
           </View>
-          <View style={styles.entries}>
+          <View className="px-6 gap-4">
             {foundStatues.map((statue) => (
               <MyStatueEntry
                 key={statue.id}
@@ -54,11 +51,11 @@ const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
               />
             ))}
           </View>
-          <View style={styles.row}>
+          <View className="flex flex-row justify-between items-center px-6">
             <Title>Zbývá ulovit</Title>
             <Label>{`${undicoveredStatues.length} zbývá`}</Label>
           </View>
-          <View style={styles.entries}>
+          <View className="px-6 gap-4">
             {undicoveredStatues.map((statue) => (
               <UndiscoveredStatue
                 key={statue.id}
@@ -72,18 +69,5 @@ const MyStatues: FC<MyStatuesProps> = ({ onClose }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  entries: {
-    paddingHorizontal: 24,
-    gap: 16,
-  },
-  row: {
-    paddingHorizontal: 24,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});
 
 export default MyStatues;

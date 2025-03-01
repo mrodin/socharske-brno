@@ -1,6 +1,6 @@
 import * as Font from "expo-font";
 import { Stack } from "expo-router";
-import { FC, useEffect } from "react";
+import { FC, useEffect, Context } from "react";
 import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -9,6 +9,9 @@ import { UserInfoProvider } from "@/providers/UserInfo";
 import { UserAvatarProvider } from "@/providers/UserAvatar";
 import "../global.css";
 import AuthRedirect from "@/components/AuthRedirect";
+import { LocationProvider } from "@/providers/LocationProvider";
+import { SelectedStatueProvider } from "@/providers/SelectedStatueProvider";
+import { LoadingProvider } from "@/providers/LoadingProvider";
 
 const queryClient = new QueryClient();
 
@@ -22,17 +25,26 @@ const RootLayout: FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserSessionProvider>
-        <UserInfoProvider>
-          <AuthRedirect>
-            <UserAvatarProvider>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              </Stack>
-            </UserAvatarProvider>
-          </AuthRedirect>
-        </UserInfoProvider>
-      </UserSessionProvider>
+      <LoadingProvider>
+        <UserSessionProvider>
+          <UserInfoProvider>
+            <AuthRedirect>
+              <UserAvatarProvider>
+                <LocationProvider>
+                  <SelectedStatueProvider>
+                    <Stack>
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                    </Stack>
+                  </SelectedStatueProvider>
+                </LocationProvider>
+              </UserAvatarProvider>
+            </AuthRedirect>
+          </UserInfoProvider>
+        </UserSessionProvider>
+      </LoadingProvider>
     </QueryClientProvider>
   );
 };

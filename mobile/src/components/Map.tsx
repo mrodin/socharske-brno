@@ -1,6 +1,7 @@
 import * as Location from "expo-location";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image, StyleSheet } from "react-native";
+
 import MapView from "react-native-map-clustering";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { Statue } from "../types/statues";
@@ -8,34 +9,35 @@ import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { sortByDistanceFromPoint } from "../utils/math";
 import { theme } from "../utils/theme";
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
+import { LocationContext } from "@/providers/LocationProvider";
 
 const statueDetailOffset = 0.0011;
 
 const maxNearestStatues = 20;
 
-type MapProps = {
-  initialRegion: Region;
-  onSelectStatue: (stateu: Statue) => void;
-  selectedStatue: Statue | null;
-};
-
-export function Map({
-  initialRegion,
-  onSelectStatue,
-  selectedStatue,
-}: MapProps) {
-  const [activeMarkerLocation, setActiveMarkerLocation] =
-    useState<any>(initialRegion);
+export function Map() {
+  const mapRef = useRef<
+    | (MapView & {
+        animateToRegion: (region: Region, duration: number) => void;
+      })
+    | null
+  >(null);
+  const { initialRegion, searchRegion, setSearchRegion } =
+    useContext(LocationContext);
+  const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
+  const [userLocation, setUserLocation] = useState<any>(initialRegion);
   const { data: statues } = useGetAllStatues();
   const { data: collectedStatueIds } = useGetCollectedStatues();
 
+  const [region, setRegion] = useState<Region>(searchRegion);
+
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues ?? [], {
-      lat: initialRegion.latitude,
-      lng: initialRegion.longitude,
+      lat: searchRegion.latitude,
+      lng: searchRegion.longitude,
     });
     return allNearest.slice(0, maxNearestStatues);
-  }, [activeMarkerLocation, statues]);
+  }, [userLocation, statues]);
 
   useEffect(() => {
     (async () => {
@@ -61,21 +63,36 @@ export function Map({
     })();
   }, []);
 
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.animateToRegion({ ...searchRegion }, 1000);
+    }
+  }, [searchRegion]);
+
   return (
     <MapView
+      ref={mapRef}
       provider={PROVIDER_GOOGLE}
       style={styles.map}
-      region={initialRegion}
-      //onRegionChange={(region) => console.log(region)}
+      initialRegion={initialRegion}
+      region={region}
+      onRegionChange={() => {
+        setRegion({
+          latitude: searchRegion.latitude,
+          longitude: searchRegion.longitude,
+          latitudeDelta: searchRegion.latitudeDelta, // Keep existing zoom
+          longitudeDelta: searchRegion.longitudeDelta, // Keep existing zoom
+        });
+      }}
       customMapStyle={customGoogleMapStyle}
       zoomControlEnabled={false}
-      clusterColor={"#DA1E27"}
+      clusterColor="#DA1E27"
     >
-      {activeMarkerLocation && (
+      {userLocation && (
         <Marker
           coordinate={{
-            latitude: activeMarkerLocation.latitude,
-            longitude: activeMarkerLocation.longitude,
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
           }}
         >
           <Image
@@ -92,13 +109,16 @@ export function Map({
             longitude: statue.lng,
           }}
           onPress={() => {
-            onSelectStatue(statue);
-            setActiveMarkerLocation({
-              latitude: statue.lat - statueDetailOffset,
-              longitude: statue.lng,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005 - statueDetailOffset,
-            });
+            setSelectedStatue(statue);
+            mapRef.current?.animateToRegion(
+              {
+                latitude: statue.lat,
+                longitude: statue.lng,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              },
+              1000
+            );
           }}
         >
           <Image

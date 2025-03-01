@@ -1,32 +1,15 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Region } from "react-native-maps";
 
 import { Map } from "@/components/Map";
 import { StatueDetail } from "@/components/StatueDetail";
 import { UserSessionContext } from "@/providers/UserSession";
 import { LoadingScreen } from "@/screens/LoadingScreen";
-import { Statue } from "@/types/statues";
-
-const brnoRegion: Region = {
-  latitude: 49.1759324,
-  longitude: 16.5630407,
-  latitudeDelta: 0.01,
-  longitudeDelta: 0.01,
-};
+import { LoadingContext } from "@/providers/LoadingProvider";
 
 const Home: FC = () => {
-  const [selectedStatue, setSelectedStatue] = useState<Statue | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { loading } = useContext(LoadingContext);
   const { session } = useContext(UserSessionContext);
-  const [orginRegion, setOrginRegion] = useState<any>(brnoRegion);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   if (loading || !session) {
     return <LoadingScreen />;
@@ -34,20 +17,8 @@ const Home: FC = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Map
-        initialRegion={orginRegion}
-        onSelectStatue={(statue) => {
-          setSelectedStatue(statue);
-        }}
-        selectedStatue={selectedStatue}
-      />
-
-      {selectedStatue && (
-        <StatueDetail
-          statue={selectedStatue}
-          onClose={() => setSelectedStatue(null)}
-        />
-      )}
+      <Map />
+      <StatueDetail />
     </GestureHandlerRootView>
   );
 };
