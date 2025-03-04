@@ -25,6 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
     supportsTablet: true,
+    usesAppleSignIn: true,
   },
   android: {
     adaptiveIcon: {
@@ -38,6 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-font",
+    "expo-apple-authentication",
     [
       "@react-native-google-signin/google-signin",
       {
