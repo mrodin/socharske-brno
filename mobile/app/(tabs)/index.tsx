@@ -4,20 +4,15 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Map } from "@/components/Map";
 import { StatueDetail } from "@/components/StatueDetail";
 import { UserSessionContext } from "@/providers/UserSession";
-import { Auth } from "@/screens/Auth";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { LoadingContext } from "@/providers/LoadingProvider";
 
 const Home: FC = () => {
   const { loading } = useContext(LoadingContext);
-  const { session, isAuthentizating } = useContext(UserSessionContext);
+  const { session } = useContext(UserSessionContext);
 
-  if (loading) {
+  if (loading || !session) {
     return <LoadingScreen />;
-  }
-
-  if (!isAuthentizating && !session) {
-    return <Auth />;
   }
 
   return (

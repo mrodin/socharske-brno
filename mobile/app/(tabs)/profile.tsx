@@ -58,12 +58,7 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
             <View>
               <View className="gap-4 mb-8">
                 <View>
-                  <StyledInput
-                    label="Email"
-                    className="bg-white px-5 py-3 rounded-full border-none"
-                    value={userInfo.email}
-                    disabled
-                  />
+                  <StyledInput label="Email" value={userInfo.email} disabled />
                 </View>
                 <View>
                   <StyledInput
@@ -88,10 +83,27 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
                     disabled={loading}
                   />
                 )}
+                <View className="gap-3 flex-row  w-full">
+                  <View className="bg-gray-light flex-1 rounded-2xl  px-3 py-7 gap-1">
+                    <Text className="text-white  ">Ulovené sochy</Text>
+                    <Text className="text-4xl font-bold text-white ">32</Text>
+                  </View>
+                  <View className="bg-gray-light flex-1 rounded-2xl  px-3 py-7 gap-1">
+                    <Text className="text-white  ">Skóre</Text>
+                    <Text className="text-4xl font-bold text-white ">176b</Text>
+                  </View>
+                </View>
                 <Button
                   variant="secondary"
+                  title="Upravit profil"
+                  onPress={() => {}}
+                />
+                <Button
+                  variant="primary"
                   title="Odhlásit se"
-                  onPress={() => supabase.auth.signOut()}
+                  onPress={() => {
+                    supabase.auth.signOut();
+                  }}
                 />
               </View>
             </View>
