@@ -17,10 +17,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const results = [];
 
-fs.createReadStream("statues.csv")
+fs.createReadStream("statues_final.csv")
   .pipe(csv())
   .on("data", (data) => results.push(data))
   .on("end", async () => {
+    let updatedCount = 0;
+    let errorCount = 0;
+
     for (const result of results) {
       const row = {
         name: result.nazev,
@@ -38,10 +41,23 @@ fs.createReadStream("statues.csv")
         image_url: convertEmptyStringToNull(result.obr_id1),
       };
 
-      const { error } = await supabase.from("statues").insert([row]);
-      if (error) console.error("Error inserting item:", error);
+      // Using upsert with name as the unique identifier to match existing records
+      // This will update existing records or insert new ones if they don't exist
+      const { error } = await supabase.from("statues").upsert([row], {
+        onConflict: "id", // Assuming 'id' is a unique identifier
+        ignoreDuplicates: false, // Set to true if you want to ignore inserts of duplicates
+      });
+
+      if (error) {
+        console.error("Error upserting item:", error);
+        errorCount++;
+      } else {
+        updatedCount++;
+      }
     }
-    console.log(`Imported ${results.length} rows`);
+    console.log(
+      `Updated ${updatedCount} rows, encountered ${errorCount} errors`
+    );
   });
 
 const convertEmptyStringToNull = (value) => {

@@ -1,8 +1,16 @@
 {
+  "name": "statues-importer",
+  "version": "1.0.0",
+  "description": "Script to replace coordinates in CSV file with correct ones from JSON",
+  "main": "replace_coordinates.js",
+  "scripts": {
+    "start": "node replace_coordinates.js"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
-    "csv-parser": "^3.2.0",
+    "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "csv-stringify": "^6.4.0"
   }
 }
