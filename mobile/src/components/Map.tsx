@@ -2,8 +2,7 @@ import * as Location from "expo-location";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image, StyleSheet } from "react-native";
 
-import MapView from "react-native-map-clustering";
-import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { Statue } from "../types/statues";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { sortByDistanceFromPoint } from "../utils/math";
@@ -86,7 +85,6 @@ export function Map() {
       }}
       customMapStyle={customGoogleMapStyle}
       zoomControlEnabled={false}
-      clusterColor="#DA1E27"
     >
       {userLocation && (
         <Marker
