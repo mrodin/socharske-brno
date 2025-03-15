@@ -41,6 +41,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-font",
     "expo-apple-authentication",
     [
+      "expo-location",
+      {
+        locationAlwaysAndWhenInUsePermission:
+          "Allow Lovci Soch to use your location.",
+        locationAlwaysPermission: "Allow Lovci Soch to use your location.",
+        locationWhenInUsePermission: "Allow Lovci Soch to use your location.",
+      },
+    ],
+    [
       "@react-native-google-signin/google-signin",
       {
         iosUrlScheme:
