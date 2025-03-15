@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Region } from "react-native-maps";
 
-const DEFAULT_ZOOM = 0.01;
+import { DEFAULT_ZOOM } from "@/utils/constants";
 
 const brnoRegion: Region = {
   latitude: 49.1759324,
