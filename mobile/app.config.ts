@@ -7,7 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "Lovci Soch",
   scheme: "lovci-soch",
-  slug: "lovci-soch",
+  slug: "mobile",
   version: "1.0.0",
   owner: "kulturni-lenochodi",
   orientation: "portrait",
@@ -50,5 +50,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   experiments: {
     typedRoutes: true,
+  },
+  extra: {
+    eas: {
+      projectId: "a70636d6-cd78-4d4e-a04b-c6ab4072227a",
+    },
   },
 });
