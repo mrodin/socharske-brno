@@ -49,4 +49,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
   },
+  extra: {
+    eas: {
+      projectId: "a70636d6-cd78-4d4e-a04b-c6ab4072227a",
+    },
+  },
 });
