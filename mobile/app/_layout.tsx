@@ -24,9 +24,9 @@ const RootLayout: FC = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <LoadingProvider>
-        <UserSessionProvider>
+    <UserSessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <LoadingProvider>
           <UserInfoProvider>
             <AuthRedirect>
               <UserAvatarProvider>
@@ -37,15 +37,19 @@ const RootLayout: FC = () => {
                         name="(tabs)"
                         options={{ headerShown: false }}
                       />
+                      <Stack.Screen
+                        name="auth"
+                        options={{ headerShown: false }}
+                      />
                     </Stack>
                   </SelectedStatueProvider>
                 </LocationProvider>
               </UserAvatarProvider>
             </AuthRedirect>
           </UserInfoProvider>
-        </UserSessionProvider>
-      </LoadingProvider>
-    </QueryClientProvider>
+        </LoadingProvider>
+      </QueryClientProvider>
+    </UserSessionProvider>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { useRouter } from "expo-router";
@@ -60,30 +60,33 @@ const PasswordResetRequest = () => {
             flex: 1,
           }}
         >
-          <GoBackHeader />
-          <View className="gap-4 justify-self-center  mb-10">
-            <Text className="text-white text-xl text-center mb-4 font-krona">
-              ZAPOMNĚLI JSTE HESLO?
-            </Text>
-            <Text className="text-white">
-              Vyplňte svůj email, kam vám pošelem odkaz k vytvoření nového hesla
-            </Text>
-          </View>
-          <View className="gap-10">
-            <StyledInput
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-              disabled={loading}
-              placeholder="Email"
-              autoCapitalize={"none"}
-            />
-            <Button
-              variant="primary"
-              title="Zažádat o nové heslo"
-              disabled={loading}
-              onPress={handleResetPassword}
-            />
-          </View>
+          <SafeAreaView>
+            <GoBackHeader />
+            <View className="gap-4 justify-self-center  mb-10">
+              <Text className="text-white text-xl text-center mb-4 font-krona">
+                ZAPOMNĚLI JSTE HESLO?
+              </Text>
+              <Text className="text-white">
+                Vyplňte svůj email, kam vám pošelem odkaz k vytvoření nového
+                hesla
+              </Text>
+            </View>
+            <View className="gap-10">
+              <StyledInput
+                onChangeText={(text) => setEmail(text)}
+                value={email}
+                disabled={loading}
+                placeholder="Email"
+                autoCapitalize={"none"}
+              />
+              <Button
+                variant="primary"
+                title="Zažádat o nové heslo"
+                disabled={loading}
+                onPress={handleResetPassword}
+              />
+            </View>
+          </SafeAreaView>
         </ScrollView>
       </View>
     </>

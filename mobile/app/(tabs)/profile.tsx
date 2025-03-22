@@ -56,20 +56,6 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
               </View>
             </View>
             <View>
-              <View className="gap-4 mb-8">
-                <View>
-                  <StyledInput label="Email" value={userInfo.email} disabled />
-                </View>
-                <View>
-                  <StyledInput
-                    label="Uživatelské jméno"
-                    value={username}
-                    onChangeText={(text) => setUsername(text)}
-                  />
-                </View>
-              </View>
-            </View>
-            <View>
               <View className="gap-3">
                 {userInfo.username !== username && (
                   <Button

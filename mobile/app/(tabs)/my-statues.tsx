@@ -9,7 +9,7 @@ import { Title } from "@/components/Title";
 import { UndiscoveredStatue } from "@/components/UndiscoveredStatue";
 import { UserTag } from "@/components/UserTag";
 import { theme } from "@/utils/theme";
-
+import { router } from "expo-router";
 
 const MyStatues: FC = () => {
   const { data: statues } = useGetAllStatues();

@@ -2,6 +2,9 @@ import { Navigation } from "@/components/navigation/Navigation";
 import { LoadingContext } from "@/providers/LoadingProvider";
 import { Tabs, TabList, TabTrigger, TabSlot } from "expo-router/ui";
 import { useContext } from "react";
+import { View } from "react-native";
+
+const NAVIGATION_HEIGHT = 96;
 
 // For now Tablist is hidden, since it's imposible to style it properly
 // You still need define route here to make it work
@@ -10,7 +13,9 @@ export default function Layout() {
   const { loading } = useContext(LoadingContext);
   return (
     <Tabs>
-      <TabSlot />
+      <View className={`w-full h-full pb-[${NAVIGATION_HEIGHT}px]`}>
+        <TabSlot />
+      </View>
       {!loading && <Navigation />}
       <TabList style={{ display: "none" }}>
         <TabTrigger name="home" href="/" />
