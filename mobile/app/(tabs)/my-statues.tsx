@@ -1,15 +1,13 @@
 import { FC } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
-import { BackToMapButton } from "@/components/BackToMapButton";
 import { Label } from "@/components/Label";
 import { MyStatueEntry } from "@/components/MyStatueEntry";
 import { Title } from "@/components/Title";
 import { UndiscoveredStatue } from "@/components/UndiscoveredStatue";
 import { UserTag } from "@/components/UserTag";
 import { theme } from "@/utils/theme";
-import { router } from "expo-router";
 
 const MyStatues: FC = () => {
   const { data: statues } = useGetAllStatues();
@@ -28,7 +26,6 @@ const MyStatues: FC = () => {
       <ScrollView>
         <View style={{ gap: 30 }}>
           <View className="flex flex-row justify-between items-center px-6">
-            <BackToMapButton onClose={() => router.push("/")} />
             <UserTag />
           </View>
           <View className="flex flex-row justify-between items-center px-6">

@@ -1,44 +1,41 @@
 import { FC } from "react";
-import { Image, Text, StyleSheet, View } from "react-native";
-import { theme } from "../utils/theme";
+import { Image, Text, View } from "react-native";
+import { tv } from "tailwind-variants";
 
-type WinnerProps = {
+type PlayerProps = {
+  isWinner: boolean;
   name: string;
   score: string;
   thumbnail: any;
 };
 
-export const Player: FC<WinnerProps> = ({ name, thumbnail, score }) => {
+export const Player: FC<PlayerProps> = ({
+  isWinner,
+  name,
+  score,
+  thumbnail,
+}) => {
   return (
-    <View style={styles.entry}>
-      <Image source={thumbnail} style={styles.avatar} />
-      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+    <View className={player({ isWinner })}>
+      <Image source={thumbnail} className="h-[52px] w-[52px] rounded-full" />
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        className="text-[22px] text-white max-w-[180px]"
+      >
         {name}
       </Text>
-      <Text style={styles.text}>{`${score} b`}</Text>
+      <Text className="text-[22px] text-white">{`${score} b`}</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  avatar: {
-    borderRadius: 50,
-    height: 54,
-    width: 54,
-  },
-  entry: {
-    height: 65,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: theme.greyLight,
-    borderRadius: 50,
-    paddingLeft: 6,
-    paddingRight: 12,
-  },
-  text: {
-    fontSize: 22,
-    color: theme.white,
-    maxWidth: 200,
+const player = tv({
+  base: "h-[60px] flex-row justify-between items-center rounded-full pl-1.5 pr-6",
+  variants: {
+    isWinner: {
+      true: "bg-red-light",
+      false: "bg-gray-light",
+    },
   },
 });

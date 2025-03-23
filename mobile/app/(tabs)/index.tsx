@@ -6,6 +6,7 @@ import { StatueDetail } from "@/components/StatueDetail";
 import { UserSessionContext } from "@/providers/UserSession";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { LoadingContext } from "@/providers/LoadingProvider";
+import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 const Home: FC = () => {
   const { loading } = useContext(LoadingContext);
