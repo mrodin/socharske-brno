@@ -44,7 +44,11 @@ export const Button = ({
   variant?: "primary" | "secondary" | "regular";
 } & TouchableOpacityProps) => {
   return (
-    <TouchableOpacity disabled={props.disabled} {...props}>
+    <TouchableOpacity
+      disabled={props.disabled}
+      style={[props.disabled && { opacity: 0.5 }]}
+      {...props}
+    >
       <View className={button({ variant })}>
         {icon}
         <Text className={buttonText({ variant })}>{title}</Text>

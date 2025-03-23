@@ -37,8 +37,6 @@ const EditProfile = ({}) => {
           value={userName}
           onChangeText={(text) => setUserName(text)}
         />
-        {/* @TODO - implement birth date to DB*/}
-        <StyledInput label="Datum narození" value="2.5.1991" />
         {userInfo.provider === "email" && (
           <Pressable
             className="pt-4 pb-4"
@@ -50,6 +48,7 @@ const EditProfile = ({}) => {
         <Button
           variant="primary"
           title="Uložit"
+          disabled={userName === userInfo.username}
           onPress={handleChangeUsername}
         />
       </View>
