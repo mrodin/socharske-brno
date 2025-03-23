@@ -1,16 +1,8 @@
-import { useState, useEffect, useContext, FC } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { useState, useEffect, useContext } from "react";
+import { View } from "react-native";
 
-import Avatar from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { StyledInput } from "@/components/StyledInput";
-import { ArrowLeft } from "@/icons/ArrowLeft";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { supabase } from "@/utils/supabase";
 import { router } from "expo-router";

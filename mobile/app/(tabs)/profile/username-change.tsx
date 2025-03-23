@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
-import { SafeAreaView, ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { StyledInput } from "@/components/StyledInput";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { router } from "expo-router";
 
-const Profile = () => {
-  const { userInfo, updateProfile, loading } = useContext(UserInfoContext);
+const UsernameChange = () => {
+  const { userInfo, updateProfile } = useContext(UserInfoContext);
   const [userName, setUserName] = useState(userInfo?.username);
 
   const handleChangeUsername = async () => {
@@ -35,4 +35,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default UsernameChange;
