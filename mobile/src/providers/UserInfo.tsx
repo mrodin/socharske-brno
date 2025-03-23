@@ -7,6 +7,7 @@ type UserInfo = {
   username: string;
   avatarUrl: string;
   email: string;
+  provider?: string;
 };
 
 export const UserInfoContext = createContext<{
@@ -50,6 +51,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
           username: data.username,
           avatarUrl: data.avatar_url,
           email: session?.user?.email || "",
+          provider: session.user.app_metadata.provider,
         });
 
         if (session?.user.user_metadata?.avatar_url && !data.avatar_url) {
@@ -98,6 +100,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
       console.log("Error", error);
     } finally {
       setUserInfo({
+        ...userInfo,
         email: userInfo?.email || "",
         username: username ?? userInfo?.username ?? "",
         avatarUrl: avatar_url ?? userInfo?.avatarUrl ?? "",
