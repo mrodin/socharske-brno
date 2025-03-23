@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ScrollView } from "react-native";
 
 import { Button } from "@/components/Button";
 import { StyledInput } from "@/components/StyledInput";
@@ -21,8 +21,8 @@ const EditProfile = ({}) => {
   if (!userInfo) return null;
 
   return (
-    <View className="bg-gray h-full w-full p-5 pt-[20px]">
-      <View className="gap-5">
+    <ScrollView automaticallyAdjustKeyboardInsets>
+      <View className="gap-5 p-5">
         <Avatar
           size={180}
           onUpload={(url: string) => {
@@ -53,7 +53,7 @@ const EditProfile = ({}) => {
           onPress={handleChangeUsername}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

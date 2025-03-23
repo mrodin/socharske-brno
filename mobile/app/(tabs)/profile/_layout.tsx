@@ -8,6 +8,9 @@ export default function RootLayout() {
           backgroundColor: "#393939",
         },
         headerTintColor: "#fff",
+        contentStyle: {
+          backgroundColor: "#393939",
+        },
       }}
     >
       <Stack.Screen options={{ title: "Můj Profil" }} name="index" />
