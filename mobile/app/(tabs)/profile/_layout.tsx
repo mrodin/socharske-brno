@@ -10,6 +10,7 @@ export default function RootLayout() {
         headerTintColor: "#fff",
         contentStyle: {
           backgroundColor: "#393939",
+          paddingBottom: 96, // to match the bottom navigation height
         },
       }}
     >
