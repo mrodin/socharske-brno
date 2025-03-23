@@ -19,6 +19,7 @@ export const appleAuth = async () => {
         provider: "apple",
         token: credential.identityToken,
       });
+      // push notification with error once they are implemented
       if (!error) {
         // User is signed in.
         console.log("User signed in", user);
