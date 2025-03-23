@@ -58,6 +58,7 @@ const PasswordReset = () => {
           Alert.alert("Jste přihlášen, nyní můžete změnit heslo");
           // Redirect to the profile page to change the password
         } else {
+          console.log('"Invalid tokens", queryParams);');
           Alert.alert("Něco se pokazilo");
           router.push("/auth");
         }
@@ -66,6 +67,7 @@ const PasswordReset = () => {
 
     call().catch((err) => {
       // Handle other errors
+      console.log("Unknown error", err);
       Alert.alert("Něco se pokazilo");
       router.push("/auth");
     });

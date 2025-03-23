@@ -1,35 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Alert, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
-import { useRouter } from "expo-router";
 import { StyledInput } from "@/components/StyledInput";
 import * as Linking from "expo-linking";
 import GoBackHeader from "@/components/auth/GoBackHeader";
 import { supabase } from "@/utils/supabase";
 
 const PasswordResetRequest = () => {
-  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(event);
-      if (event == "PASSWORD_RECOVERY") {
-        console.log("PASSWORD_RECOVERY");
-        const newPassword = prompt(
-          "What would you like your new password to be?"
-        );
-        // const { data, error } = await supabase.auth.updateUser({
-        //   password: newPassword,
-        // });
-
-        // if (data) alert("Password updated successfully!");
-        // if (error) alert("There was an error updating your password.");
-      }
-    });
-  }, []);
+  const [loading] = useState(false);
 
   const handleResetPassword = async () => {
     const resetPasswordURL = Linking.createURL("auth/password-reset");
