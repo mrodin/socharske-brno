@@ -8,6 +8,7 @@ import { googleAuth } from "@/utils/googleAuth";
 import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
 import { Link } from "expo-router";
+import { appleAuth } from "@/utils/appleAuth";
 
 const AuthRegister = () => {
   const [email, setEmail] = useState("");
@@ -57,7 +58,11 @@ const AuthRegister = () => {
           onPress={signUpWithEmail}
         />
         <Text className="text-white text-center">nebo</Text>
-        <Button icon={<AppleIcon />} title="Registrovat se přes Apple" />
+        <Button
+          onPress={appleAuth}
+          icon={<AppleIcon />}
+          title="Registrovat se přes Apple"
+        />
         <Button
           onPress={googleAuth}
           icon={<GoogleIcon className="top-[2px]" />}

@@ -56,12 +56,6 @@ const AuthEmailSignIn = () => {
           disabled={loading}
           onPress={() => signInWithEmail()}
         />
-        <Button
-          variant="secondary"
-          title="Přihlásit"
-          disabled={loading}
-          onPress={() => signInWithEmail()}
-        />
         <Text className="text-white text-xl text-center mb-4 mt-10 font-krona">
           JSI TU POPRVÉ?
         </Text>
