@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
-import { supabase } from "../utils/supabase";
-import { Alert, View, Image, Pressable } from "react-native";
+import { Alert, View, Image, Pressable, Text } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
 import { uploadAvatar } from "../api/avatar";
@@ -70,10 +69,22 @@ export default function Avatar({ size, onUpload }: Props) {
           <Image
             source={{ uri: userInfo.avatarUrl }}
             accessibilityLabel="Avatar"
-            style={{ width: size, height: size }}
-            className="object-cover rounded-full"
+            style={{
+              width: size,
+              height: size,
+            }}
+            className="object-cover rounded-full border-2 border-[rgb(169,169,169)]"
           />
         )}
+        <View
+          style={{
+            width: size,
+            height: size,
+          }}
+          className="flex justify-center items-center absolute"
+        >
+          <Text className="color-white">Nahrát novou fotku</Text>
+        </View>
       </Pressable>
     </View>
   );

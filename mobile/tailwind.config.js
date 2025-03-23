@@ -22,6 +22,7 @@ module.exports = {
       },
       fontFamily: {
         krona: ["KronaOne-Regular"],
+        rethink: ["RethinkSans-Regular"]
       },
     },
   },

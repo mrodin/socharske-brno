@@ -1,10 +1,6 @@
-import { UserInfoContext } from "@/providers/UserInfo";
 import { Stack } from "expo-router";
-import { useContext } from "react";
 
 export default function RootLayout() {
-  const { userInfo, updateProfile, loading } = useContext(UserInfoContext);
-
   return (
     <Stack
       screenOptions={{
@@ -14,9 +10,9 @@ export default function RootLayout() {
         headerTintColor: "#fff",
       }}
     >
-      <Stack.Screen options={{ title: userInfo?.username }} name="index" />
+      <Stack.Screen options={{ title: "Můj Profil" }} name="index" />
       <Stack.Screen options={{ title: "Změna hesla" }} name="password-change" />
-      <Stack.Screen options={{ title: "Změna jména" }} name="username-change" />
+      <Stack.Screen options={{ title: "Upravit profil" }} name="edit-profile" />
     </Stack>
   );
 }
