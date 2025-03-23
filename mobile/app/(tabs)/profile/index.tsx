@@ -31,18 +31,13 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
     <View className="bg-gray h-full w-full p-5 pt-[20px]">
       <SafeAreaView>
         <ScrollView automaticallyAdjustKeyboardInsets>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => router.push("/")}
             className="z-[2] mb-4"
           >
             <ArrowLeft width={16} height={32} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View className="gap-8">
-            <View>
-              <Text className="text-2xl	text-center font-bold text-white text-bold">
-                Uživatelský profil
-              </Text>
-            </View>
             <View>
               <View className="items-center">
                 <Avatar
@@ -57,19 +52,8 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
             </View>
             <View>
               <View className="gap-3">
-                {userInfo.username !== username && (
-                  <Button
-                    variant="primary"
-                    title={loading ? "Ukládám ..." : "Uložit"}
-                    onPress={() =>
-                      updateProfile({
-                        username,
-                      })
-                    }
-                    disabled={loading}
-                  />
-                )}
-                <View className="gap-3 flex-row  w-full">
+                {/* <Text className="text-white text-xl w-full">{username}</Text> */}
+                {/* <View className="gap-3 flex-row  w-full">
                   <View className="bg-gray-light flex-1 rounded-2xl  px-3 py-7 gap-1">
                     <Text className="text-white  ">Ulovené sochy</Text>
                     <Text className="text-4xl font-bold text-white ">32</Text>
@@ -78,12 +62,25 @@ const Profile: FC<ProfileProps> = ({ onClickBack }) => {
                     <Text className="text-white  ">Skóre</Text>
                     <Text className="text-4xl font-bold text-white ">176b</Text>
                   </View>
-                </View>
+                </View> */}
+
                 <Button
                   variant="secondary"
-                  title="Upravit profil"
-                  onPress={() => {}}
+                  title="Změnit uživatelské jméno"
+                  onPress={() => {
+                    router.push("/profile/username-change");
+                  }}
                 />
+
+                {userInfo.provider === "email" && (
+                  <Button
+                    variant="secondary"
+                    title="Změnit heslo"
+                    onPress={() => {
+                      router.push("/profile/password-change");
+                    }}
+                  />
+                )}
                 <Button
                   variant="primary"
                   title="Odhlásit se"

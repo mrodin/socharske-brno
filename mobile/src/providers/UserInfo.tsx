@@ -100,6 +100,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
       console.log("Error", error);
     } finally {
       setUserInfo({
+        ...userInfo,
         email: userInfo?.email || "",
         username: username ?? userInfo?.username ?? "",
         avatarUrl: avatar_url ?? userInfo?.avatarUrl ?? "",
