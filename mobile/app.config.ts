@@ -27,6 +27,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     supportsTablet: true,
     usesAppleSignIn: true,
+    infoPlist: {
+      NSLocationWhenInUseUsageDescription:
+        "This app requires access to your location when open.",
+      NSLocationAlwaysAndWhenInUseUsageDescription:
+        "This app requires access to your location even when closed.",
+      NSLocationAlwaysUsageDescription:
+        "This app requires access to your location when open.",
+    },
   },
   android: {
     adaptiveIcon: {
