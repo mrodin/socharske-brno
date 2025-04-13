@@ -36,19 +36,23 @@ type EnhancedMapView = MapView & {
 export const Map: FC = () => {
   const mapRef = useRef<EnhancedMapView | null>(null);
 
-  const { initialRegion, searchRegion, setSearchRegion } =
-    useContext(LocationContext);
+  const { initialRegion, searchRegion } = useContext(LocationContext);
   const { selectedStatue, setSelectedStatue } = useContext(
     SelectedStatueContext
   );
 
-  const [userLocation, setUserLocation] = useState<any>(initialRegion);
+  // location of the user marker
+  const [userLocation, setUserLocation] = useState<
+    Location.LocationObjectCoords | undefined
+  >(undefined);
+  // region of the map (might not be centered on the user)
   const [region, setRegion] = useState<Region>(searchRegion);
 
   const { data: statues } = useGetAllStatues();
 
   const nearestStatues = useMemo(() => {
     const allNearest = sortByDistanceFromPoint(statues ?? [], {
+      // TODO: here probably shouldn't be searchRegion?
       lat: searchRegion.latitude,
       lng: searchRegion.longitude,
     });
@@ -68,29 +72,31 @@ export const Map: FC = () => {
 
   useEffect(() => {
     const getCurrentLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Permission to access location was denied");
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      // setRegion(location);
+      const location = await Location.getCurrentPositionAsync();
+      setUserLocation(location.coords);
+      mapRef.current?.animateToRegion(
+        {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        },
+        500
+      );
     };
 
-    // Location.watchPositionAsync(
-    //   { accuracy: Location.Accuracy.High, timeInterval: 1000 },
-    //   (newLocation) => {
-    //     setCurrentLocation(newLocation.coords);
-
-    //     setInitialRegion({
-    //       latitude: newLocation.coords.latitude,
-    //       longitude: newLocation.coords.longitude,
-    //       latitudeDelta: 0.005,
-    //       longitudeDelta: 0.005,
-    //     });
-    //   }
-    // );
+    Location.watchPositionAsync(
+      { accuracy: Location.Accuracy.High, timeInterval: 1000 },
+      (newLocation) => {
+        setUserLocation(newLocation.coords);
+      }
+    );
 
     getCurrentLocation();
   }, []);
