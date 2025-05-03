@@ -15,3 +15,7 @@ export type Statue = {
   wiki_url: string | null;
   image_url: string | null;
 };
+
+export type StatueWithDistance = Statue & {
+  distance?: number;
+};

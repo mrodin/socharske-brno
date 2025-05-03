@@ -1,11 +1,10 @@
-import React, { FC, memo, useContext, useEffect, useRef } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import React, { FC, memo, useContext, useRef } from "react";
+import { Text, View } from "react-native";
 import { Marker as MapsMarker } from "react-native-maps";
 
 import { useGetCollectedStatues } from "@/api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { MapPoint as MapPointType } from "@/types/common";
-import { theme } from "@/utils/theme";
 import { isPointCluster } from "react-native-clusterer";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 
@@ -60,7 +59,11 @@ export const MapPoint: FC<MapPointProps> = memo(
               // render statue marker
               <View className="w-20 h-48 items-center justify-center">
                 <UndiscoveredStatueIcon />
-                <DistanceTooltip distance={10} />
+                {point.properties.distance ? (
+                  <DistanceTooltip
+                    distance={point.properties.distance * 1000}
+                  />
+                ) : null}
               </View>
               // <>
               //   <Image
@@ -105,8 +108,12 @@ export const MapPoint: FC<MapPointProps> = memo(
       !isPointCluster(prevProps.point) &&
       !isPointCluster(nextProps.point)
     ) {
-      // for statues, compare just id
-      return prevProps.point.properties.id === nextProps.point.properties.id;
+      // for statues, compare just id and distance
+      return (
+        prevProps.point.properties.id === nextProps.point.properties.id &&
+        prevProps.point.properties.distance ===
+          nextProps.point.properties.distance
+      );
     }
     // one is a cluster and one is a statue, they're different
     return false;

@@ -18,12 +18,8 @@ import { MapPoint as MapPointType } from "@/types/common";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
-import { sortByDistanceFromPoint } from "../utils/math";
+import { calculateDistance } from "../utils/math";
 import { MapPoint } from "./MapPoint";
-
-const statueDetailOffset = 0.0011;
-
-const maxNearestStatues = 200;
 
 const MAP_WIDTH = Dimensions.get("window").width;
 const MAP_HEIGHT = Dimensions.get("window").height - 96;
@@ -37,9 +33,7 @@ export const Map: FC = () => {
   const mapRef = useRef<EnhancedMapView | null>(null);
 
   const { initialRegion, searchRegion } = useContext(LocationContext);
-  const { selectedStatue, setSelectedStatue } = useContext(
-    SelectedStatueContext
-  );
+  const { setSelectedStatue } = useContext(SelectedStatueContext);
 
   // location of the user marker
   const [userLocation, setUserLocation] = useState<
@@ -50,25 +44,49 @@ export const Map: FC = () => {
 
   const { data: statues } = useGetAllStatues();
 
-  const nearestStatues = useMemo(() => {
-    const allNearest = sortByDistanceFromPoint(statues ?? [], {
-      // TODO: here probably shouldn't be searchRegion?
-      lat: searchRegion.latitude,
-      lng: searchRegion.longitude,
-    });
-    return allNearest.slice(0, maxNearestStatues);
-  }, [userLocation, statues]);
+  const statuesPoints = useMemo(
+    () =>
+      statues.map((statue) => ({
+        type: "Feature" as const,
+        geometry: {
+          type: "Point" as const,
+          coordinates: [statue.lng, statue.lat],
+        },
+        properties: {
+          ...statue,
+          distance: userLocation
+            ? calculateDistance(
+                userLocation.latitude,
+                userLocation.longitude,
+                statue.lat,
+                statue.lng
+              )
+            : undefined,
+        },
+      })),
+    [statues, userLocation]
+  );
 
-  const statuesPoints = statues.map((statue) => ({
-    type: "Feature" as const,
-    geometry: {
-      type: "Point" as const,
-      coordinates: [statue.lng, statue.lat],
+  const goToRegion = useCallback(
+    (region: Region) => {
+      if (mapRef.current) {
+        mapRef.current.animateToRegion(region, 500);
+      }
     },
-    properties: {
-      ...statue,
+    [mapRef]
+  );
+
+  const onMapPointPress = useCallback(
+    (point: MapPointType) => {
+      if (isPointCluster(point)) {
+        const region = point.properties.getExpansionRegion();
+        goToRegion(region);
+      } else {
+        setSelectedStatue(point.properties);
+      }
     },
-  }));
+    [goToRegion, setSelectedStatue]
+  );
 
   useEffect(() => {
     const getCurrentLocation = async () => {
@@ -80,15 +98,12 @@ export const Map: FC = () => {
 
       const location = await Location.getCurrentPositionAsync();
       setUserLocation(location.coords);
-      mapRef.current?.animateToRegion(
-        {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        },
-        500
-      );
+      goToRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      });
     };
 
     Location.watchPositionAsync(
@@ -101,17 +116,10 @@ export const Map: FC = () => {
     getCurrentLocation();
   }, []);
 
-  const handlePointPress = useCallback(
-    (point: MapPointType) => {
-      if (isPointCluster(point)) {
-        const toRegion = point.properties.getExpansionRegion();
-        mapRef.current?.animateToRegion({ ...toRegion }, 500);
-      } else {
-        setSelectedStatue(point.properties);
-      }
-    },
-    [mapRef, setSelectedStatue]
-  );
+  // goes to the region of the search
+  useEffect(() => {
+    goToRegion(searchRegion);
+  }, [goToRegion, searchRegion]);
 
   return (
     <MapView
@@ -148,7 +156,7 @@ export const Map: FC = () => {
                 : `point-${point.properties.id}`
             }
             point={point}
-            onPress={handlePointPress}
+            onPress={onMapPointPress}
           />
         )}
       />

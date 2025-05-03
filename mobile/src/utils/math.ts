@@ -26,25 +26,23 @@ export function calculateDistance(
 }
 
 export function sortByDistanceFromPoint(
-  coordinates: Statue[],
-  referencePoint: Coordinate
+  statues: Statue[],
+  userLocation: Coordinate
 ): Statue[] {
-  const nextSort = [...coordinates];
-  nextSort.sort((a, b) => {
+  return [...statues].sort((a, b) => {
     const distanceToA = calculateDistance(
-      referencePoint.lat,
-      referencePoint.lng,
+      userLocation.lat,
+      userLocation.lng,
       a.lat,
       a.lng
     );
     const distanceToB = calculateDistance(
-      referencePoint.lat,
-      referencePoint.lng,
+      userLocation.lat,
+      userLocation.lng,
       b.lat,
       b.lng
     );
 
     return distanceToA - distanceToB;
   });
-  return nextSort;
 }
