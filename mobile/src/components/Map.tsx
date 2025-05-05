@@ -15,10 +15,12 @@ import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { LocationContext } from "@/providers/LocationProvider";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { MapPoint as MapPointType } from "@/types/common";
+import { DEFAULT_ZOOM } from "@/utils/constants";
 
-import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
+import { useGetAllStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { calculateDistance } from "../utils/math";
+
 import { MapPoint } from "./MapPoint";
 
 const MAP_WIDTH = Dimensions.get("window").width;
@@ -101,8 +103,8 @@ export const Map: FC = () => {
       goToRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
+        latitudeDelta: DEFAULT_ZOOM,
+        longitudeDelta: DEFAULT_ZOOM,
       });
     };
 

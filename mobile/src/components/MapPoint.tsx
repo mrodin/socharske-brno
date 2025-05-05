@@ -2,11 +2,10 @@ import React, { FC, memo, useContext, useRef } from "react";
 import { Text, View } from "react-native";
 import { Marker as MapsMarker } from "react-native-maps";
 
-import { useGetCollectedStatues } from "@/api/queries";
-import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { MapPoint as MapPointType } from "@/types/common";
 import { isPointCluster } from "react-native-clusterer";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
+import { formatDistance } from "@/utils/math";
 
 type MapPointProps = {
   point: MapPointType;
@@ -16,12 +15,6 @@ type MapPointProps = {
 export const MapPoint: FC<MapPointProps> = memo(
   ({ point, onPress }) => {
     const testRef = useRef(null);
-
-    const { selectedStatue, setSelectedStatue } = useContext(
-      SelectedStatueContext
-    );
-
-    const { data: collectedStatueIds } = useGetCollectedStatues();
 
     return (
       <>
@@ -61,7 +54,7 @@ export const MapPoint: FC<MapPointProps> = memo(
                 <UndiscoveredStatueIcon />
                 {point.properties.distance ? (
                   <DistanceTooltip
-                    distance={point.properties.distance * 1000}
+                    distance={formatDistance(point.properties.distance)}
                   />
                 ) : null}
               </View>
@@ -120,6 +113,20 @@ export const MapPoint: FC<MapPointProps> = memo(
   }
 );
 
+const DistanceTooltip: FC<{ distance: string }> = ({ distance }) => {
+  return (
+    <View className="absolute left-0 bottom-[120px]">
+      <View className="bg-gray-lighter rounded-3xl w-20 h-[32px] justify-center items-center">
+        <Text className="text-md text-center text-white">{distance}</Text>
+      </View>
+      {/* Triangle pointing downward */}
+      <View className="w-0 h-0 bg-transparent border-solid border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-gray-lighter self-center -mt-px -z-10" />
+    </View>
+  );
+};
+
+// Do not delete this component. It is used for debugging purposes
+// (to check if the custom marker is properly positioned).
 const DefaultMarker: FC<MapPointProps> = ({ point, onPress }) => {
   return (
     <MapsMarker
@@ -139,19 +146,5 @@ const DefaultMarker: FC<MapPointProps> = ({ point, onPress }) => {
       title={"marker.title"}
       description={"marker.description"}
     />
-  );
-};
-
-const DistanceTooltip: FC<{ distance: number }> = ({ distance }) => {
-  return (
-    <View className="absolute left-0 bottom-[120px]">
-      <View className="bg-gray-lighter rounded-3xl w-20 h-[32px] justify-center items-center">
-        <Text className="text-md text-center text-white">
-          {`${distance.toString()} m`}
-        </Text>
-      </View>
-      {/* Triangle pointing downward */}
-      <View className="w-0 h-0 bg-transparent border-solid border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-gray-lighter self-center -mt-px -z-10" />
-    </View>
   );
 };
