@@ -4,7 +4,6 @@ import {
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
-import { theme } from "../utils/theme";
 import { TouchableOpacity, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 

@@ -6,7 +6,7 @@ import { View } from "react-native";
 
 const NAVIGATION_HEIGHT = 96;
 
-// For now Tablist is hidden, since it's imposible to style it properly
+// For now Tablist is hidden, since it's impossible to style it properly
 // You still need define route here to make it work
 // Navigation is fully styled and using router.push to navigate
 export default function Layout() {

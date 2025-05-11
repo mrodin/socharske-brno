@@ -3,7 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import { SearchIcon } from "./SearchIcon";
 import { CrownIcon } from "./CrownIcon";
 import { JostStatueIcon } from "./JostStatueIcon";
-import { CogIcon } from "./CogIcon";
+import { MapIcon } from "./MapIcon";
 import { UserIcon } from "./UserIcon";
 import { router } from "expo-router";
 
@@ -16,7 +16,7 @@ export const Navigation: FC = () => {
       <View className="flex flex-row justify-between items-end px-7">
         <NavigationButton
           label="Do mapy"
-          icon={CogIcon}
+          icon={MapIcon}
           onPress={() => router.push("/")}
         />
         <NavigationButton

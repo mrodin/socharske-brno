@@ -22,6 +22,7 @@ import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { calculateDistance } from "../utils/math";
 
 import { MapPoint } from "./MapPoint";
+import { GpsButton } from "./GpsButton";
 
 const MAP_WIDTH = Dimensions.get("window").width;
 const MAP_HEIGHT = Dimensions.get("window").height - 96;
@@ -162,6 +163,7 @@ export const Map: FC = () => {
           />
         )}
       />
+      <GpsButton onPress={() => goToRegion(searchRegion)} />
     </MapView>
   );
 };

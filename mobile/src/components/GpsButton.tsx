@@ -1,10 +1,18 @@
 import Svg, { Path } from "react-native-svg";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { FC } from "react";
 
-export const GpsButton = () => {
+type GpsButtonProps = {
+  onPress: () => void;
+};
+
+export const GpsButton: FC<GpsButtonProps> = ({onPress}) => {
   return (
-    <View className="w-[46px] h-[46px] flex justify-center items-center bg-gray-light rounded-tr-[23px] rounded-br-[23px]">
-      <View className="w-[36px] h-[36px] relative rounded-[50px] bg-primary flex flex-row items-center justify-center box-border">
+    <View className="absolute bottom-4 right-4 w-[46px] h-[46px] flex justify-center items-center bg-gray-light rounded-[23px]">
+      <TouchableOpacity 
+        onPress={onPress}
+        className="w-full h-full flex justify-center items-center"
+      >
         <Svg width="16" height="18" viewBox="0 0 16 18" fill="none">
           <Path
             d="M8.00006 5.49396C6.16269 5.49396 4.66748 7.067 4.66748 9.00001C4.66748 10.9331 6.16269 12.5061 8.00006 12.5061C9.83745 12.5061 11.3326 10.9331 11.3326 9.00001C11.3326 7.067 9.83745 5.49396 8.00006 5.49396ZM8.00006 11.5257C6.67595 11.5257 5.59937 10.393 5.59937 9.00001C5.59937 7.60698 6.67595 6.47436 8.00006 6.47436C9.32417 6.47436 10.4008 7.60698 10.4008 9.00001C10.4008 10.393 9.32417 11.5257 8.00006 11.5257Z"
@@ -15,7 +23,7 @@ export const GpsButton = () => {
             fill="#FDF2F2"
           />
         </Svg>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
