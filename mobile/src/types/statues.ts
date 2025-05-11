@@ -1,24 +1,21 @@
 export type Statue = {
-  author: string | null;
-  category: string | null;
-  code: number;
-  created_at: string | null;
-  description: string | null;
-  district: string | null;
-  house_number: string | null;
   id: number;
-  lat: number;
-  lng: number;
-  material: string | null;
+  created_at: string;
   name: string;
-  street: string | null;
-  street_number: string | null;
-  style: string | null;
+  lng: number;
+  lat: number;
+  visible: boolean;
+  description: string | null;
+  material: string | null;
   type: string | null;
-  url_3d: string | null;
-  url_catalog: string | null;
-  url_wiki: string | null;
+  category: string | null;
+  author: string | null;
   year: string | null;
-  img1: string | undefined;
-  imgthumbnail: string;
+  place: string | null;
+  wiki_url: string | null;
+  image_url: string | null;
+};
+
+export type StatueWithDistance = Statue & {
+  distance?: number;
 };
