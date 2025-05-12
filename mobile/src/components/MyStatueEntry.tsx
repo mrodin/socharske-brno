@@ -2,19 +2,34 @@ import { FC } from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { theme } from "../utils/theme";
 import Svg, { Path } from "react-native-svg";
+import { format } from "date-fns";
 
 type MyStatueEntryProps = {
   name: string;
   thumbnail: string;
+  createdAt: string;
 };
 
-export const MyStatueEntry: FC<MyStatueEntryProps> = ({ name, thumbnail }) => {
+export const MyStatueEntry: FC<MyStatueEntryProps> = ({
+  name,
+  thumbnail,
+  createdAt,
+}) => {
   return (
     <View style={styles.entry}>
       <Image source={{ uri: thumbnail }} style={styles.avatar} />
-      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
-        {name}
-      </Text>
+      <View>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          className="color-white text-2xl  max-w-[200px]"
+        >
+          {name}
+        </Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" className="color-red-pale">
+          uloveno {format(new Date(createdAt), "dd.MM.yyyy")}
+        </Text>
+      </View>
       <Svg width={10} height={18} viewBox="0 0 10 18" fill="none">
         <Path
           d="M1 17L9 9L1 1"

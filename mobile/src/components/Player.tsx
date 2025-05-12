@@ -6,7 +6,7 @@ type PlayerProps = {
   isWinner: boolean;
   name: string;
   score: string;
-  thumbnail: any;
+  thumbnail: string | any;
 };
 
 export const Player: FC<PlayerProps> = ({
@@ -17,7 +17,12 @@ export const Player: FC<PlayerProps> = ({
 }) => {
   return (
     <View className={player({ isWinner })}>
-      <Image source={thumbnail} className="h-[52px] w-[52px] rounded-full" />
+      <Image
+        source={{
+          uri: thumbnail,
+        }}
+        className="h-[52px] w-[52px] rounded-full"
+      />
       <Text
         numberOfLines={1}
         ellipsizeMode="tail"

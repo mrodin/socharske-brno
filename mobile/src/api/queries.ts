@@ -1,8 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { UserSessionContext } from "../providers/UserSession";
-import { Statue } from "../types/statues";
+import { collectedStatue, Statue } from "../types/statues";
 import { fetchWithAuth } from "../utils/api";
 
 const useSession = () => {
@@ -33,7 +33,7 @@ export const useGetAllStatues = () => {
 export const useGetCollectedStatues = () => {
   const session = useSession();
 
-  return useQuery<number[], Error>({
+  return useQuery<collectedStatue[], Error>({
     queryKey: ["collectedStatues"],
     queryFn: () =>
       fetchWithAuth(
@@ -45,7 +45,7 @@ export const useGetCollectedStatues = () => {
   });
 };
 
-export const useGetLeaderboard = (): { data: LeaderBoardEntry[] } => {
+export const useGetLeaderboard = () => {
   const session = useSession();
 
   return useQuery<LeaderBoardEntry[], Error>({
@@ -61,8 +61,9 @@ export const useGetLeaderboard = (): { data: LeaderBoardEntry[] } => {
 };
 
 export const useCollectStatue = () => {
-  const queryClient = useQueryClient();
   const session = useSession();
+  const leaderboard = useGetLeaderboard();
+  const collectedStatues = useGetCollectedStatues();
 
   return useMutation({
     mutationFn: (statueId: number) =>
@@ -71,10 +72,9 @@ export const useCollectStatue = () => {
         session.access_token,
         { method: "POST", body: { statue_id: statueId } }
       ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["statues", "collectedStatues", "leaderboard"],
-      });
+    onSuccess: async () => {
+      await leaderboard.refetch();
+      await collectedStatues.refetch();
     },
   });
 };
