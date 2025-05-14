@@ -2,10 +2,14 @@ import { Image, View, Text } from "react-native";
 import { useContext } from "react";
 import { UserAvatarContext } from "../providers/UserAvatar";
 import { UserInfoContext } from "../providers/UserInfo";
+import { useGetLeaderboard } from "@/api/queries";
+import { useUserStatistics } from "@/hooks/useUserStatistics";
 
 export const UserTag = () => {
   const { url } = useContext(UserAvatarContext);
   const { userInfo } = useContext(UserInfoContext);
+
+  const userStatistics = useUserStatistics();
 
   return (
     <View className="flex-row justify-between items-center border-[2px] w-full border-gray-light rounded-full ">
@@ -20,10 +24,12 @@ export const UserTag = () => {
           <Text className="color-white text-2xl font-bold">
             {userInfo?.username}
           </Text>
-          <Text className="color-red-pale">13. místo</Text>
+          <Text className="color-red-pale">{userStatistics?.rank}. místo</Text>
         </View>
       </View>
-      <Text className="color-white text-2xl pr-6">120b</Text>
+      <Text className="color-white text-2xl pr-6">
+        {userStatistics?.score}b
+      </Text>
     </View>
   );
 };
