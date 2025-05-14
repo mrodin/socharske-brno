@@ -75,9 +75,10 @@ const MyStatues: FC = () => {
   return (
     <SafeAreaView className="bg-gray h-full">
       <RouteHeader route="Moje sochy" />
-      <View className="flex flex-row justify-between items-center px-6 mb-4">
+      <View className="flex flex-row justify-between items-center px-4 mb-4">
         <UserTag />
       </View>
+
       <SectionList
         sections={sections}
         keyExtractor={(item) =>
@@ -117,12 +118,12 @@ const MyStatues: FC = () => {
           }
         }}
         renderSectionHeader={({ section }) => (
-          <View className="flex flex-row gap-3 items-center px-6 py-3 bg-gray">
+          <View className="flex flex-row gap-3 items-center py-3 bg-gray">
             <Title>{section.title}</Title>
             <Label>{section.count}</Label>
           </View>
         )}
-        contentContainerStyle={{ paddingHorizontal: 6, gap: 4 }}
+        contentContainerStyle={{ paddingHorizontal: 18, gap: 4 }}
         stickySectionHeadersEnabled={true}
       />
     </SafeAreaView>
