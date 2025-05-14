@@ -28,7 +28,6 @@ const PasswordResetRequest = () => {
     } else {
       Alert.alert("Odkaz na přihlášení byl odeslán na váš email");
     }
-    console.log(data);
   };
 
   return (
