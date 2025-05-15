@@ -1,5 +1,7 @@
-import { FC, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 import { SafeAreaView, View, Text, SectionList } from "react-native";
+import { router } from "expo-router";
+import { format } from "date-fns";
 
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
 import { Label } from "@/components/Label";
@@ -8,55 +10,90 @@ import { UserTag } from "@/components/UserTag";
 import { RouteHeader } from "@/components/RouteHeader";
 import { calculateDistance } from "@/utils/math";
 import { StatueEntry } from "@/components/StatueEntry";
-import { format } from "date-fns";
 import { useLocation } from "@/hooks/useLocation";
+import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
+import { LocationContext } from "@/providers/LocationProvider";
+import { Statue } from "@/types/statues";
+import { DEFAULT_ZOOM } from "@/utils/constants";
+
+type StatueListItem = {
+  isCollected: boolean;
+  statue_id: number;
+  statueInfo: Statue;
+  created_at: string;
+  value: number;
+  distance: number;
+};
+
+type SectionData = {
+  title: string;
+  count: number;
+  data: StatueListItem[];
+};
 
 const MyStatues: FC = () => {
-  const { data: statues } = useGetAllStatues();
-  const { data: collectedStatues } = useGetCollectedStatues();
+  const { data: statues = [] } = useGetAllStatues();
+  const { data: collectedStatues = [] } = useGetCollectedStatues();
   const location = useLocation();
+  const { setSelectedStatue } = useContext(SelectedStatueContext);
+  const { setSearchRegion } = useContext(LocationContext);
 
-  const collectedStatuesList = useMemo(
-    () =>
-      collectedStatues.map((collectedStatue) => ({
-        ...collectedStatue,
-        distance: 0,
-        statueInfo: statues.find(
-          (statue) => statue.id === collectedStatue.statue_id
-        ),
-      })),
-    [statues, collectedStatues]
-  );
+  const findStatueById = (id: number) => {
+    const statue = statues.find((statue) => statue.id === id);
+    if (!statue) {
+      throw new Error(`Statue with id ${id} not found`);
+    }
+    return statue;
+  };
 
-  const undiscoveredStatues = useMemo(
-    () =>
-      statues
-        .filter(
-          (statue) =>
-            !collectedStatues.some(
-              (collectedStatue) => collectedStatue.statue_id === statue.id
+  // Handler for navigating to a statue on the map
+  const handleNavigateToStatue = (statue: Statue | null) => {
+    router.push("/");
+    setSelectedStatue(statue);
+    if (statue) {
+      setSearchRegion({
+        latitude: statue.lat,
+        longitude: statue.lng,
+        latitudeDelta: DEFAULT_ZOOM,
+        longitudeDelta: DEFAULT_ZOOM,
+      });
+    }
+  };
+
+  const collectedStatuesList = useMemo<StatueListItem[]>(() => {
+    return collectedStatues.map((collectedStatue) => ({
+      ...collectedStatue,
+      isCollected: true,
+      distance: 0,
+      statueInfo: findStatueById(collectedStatue.statue_id),
+    }));
+  }, [statues, collectedStatues]);
+
+  const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
+    const collectedIds = new Set(collectedStatues.map((cs) => cs.statue_id));
+
+    return statues
+      .filter((statue) => !collectedIds.has(statue.id))
+      .map((statue) => ({
+        isCollected: false,
+        statue_id: statue.id,
+        statueInfo: statue,
+        created_at: "",
+        value: 0,
+        distance: location?.coords.latitude
+          ? calculateDistance(
+              statue.lat,
+              statue.lng,
+              location.coords.latitude,
+              location.coords.longitude
             )
-        )
-        .map((statue) => ({
-          statue_id: statue.id,
-          statueInfo: statue,
-          created_at: "",
-          value: 0,
-          distance: location?.coords.latitude
-            ? calculateDistance(
-                statue.lat,
-                statue.lng,
-                location?.coords.latitude,
-                location?.coords.longitude
-              )
-            : 0,
-        }))
-        .sort((a, b) => a.distance - b.distance),
-    [statues, collectedStatues, location]
-  );
+          : 0,
+      }))
+      .sort((a, b) => a.distance - b.distance);
+  }, [statues, collectedStatues, location?.coords]);
 
   // Create sections for SectionList
-  const sections = useMemo(
+  const sections: SectionData[] = useMemo(
     () => [
       {
         title: "Moje sochy",
@@ -81,47 +118,22 @@ const MyStatues: FC = () => {
 
       <SectionList
         sections={sections}
-        keyExtractor={(item) =>
-          "statue_id" in item ? item.statue_id.toString() : item.id.toString()
+        keyExtractor={(item) => item.statueInfo.id.toString()}
+        renderItem={({ item }) =>
+          item.isCollected ? (
+            <CollectedStatueItem
+              item={item}
+              onNavigate={handleNavigateToStatue}
+            />
+          ) : (
+            <UndiscoveredStatueItem
+              item={item}
+              onNavigate={handleNavigateToStatue}
+            />
+          )
         }
-        renderItem={({ item, section }) => {
-          if (section.title === "Moje sochy") {
-            return (
-              <StatueEntry
-                variant="primary"
-                name={item.statueInfo?.name ?? ""}
-                thumbnail={
-                  item.statueInfo?.thumbnail
-                    ? { uri: item.statueInfo?.thumbnail }
-                    : require("../../assets/images/spravedlnost.png")
-                }
-                score={10}
-                subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
-              />
-            );
-          } else {
-            return (
-              <StatueEntry
-                score={10}
-                variant="secondary"
-                name="???"
-                subtitle={
-                  <>
-                    vzdálenost{" "}
-                    <Text className="font-bold">
-                      {(item as any).distance?.toFixed(2)}km
-                    </Text>
-                  </>
-                }
-              />
-            );
-          }
-        }}
         renderSectionHeader={({ section }) => (
-          <View className="flex flex-row gap-3 items-center py-3 bg-gray">
-            <Title>{section.title}</Title>
-            <Label>{section.count}</Label>
-          </View>
+          <SectionHeader section={section} />
         )}
         contentContainerStyle={{ paddingHorizontal: 18, gap: 4 }}
         stickySectionHeadersEnabled={true}
@@ -129,5 +141,49 @@ const MyStatues: FC = () => {
     </SafeAreaView>
   );
 };
+
+// Component to render collected statue entry
+const CollectedStatueItem: FC<{
+  item: StatueListItem;
+  onNavigate: (statue: Statue) => void;
+}> = ({ item, onNavigate }) => (
+  <StatueEntry
+    onPress={() => onNavigate(item.statueInfo)}
+    variant="primary"
+    name={item.statueInfo.name}
+    thumbnail={
+      item.statueInfo.image_url ? { uri: item.statueInfo.image_url } : undefined
+    }
+    score={10}
+    subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
+  />
+);
+
+// Component to render undiscovered statue entry
+const UndiscoveredStatueItem: FC<{
+  item: StatueListItem;
+  onNavigate: (statue: Statue) => void;
+}> = ({ item, onNavigate }) => (
+  <StatueEntry
+    score={10}
+    onPress={() => onNavigate(item.statueInfo)}
+    variant="secondary"
+    name="???"
+    subtitle={
+      <>
+        vzdálenost{" "}
+        <Text className="font-bold">{item.distance.toFixed(2)}km</Text>
+      </>
+    }
+  />
+);
+
+// Section header component
+const SectionHeader: FC<{ section: SectionData }> = ({ section }) => (
+  <View className="flex flex-row gap-3 items-center py-3 bg-gray">
+    <Title>{section.title}</Title>
+    <Label>{section.count}</Label>
+  </View>
+);
 
 export default MyStatues;
