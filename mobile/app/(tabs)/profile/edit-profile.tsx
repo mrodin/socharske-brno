@@ -11,7 +11,7 @@ const EditProfile = ({}) => {
   const { userInfo, updateProfile } = useContext(UserInfoContext);
   const [userName, setUserName] = useState(userInfo?.username);
 
-  const handleChangeUsername = async () => {
+  const handleChangeUsername = () => {
     updateProfile({
       username: userName,
     });

@@ -20,7 +20,7 @@ export type StatueWithDistance = Statue & {
   distance?: number;
 };
 
-export type collectedStatue = {
+export type CollectedStatue = {
   statue_id: number;
   created_at: string;
   value: number;
