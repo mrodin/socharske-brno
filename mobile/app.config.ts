@@ -20,6 +20,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   assetBundlePatterns: ["**/*"],
   ios: {
+    buildNumber: "10",
     bundleIdentifier: "com.kulturnilenochodi.socharske-brno",
     config: {
       googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
