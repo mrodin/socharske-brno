@@ -26,9 +26,8 @@ const PasswordResetRequest = () => {
         console.log(error.message);
       }
     } else {
-      Alert.alert("Odkaz na obnovení hesla byl odeslán na váš email");
+      Alert.alert("Odkaz na přihlášení byl odeslán na váš email");
     }
-    console.log(data);
   };
 
   return (
@@ -47,8 +46,8 @@ const PasswordResetRequest = () => {
                 ZAPOMNĚLI JSTE HESLO?
               </Text>
               <Text className="text-white">
-                Vyplňte svůj email, kam vám pošelem odkaz k vytvoření nového
-                hesla
+                Vyplňte svůj email, kam vám pošelem odkaz k přihlášení. Poté si
+                budete moct své heslo změnit v aplikaci (záložka profil).
               </Text>
             </View>
             <View className="gap-10">
@@ -61,7 +60,7 @@ const PasswordResetRequest = () => {
               />
               <Button
                 variant="primary"
-                title="Zažádat o nové heslo"
+                title="Zažádat o odkaz k přihlášení"
                 disabled={loading}
                 onPress={handleResetPassword}
               />

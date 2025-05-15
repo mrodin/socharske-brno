@@ -12,16 +12,11 @@ export function calculateDistance(
   lng2: number
 ): number {
   const earthRadiusKm = 6371;
-  const dLat = degreesToRadians(lat2 - lat1);
-  const dLng = degreesToRadians(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(degreesToRadians(lat1)) *
-      Math.cos(degreesToRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = earthRadiusKm * c;
+  const x =
+    degreesToRadians(lng2 - lng1) *
+    Math.cos(degreesToRadians((lat1 + lat2) / 2));
+  const y = degreesToRadians(lat2 - lat1);
+  const distance = earthRadiusKm * Math.sqrt(x * x + y * y);
   return distance;
 }
 

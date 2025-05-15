@@ -48,4 +48,4 @@ def statue_collected(request: flask.Request) -> str:
         {"profile_id": profile_id, "statue_id": statue_id},
     ).execute()
 
-    return "OK"
+    return {"status": "success"}

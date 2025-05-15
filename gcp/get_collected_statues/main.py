@@ -6,7 +6,7 @@ from supabase import Client, create_client
 
 
 @functions_framework.http
-def get_collected_statues(request: flask.Request) -> list[int] | str:
+def get_collected_statues(request: flask.Request) -> list[any]:
     """Get all statues collected by a user."""
     supabase_url, supabase_key = (
         os.environ.get("SUPABASE_URL"),
@@ -28,9 +28,9 @@ def get_collected_statues(request: flask.Request) -> list[int] | str:
 
     data = (
         supabase.table("profile_statue_collected")
-        .select("statue_id", count="exact")
+        .select("statue_id", "created_at", "value", count="exact")
         .eq("profile_id", profile_id)
         .execute()
     )
 
-    return [statue["statue_id"] for statue in data.data]
+    return data.data
