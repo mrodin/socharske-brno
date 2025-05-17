@@ -17,6 +17,6 @@ export const useUserStatistics = () => {
 
   return {
     rank: userIndex + 1,
-    score: Math.round(userScore.score),
+    score: userScore.score,
   };
 };
