@@ -154,7 +154,7 @@ const CollectedStatueItem: FC<{
     thumbnail={
       item.statueInfo.image_url ? { uri: item.statueInfo.image_url } : undefined
     }
-    score={10}
+    score={item.value}
     subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
   />
 );
@@ -165,7 +165,7 @@ const UndiscoveredStatueItem: FC<{
   onNavigate: (statue: Statue) => void;
 }> = ({ item, onNavigate }) => (
   <StatueEntry
-    score={10}
+    score={item.statueInfo.score}
     onPress={() => onNavigate(item.statueInfo)}
     variant="secondary"
     name="???"

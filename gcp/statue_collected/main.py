@@ -44,8 +44,22 @@ def statue_collected(request: flask.Request) -> str:
     )
     if data.count:
         return "Statue already collected by user!"
+
+    # Get the statue score
+    score_data = (
+        supabase.table("statue_scores")
+        .select("score")
+        .eq("statue_id", statue_id)
+        .order("created_at", desc=True)
+        .limit(1)
+        .execute()
+    )
+
+    # Extract the score value if available
+    statue_score = score_data.data[0]["score"] if score_data.data else 1
+
     supabase.table("profile_statue_collected").insert(
-        {"profile_id": profile_id, "statue_id": statue_id},
+        {"profile_id": profile_id, "statue_id": statue_id, "value": statue_score},
     ).execute()
 
     return {"status": "success"}

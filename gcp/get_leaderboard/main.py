@@ -6,6 +6,8 @@ import flask
 import functions_framework
 from supabase import Client, create_client
 
+MAX_LEADERBOARD_SIZE = 10
+
 
 class LeaderboardEntry(TypedDict):
     """One entry in the leaderboard."""
@@ -46,4 +48,6 @@ def get_leaderboard(request: flask.Request) -> list[LeaderboardEntry]:
         )
         for entry in data.data
     ]
-    return sorted(leaderboard, key=itemgetter("score"), reverse=True)
+    return sorted(leaderboard, key=itemgetter("score"), reverse=True)[
+        :MAX_LEADERBOARD_SIZE
+    ]

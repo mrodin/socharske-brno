@@ -6,6 +6,7 @@ import { AppleIcon } from "../icons/AppleIcon";
 import { GoogleIcon } from "../icons/GoogleIcon";
 import { googleAuth } from "../utils/googleAuth";
 import { StyledInput } from "../components/StyledInput";
+import { appleAuth } from "@/utils/appleAuth";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -91,7 +92,7 @@ export const Auth = () => {
             variant="secondary"
           />
           <Text className="text-white text-base text-center">Nebo přes</Text>
-          <Button icon={<AppleIcon />} title="Přihlásit se přes Apple" />
+          <Button onPress={appleAuth} icon={<AppleIcon />} title="Přihlásit se přes Apple" />
           <Button
             onPress={googleAuth}
             icon={<GoogleIcon className="top-[2px]" />}
