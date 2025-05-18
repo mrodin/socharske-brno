@@ -5,6 +5,7 @@ import { useGetLeaderboard } from "@/api/queries";
 import { RouteHeader } from "@/components/RouteHeader";
 import { Player } from "@/components/Player";
 import { Title } from "@/components/Title";
+import { router } from "expo-router";
 
 const LeaderBoard: FC = () => {
   const { data: leaderboard } = useGetLeaderboard();
@@ -12,7 +13,6 @@ const LeaderBoard: FC = () => {
   return (
     <SafeAreaView className="flex-1 bg-gray">
       <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-        <RouteHeader route="Leaderboard" />
         <View className="bg-gray flex-1 gap-8 px-6 mt-3">
           <Title className="text-gray-pale text-[20px] tracking-wide">
             Nejlepší lovci soch
@@ -21,6 +21,9 @@ const LeaderBoard: FC = () => {
           <View className="gap-4">
             {leaderboard.map((user, index) => (
               <Player
+                onPress={() => {
+                  router.push(`/leaderboard/profile?id=${user.id}`);
+                }}
                 key={user.id}
                 isWinner={index === 0}
                 name={user.username}
