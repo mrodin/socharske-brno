@@ -61,6 +61,9 @@ const MyStatues: FC = () => {
   };
 
   const collectedStatuesList = useMemo<StatueListItem[]>(() => {
+    if (statues.length === 0) {
+      return [];
+    }
     return collectedStatues.map((collectedStatue) => ({
       ...collectedStatue,
       isCollected: true,
@@ -70,6 +73,9 @@ const MyStatues: FC = () => {
   }, [statues, collectedStatues]);
 
   const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
+    if (statues.length === 0) {
+      return [];
+    }
     const collectedIds = new Set(collectedStatues.map((cs) => cs.statue_id));
 
     return statues
@@ -154,7 +160,7 @@ const CollectedStatueItem: FC<{
     thumbnail={
       item.statueInfo.image_url ? { uri: item.statueInfo.image_url } : undefined
     }
-    score={10}
+    score={item.value}
     subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
   />
 );
@@ -165,7 +171,7 @@ const UndiscoveredStatueItem: FC<{
   onNavigate: (statue: Statue) => void;
 }> = ({ item, onNavigate }) => (
   <StatueEntry
-    score={10}
+    score={item.statueInfo.score}
     onPress={() => onNavigate(item.statueInfo)}
     variant="secondary"
     name="???"
