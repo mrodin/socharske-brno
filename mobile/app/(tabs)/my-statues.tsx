@@ -15,6 +15,7 @@ import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { LocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
 import { DEFAULT_ZOOM } from "@/utils/constants";
+import { Puzzle } from "@/components/Puzzle";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -108,6 +109,8 @@ const MyStatues: FC = () => {
     ],
     [collectedStatuesList, undiscoveredStatues]
   );
+
+  return <Puzzle />;
 
   return (
     <SafeAreaView className="bg-gray h-full">
