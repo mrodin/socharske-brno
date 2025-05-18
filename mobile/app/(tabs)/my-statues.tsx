@@ -61,6 +61,9 @@ const MyStatues: FC = () => {
   };
 
   const collectedStatuesList = useMemo<StatueListItem[]>(() => {
+    if (statues.length === 0) {
+      return [];
+    }
     return collectedStatues.map((collectedStatue) => ({
       ...collectedStatue,
       isCollected: true,
@@ -70,6 +73,9 @@ const MyStatues: FC = () => {
   }, [statues, collectedStatues]);
 
   const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
+    if (statues.length === 0) {
+      return [];
+    }
     const collectedIds = new Set(collectedStatues.map((cs) => cs.statue_id));
 
     return statues

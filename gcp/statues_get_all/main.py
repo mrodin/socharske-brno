@@ -14,13 +14,16 @@ def statues_get_all(request: flask.Request) -> list[dict]:
     )
 
     supabase: Client = create_client(supabase_url, supabase_key)
-    statues = supabase.table("statues").select("*").execute().data
-    statue_scores = supabase.table("statue_scores").select("*").execute().data
-    # Create dictionary mapping statue_id to score for O(1) lookups
-    score_map = {score["statue_id"]: score["score"] for score in statue_scores}
 
-    # Assign scores in a single pass
+    # Get all statues and their scores using foreign table syntax
+    statues = supabase.from_("statues").select("*, statue_scores(score)").execute().data
+
+    # Process the nested data structure to have a flat score field
     for statue in statues:
-        statue["score"] = score_map.get(statue["id"], 5)
+        scores = statue.pop("statue_scores", [])
+        if scores and len(scores) > 0 and scores[0] and "score" in scores[0]:
+            statue["score"] = scores[0]["score"]
+        else:
+            statue["score"] = 5
 
     return statues
