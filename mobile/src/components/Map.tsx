@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, Image } from "react-native";
+import { Dimensions, Image, View } from "react-native";
 import { Clusterer, isPointCluster } from "react-native-clusterer";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
@@ -124,46 +124,50 @@ export const Map: FC = () => {
     goToRegion(searchRegion);
   }, [goToRegion, searchRegion]);
 
+  // additional elements needs to be rendered outside of the MapView
+  // otherwise cause issues with positioning.
   return (
-    <MapView
-      ref={mapRef}
-      customMapStyle={customGoogleMapStyle}
-      initialRegion={initialRegion}
-      onRegionChangeComplete={setRegion}
-      provider={PROVIDER_GOOGLE}
-      style={MAP_DIMENSIONS}
-    >
-      {userLocation && (
-        <Marker
-          coordinate={{
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-          }}
-        >
-          <Image
-            className="w-12 h-12"
-            source={require("../../assets/current-location-marker.png")}
-          />
-        </Marker>
-      )}
-      <Clusterer
-        data={statuesPoints}
-        region={region}
-        options={{ radius: 30 }}
-        mapDimensions={MAP_DIMENSIONS}
-        renderItem={(point) => (
-          <MapPoint
-            key={
-              isPointCluster(point)
-                ? `cluster-${point.properties.cluster_id}`
-                : `point-${point.properties.id}`
-            }
-            point={point}
-            onPress={onMapPointPress}
-          />
+    <View className="size-full relative">
+      <MapView
+        ref={mapRef}
+        customMapStyle={customGoogleMapStyle}
+        initialRegion={initialRegion}
+        onRegionChangeComplete={setRegion}
+        provider={PROVIDER_GOOGLE}
+        style={MAP_DIMENSIONS}
+      >
+        {userLocation && (
+          <Marker
+            coordinate={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            }}
+          >
+            <Image
+              className="w-12 h-12"
+              source={require("../../assets/current-location-marker.png")}
+            />
+          </Marker>
         )}
-      />
+        <Clusterer
+          data={statuesPoints}
+          region={region}
+          options={{ radius: 30 }}
+          mapDimensions={MAP_DIMENSIONS}
+          renderItem={(point) => (
+            <MapPoint
+              key={
+                isPointCluster(point)
+                  ? `cluster-${point.properties.cluster_id}`
+                  : `point-${point.properties.id}`
+              }
+              point={point}
+              onPress={onMapPointPress}
+            />
+          )}
+        />
+      </MapView>
       <GpsButton onPress={() => goToRegion(searchRegion)} />
-    </MapView>
+    </View>
   );
 };
