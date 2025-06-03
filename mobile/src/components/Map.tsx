@@ -17,7 +17,7 @@ import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { MapPoint as MapPointType } from "@/types/common";
 import { DEFAULT_ZOOM } from "@/utils/constants";
 
-import { useGetAllStatues } from "../api/queries";
+import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { calculateDistance } from "../utils/math";
 
@@ -46,29 +46,34 @@ export const Map: FC = () => {
   const [region, setRegion] = useState<Region>(searchRegion);
 
   const { data: statues } = useGetAllStatues();
+  const { data: collectedStatues = [] } = useGetCollectedStatues();
 
-  const statuesPoints = useMemo(
-    () =>
-      statues.map((statue) => ({
-        type: "Feature" as const,
-        geometry: {
-          type: "Point" as const,
-          coordinates: [statue.lng, statue.lat],
-        },
-        properties: {
-          ...statue,
-          distance: userLocation
-            ? calculateDistance(
-                userLocation.latitude,
-                userLocation.longitude,
-                statue.lat,
-                statue.lng
-              )
-            : undefined,
-        },
-      })),
-    [statues, userLocation]
-  );
+  const statuesPoints = useMemo(() => {
+    // create a Set of collected statue IDs for O(1) lookup
+    const collectedStatueIds = new Set(
+      collectedStatues.map((cs) => cs.statue_id)
+    );
+
+    return statues.map((statue) => ({
+      type: "Feature" as const,
+      geometry: {
+        type: "Point" as const,
+        coordinates: [statue.lng, statue.lat],
+      },
+      properties: {
+        ...statue,
+        distance: userLocation
+          ? calculateDistance(
+              userLocation.latitude,
+              userLocation.longitude,
+              statue.lat,
+              statue.lng
+            )
+          : undefined,
+        isCollected: collectedStatueIds.has(statue.id),
+      },
+    }));
+  }, [collectedStatues, statues, userLocation]);
 
   const goToRegion = useCallback(
     (region: Region) => {
@@ -161,8 +166,8 @@ export const Map: FC = () => {
                   ? `cluster-${point.properties.cluster_id}`
                   : `point-${point.properties.id}`
               }
-              point={point}
               onPress={onMapPointPress}
+              point={point}
             />
           )}
         />

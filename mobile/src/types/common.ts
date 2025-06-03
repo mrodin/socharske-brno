@@ -2,7 +2,7 @@ import { StyleProp } from "react-native";
 import { supercluster } from "react-native-clusterer";
 import { Region } from "react-native-maps";
 
-import {  StatueWithDistance } from "./statues";
+import { StatueWithDistance } from "./statues";
 
 export type Cluster = {
   cluster: true;
