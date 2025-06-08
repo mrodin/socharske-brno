@@ -37,7 +37,7 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
   return (
     <Pressable
       className="flex flex-col justify-center items-center gap-2"
-      onPress={() => isActive ? router.dismissAll() : router.navigate(route)} // Use replace to avoid adding to history
+      onPress={() => isActive ? router.dismissAll() : router.navigate(route)}
     >
       {accent ? (
         <View className={accentButtonVariants({ isActive })}>
