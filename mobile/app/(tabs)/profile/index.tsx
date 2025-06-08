@@ -46,7 +46,7 @@ const Profile = () => {
             variant="primary"
             title="Odhlásit se"
             onPress={() => {
-              supabase.auth.signOut();
+              router.replace("/sign-out");
             }}
           />
         </View>
