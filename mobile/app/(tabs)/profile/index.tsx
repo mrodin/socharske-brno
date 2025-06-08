@@ -21,7 +21,7 @@ const Profile = () => {
     }
   }, [userInfo]);
 
-  if (!userInfo || !userStatistics) return null;
+  if (!userInfo || !userStatistics) return <View className="bg-gray h-full w-full"/>;
 
   return (
     <ScrollView automaticallyAdjustKeyboardInsets>
