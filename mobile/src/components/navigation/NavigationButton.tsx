@@ -29,12 +29,15 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
   accent,
 }) => {
   const pathName = usePathname();
-  const isActive = pathName === route;
+  const isRoot = route === "/";
+
+  const isActive = isRoot ? pathName == route : pathName.startsWith(route) ;
+  
   const Icon = icon;
   return (
     <Pressable
       className="flex flex-col justify-center items-center gap-2"
-      onPress={() => router.push(route)}
+      onPress={() => isActive ? router.dismissAll() : router.navigate(route)} // Use replace to avoid adding to history
     >
       {accent ? (
         <View className={accentButtonVariants({ isActive })}>

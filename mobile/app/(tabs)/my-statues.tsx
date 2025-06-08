@@ -48,7 +48,7 @@ const MyStatues: FC = () => {
 
   // Handler for navigating to a statue on the map
   const handleNavigateToStatue = (statue: Statue | null) => {
-    router.push("/");
+    router.navigate("/");
     setSelectedStatue(statue);
     if (statue) {
       setSearchRegion({

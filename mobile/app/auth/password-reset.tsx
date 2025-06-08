@@ -37,7 +37,7 @@ const PasswordReset = () => {
 
       if (queryParams.error_description) {
         Alert.alert("Něco se pokazilo: " + queryParams.error_description);
-        router.push("/auth");
+        router.navigate("/auth");
       } else {
         const access_token = queryParams?.access_token;
         const refresh_token = queryParams?.refresh_token;
@@ -60,7 +60,7 @@ const PasswordReset = () => {
         } else {
           console.log('"Invalid tokens", queryParams);');
           Alert.alert("Něco se pokazilo");
-          router.push("/auth");
+          router.navigate("/auth");
         }
       }
     };
@@ -69,7 +69,7 @@ const PasswordReset = () => {
       // Handle other errors
       console.log("Unknown error", err);
       Alert.alert("Něco se pokazilo");
-      router.push("/auth");
+      router.navigate("/auth");
     });
   }, []);
 

@@ -22,7 +22,7 @@ const LeaderBoard: FC = () => {
             {leaderboard.map((user, index) => (
               <Player
                 onPress={() => {
-                  router.push(`/leaderboard/profile?id=${user.id}`);
+                  router.navigate(`/leaderboard/profile?id=${user.id}`);
                 }}
                 key={user.id}
                 isWinner={index === 0}

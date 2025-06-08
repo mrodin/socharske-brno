@@ -45,7 +45,7 @@ const AuthEmailSignIn = () => {
           autoCapitalize={"none"}
           secureTextEntry={true}
         />
-        <Pressable onPress={() => router.push("/auth/password-reset-request")}>
+        <Pressable onPress={() => router.navigate("/auth/password-reset-request")}>
           <Text className="underline text-white text-right">
             Zapomenuté heslo?
           </Text>
@@ -61,7 +61,7 @@ const AuthEmailSignIn = () => {
         </Text>
         <Button
           variant="primary"
-          onPress={() => router.push("/auth/register")}
+          onPress={() => router.navigate("/auth/register")}
           title="Vytvořit účet"
         />
       </View>

@@ -39,7 +39,7 @@ const Profile = () => {
             variant="secondary"
             title="Upravit profil"
             onPress={() => {
-              router.push("/profile/edit-profile");
+              router.navigate("/profile/edit-profile");
             }}
           />
           <Button
