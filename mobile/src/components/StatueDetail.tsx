@@ -1,6 +1,7 @@
 import React, {
   FC,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -24,16 +25,6 @@ import { theme } from "../utils/theme";
 import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
-// TODO: martin.rodin: Replace with actual image
-const spravedlnost = require("../../assets/images/spravedlnost.png");
-
-const HANDLE_BORDER_RADIUS = 50;
-
-const cardBorderRadius = {
-  borderTopLeftRadius: HANDLE_BORDER_RADIUS,
-  borderTopRightRadius: HANDLE_BORDER_RADIUS,
-};
-
 export const StatueDetail: FC = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -44,7 +35,7 @@ export const StatueDetail: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [alreadyCollected, setAlreadyCollected] = useState(false);
 
-  const { data: statueIds, refetch: refetchStatueIds } =
+  const { data: collectedStatues, refetch: refetchStatueIds } =
     useGetCollectedStatues();
   const collectStatue = useCollectStatue();
 
@@ -65,12 +56,19 @@ export const StatueDetail: FC = () => {
       return undefined;
     }
 
-    if (statueIds.includes(selectedStatue.id)) {
+    if (collectedStatues.some((cs) => cs.statue_id === selectedStatue.id)) {
       setAlreadyCollected(true);
     } else {
       setAlreadyCollected(false);
     }
-  }, [statueIds, selectedStatue]);
+  }, [collectedStatues, selectedStatue]);
+
+  const imageUrl = `https://storage.googleapis.com/lovci-soch-images/${selectedStatue?.id}/thumb480/1.JPEG`;
+
+  const HandleWithImage = useCallback(
+    () => <Handle imageUrl={imageUrl} />,
+    [imageUrl]
+  );
 
   if (!selectedStatue) {
     return null;
@@ -79,10 +77,10 @@ export const StatueDetail: FC = () => {
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      backgroundStyle={cardBorderRadius}
+      backgroundStyle={styles.handleBackground}
       enablePanDownToClose
       onClose={() => setSelectedStatue(null)}
-      handleComponent={Handle}
+      handleComponent={HandleWithImage}
       snapPoints={["73%", "100%"]}
     >
       <BottomSheetScrollView
@@ -105,10 +103,7 @@ export const StatueDetail: FC = () => {
               <TouchableOpacity
                 disabled={alreadyCollected || isLoading}
                 onPress={handleCollect}
-                style={{
-                  ...styles.collectButton,
-                  ...(isLoading && { backgroundColor: theme.redDark }),
-                }}
+                className={collectButton({ isLoading })}
               >
                 <Text
                   style={{
@@ -129,13 +124,20 @@ export const StatueDetail: FC = () => {
   );
 };
 
-const Handle = () => (
+const Handle: FC<{ imageUrl: string }> = ({ imageUrl }) => (
   <View className="border-b-4 border-red-light">
-    <ImageBackground
-      source={spravedlnost}
-      style={styles.image}
-      imageStyle={cardBorderRadius}
-    >
+    <View style={styles.handleBackgroundView}>
+      <ImageBackground
+        source={{ uri: imageUrl }}
+        style={StyleSheet.absoluteFill}
+        imageStyle={styles.handleBlurredBackgroundImage}
+        blurRadius={6}
+      />
+      <ImageBackground
+        source={{ uri: imageUrl }}
+        style={StyleSheet.absoluteFill}
+        imageStyle={styles.handleBackgroundImage}
+      />
       <View className="w-32 h-1.5 bg-white/50 rounded-full absolute self-center mt-3 z-10" />
       <LinearGradient
         colors={["rgba(0, 0, 0, .64)", "rgba(0, 0, 0, 0)"]}
@@ -144,7 +146,7 @@ const Handle = () => (
         locations={[0, 0.4]}
         style={styles.imageOverlay}
       />
-    </ImageBackground>
+    </View>
   </View>
 );
 
@@ -190,16 +192,6 @@ const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
   );
 };
 
-const description = tv({
-  base: "text-white",
-  variants: {
-    expanded: {
-      true: "line-clamp-none",
-      false: "line-clamp-3",
-    },
-  },
-});
-
 const Description: FC<{ children: ReactNode }> = ({ children }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -227,23 +219,52 @@ const LabelValueRow: FC<LabelValueRowProps> = ({ label, value }) => (
   </View>
 );
 
-const styles = StyleSheet.create({
-  collectButton: {
-    backgroundColor: theme.redLight,
-    justifyContent: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 50,
+const collectButton = tv({
+  base: "bg-red-light justify-center p-4 rounded-full",
+  variants: {
+    isLoading: {
+      true: "bg-red-dark",
+    },
   },
-  image: {
+});
+
+const description = tv({
+  base: "text-white",
+  variants: {
+    expanded: {
+      true: "line-clamp-none",
+      false: "line-clamp-3",
+    },
+  },
+});
+
+const HANDLE_BORDER_RADIUS = 50;
+
+// styling for BottomSheet component cannot be fully done using Tailwind,
+// so we keep the styles in StyleSheet
+const styles = StyleSheet.create({
+  handleBackground: {
+    borderTopLeftRadius: HANDLE_BORDER_RADIUS,
+    borderTopRightRadius: HANDLE_BORDER_RADIUS,
+  },
+  handleBackgroundView: {
     width: "100%",
     height: 220,
     alignItems: "flex-end",
     paddingTop: 12,
     position: "relative",
+    overflow: "hidden",
     backgroundColor: theme.greyDarker,
     borderTopLeftRadius: HANDLE_BORDER_RADIUS,
     borderTopRightRadius: HANDLE_BORDER_RADIUS,
+  },
+  handleBackgroundImage: {
+    borderTopLeftRadius: HANDLE_BORDER_RADIUS,
+    borderTopRightRadius: HANDLE_BORDER_RADIUS,
+    objectFit: "contain",
+  },
+  handleBlurredBackgroundImage: {
+    objectFit: "cover",
   },
   imageOverlay: {
     position: "absolute",

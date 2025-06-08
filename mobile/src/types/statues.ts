@@ -19,6 +19,7 @@ export type Statue = {
 
 export type StatueWithDistance = Statue & {
   distance?: number;
+  isCollected: boolean;
 };
 
 export type CollectedStatue = {
