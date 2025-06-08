@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, Image } from "react-native";
+import { Dimensions, Image, View } from "react-native";
 import { Clusterer, isPointCluster } from "react-native-clusterer";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
@@ -22,6 +22,7 @@ import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
 import { calculateDistance } from "../utils/math";
 
 import { MapPoint } from "./MapPoint";
+import { GpsButton } from "./GpsButton";
 
 const MAP_WIDTH = Dimensions.get("window").width;
 const MAP_HEIGHT = Dimensions.get("window").height - 96;
@@ -123,45 +124,50 @@ export const Map: FC = () => {
     goToRegion(searchRegion);
   }, [goToRegion, searchRegion]);
 
+  // additional elements needs to be rendered outside of the MapView
+  // otherwise cause issues with positioning.
   return (
-    <MapView
-      ref={mapRef}
-      customMapStyle={customGoogleMapStyle}
-      initialRegion={initialRegion}
-      onRegionChangeComplete={setRegion}
-      provider={PROVIDER_GOOGLE}
-      style={MAP_DIMENSIONS}
-    >
-      {userLocation && (
-        <Marker
-          coordinate={{
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-          }}
-        >
-          <Image
-            className="w-12 h-12"
-            source={require("../../assets/current-location-marker.png")}
-          />
-        </Marker>
-      )}
-      <Clusterer
-        data={statuesPoints}
-        region={region}
-        options={{ radius: 30 }}
-        mapDimensions={MAP_DIMENSIONS}
-        renderItem={(point) => (
-          <MapPoint
-            key={
-              isPointCluster(point)
-                ? `cluster-${point.properties.cluster_id}`
-                : `point-${point.properties.id}`
-            }
-            point={point}
-            onPress={onMapPointPress}
-          />
+    <View className="size-full relative">
+      <MapView
+        ref={mapRef}
+        customMapStyle={customGoogleMapStyle}
+        initialRegion={initialRegion}
+        onRegionChangeComplete={setRegion}
+        provider={PROVIDER_GOOGLE}
+        style={MAP_DIMENSIONS}
+      >
+        {userLocation && (
+          <Marker
+            coordinate={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            }}
+          >
+            <Image
+              className="w-12 h-12"
+              source={require("../../assets/current-location-marker.png")}
+            />
+          </Marker>
         )}
-      />
-    </MapView>
+        <Clusterer
+          data={statuesPoints}
+          region={region}
+          options={{ radius: 30 }}
+          mapDimensions={MAP_DIMENSIONS}
+          renderItem={(point) => (
+            <MapPoint
+              key={
+                isPointCluster(point)
+                  ? `cluster-${point.properties.cluster_id}`
+                  : `point-${point.properties.id}`
+              }
+              point={point}
+              onPress={onMapPointPress}
+            />
+          )}
+        />
+      </MapView>
+      <GpsButton onPress={() => goToRegion(searchRegion)} />
+    </View>
   );
 };
