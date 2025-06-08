@@ -1,18 +1,27 @@
 import { useEffect } from "react"
 import { View } from "react-native"
 import { supabase } from "@/utils/supabase";
-import { router } from "expo-router";
+import { useNavigation, CommonActions } from '@react-navigation/native';
+
+
 
 
 const Signout = () => {
+  const navigation = useNavigation();
   // We want to need to sign out out of the (tabs) layout and auth layout.
   // Because after signing out, session is deleted and hooks not working
-  
+
   useEffect(() => {
     const signOut = async () => {
       await supabase.auth.refreshSession();
       await supabase.auth.signOut();
-      router.replace("/auth");
+      
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'auth' }],
+        })
+      );
     };
     signOut();
   }, [])
