@@ -5,6 +5,9 @@ import { router } from "expo-router";
 
 
 const Signout = () => {
+  // We want to need to sign out out of the (tabs) layout and auth layout.
+  // Because after signing out, session is deleted and hooks not working
+  
   useEffect(() => {
     const signOut = async () => {
       await supabase.auth.refreshSession();
