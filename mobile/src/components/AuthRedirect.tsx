@@ -16,11 +16,11 @@ const AuthRedirect: FC<{ children: React.ReactElement }> = ({ children }) => {
       if (!session && !routeName.startsWith("auth")) {
         // Redirect to the auth screen if the user is not authenticated
         // and the current route is not the auth screen.
-        router.push("/auth");
+        router.navigate("/auth");
       } else if (session && routeName.startsWith("auth")) {
         // Redirect to the home screen if the user is authenticated
         // and the current route is the auth screen.
-        router.push("/");
+        router.navigate("/");
       }
     }
   }, [isAuthentizating, session, routeName]);

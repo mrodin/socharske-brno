@@ -2,7 +2,7 @@ import { Tabs, TabList, TabTrigger, TabSlot } from "expo-router/ui";
 
 // For now Tablist is hidden, since it's imposible to style it properly
 // You still need define route here to make it work
-// Navigation is fully styled and using router.push to navigate
+// Navigation is fully styled and using router.navigate to navigate
 export default function Layout() {
   return (
     <Tabs>

@@ -30,7 +30,7 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
               latitude: lat,
               longitude: lng,
             }));
-            router.push("/");
+            router.navigate("/");
           }}
         />
       </View>

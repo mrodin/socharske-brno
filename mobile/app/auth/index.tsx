@@ -31,7 +31,7 @@ const Auth = () => {
           title="Přihlásit se přes Google"
         />
         <Button
-          onPress={() => router.push("/auth/email-signin")}
+          onPress={() => router.navigate("/auth/email-signin")}
           icon={<MailIcon className="top" />}
           title="Přihlásit se přes Email"
         />
@@ -41,7 +41,7 @@ const Auth = () => {
       </Text>
       <Button
         variant="primary"
-        onPress={() => router.push("/auth/register")}
+        onPress={() => router.navigate("/auth/register")}
         title="Vytvořit účet"
       />
     </AuthWrap>

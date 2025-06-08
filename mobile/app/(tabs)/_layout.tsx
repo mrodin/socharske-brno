@@ -8,7 +8,7 @@ const NAVIGATION_HEIGHT = 96;
 
 // For now Tablist is hidden, since it's impossible to style it properly
 // You still need define route here to make it work
-// Navigation is fully styled and using router.push to navigate
+// Navigation is fully styled and using router.navigate to navigate
 export default function Layout() {
   const { loading } = useContext(LoadingContext);
   return (

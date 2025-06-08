@@ -40,7 +40,7 @@ const EditProfile = ({}) => {
         {userInfo.provider === "email" && (
           <Pressable
             className="pt-4 pb-4"
-            onPress={() => router.push("/profile/password-change")}
+            onPress={() => router.navigate("/profile/password-change")}
           >
             <Text className="color-white underline">Změnit heslo</Text>
           </Pressable>
