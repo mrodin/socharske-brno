@@ -20,14 +20,10 @@ export const appleAuth = async () => {
         token: credential.identityToken,
       });
 
-      alert("User signed in " + JSON.stringify(user)); // TODO: just for testing
-      alert("User signed in " + JSON.stringify(error)); // TODO: just for testing
-
       // push notification with error once they are implemented
       if (!error) {
         // User is signed in.
         console.log("User signed in", user);
-        alert("User error in " + JSON.stringify(error)); // TODO: just for testing
       }
     } else {
       throw new Error("No identityToken.");
