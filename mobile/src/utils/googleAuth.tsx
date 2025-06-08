@@ -6,7 +6,7 @@ import { supabase } from "./supabase";
 
 export const googleAuth = async () => {
   GoogleSignin.configure({
-    scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+    scopes: [],
     iosClientId:
       "865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c.apps.googleusercontent.com",
   });
