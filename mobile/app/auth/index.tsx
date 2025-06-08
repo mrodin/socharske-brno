@@ -10,6 +10,18 @@ import AuthWrap from "@/components/auth/Wrap";
 import { useRouter } from "expo-router";
 
 import { appleAuth } from "@/utils/appleAuth";
+import { supabase } from "@/utils/supabase";
+
+async function signInWithApple() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'apple',
+  })
+  if (error) {
+    alert("Chyba"+ JSON.stringify(error));
+  } else {
+    alert("Úspěšné přihlášení: " + JSON.stringify(data));
+  }
+}
 
 const Auth = () => {
   const router = useRouter();
@@ -24,6 +36,11 @@ const Auth = () => {
           onPress={appleAuth}
           icon={<AppleIcon className="top-[2px]" />}
           title="Přihlásit se přes Apple"
+        />
+           <Button
+          onPress={signInWithApple}
+          icon={<AppleIcon className="top-[2px]" />}
+          title="Přihlásit se přes Apple 2"
         />
         <Button
           onPress={googleAuth}
