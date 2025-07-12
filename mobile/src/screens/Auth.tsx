@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, AppState, ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { supabase } from "../utils/supabase";
 import { Button } from "../components/Button";
 import { AppleIcon } from "../icons/AppleIcon";
@@ -7,18 +7,6 @@ import { GoogleIcon } from "../icons/GoogleIcon";
 import { googleAuth } from "../utils/googleAuth";
 import { StyledInput } from "../components/StyledInput";
 import { appleAuth } from "@/utils/appleAuth";
-
-// Tells Supabase Auth to continuously refresh the session automatically if
-// the app is in the foreground. When this is added, you will continue to receive
-// `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
-// if the user's session is terminated. This should only be registered once.
-AppState.addEventListener("change", (state) => {
-  if (state === "active") {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
 
 export const Auth = () => {
   const [email, setEmail] = useState("");
@@ -92,7 +80,11 @@ export const Auth = () => {
             variant="secondary"
           />
           <Text className="text-white text-base text-center">Nebo přes</Text>
-          <Button onPress={appleAuth} icon={<AppleIcon />} title="Přihlásit se přes Apple" />
+          <Button
+            onPress={appleAuth}
+            icon={<AppleIcon />}
+            title="Přihlásit se přes Apple"
+          />
           <Button
             onPress={googleAuth}
             icon={<GoogleIcon className="top-[2px]" />}

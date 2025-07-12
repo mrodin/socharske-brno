@@ -14,11 +14,10 @@ export const googleAuth = async () => {
     await GoogleSignin.hasPlayServices();
     const userInfo = await GoogleSignin.signIn();
     if (userInfo.idToken) {
-      const { data, error } = await supabase.auth.signInWithIdToken({
+      await supabase.auth.signInWithIdToken({
         provider: "google",
         token: userInfo.idToken,
       });
-      console.log("Nope", error, data);
     } else {
       throw new Error("no ID token present!");
     }

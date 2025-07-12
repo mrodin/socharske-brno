@@ -47,8 +47,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: "./assets/favicon.png",
   },
   plugins: [
-    "expo-font",
     "expo-apple-authentication",
+    "expo-font",
     [
       "@react-native-google-signin/google-signin",
       {
@@ -56,6 +56,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           "com.googleusercontent.apps.865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c",
       },
     ],
+    "expo-router",
   ],
   experiments: {
     typedRoutes: true,

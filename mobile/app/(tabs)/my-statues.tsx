@@ -1,7 +1,6 @@
 import { FC, useContext, useMemo } from "react";
 import { SafeAreaView, View, Text, SectionList } from "react-native";
 import { router } from "expo-router";
-import { format } from "date-fns";
 
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
 import { Label } from "@/components/Label";
@@ -161,7 +160,8 @@ const CollectedStatueItem: FC<{
       item.statueInfo.image_url ? { uri: item.statueInfo.image_url } : undefined
     }
     score={item.value}
-    subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
+    subtitle="12.7.2025"
+    // subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
   />
 );
 
