@@ -4,41 +4,52 @@ import "react-native-get-random-values";
 
 import { UserSessionContext } from "@/providers/UserSession";
 import { LoadingScreen } from "@/screens/LoadingScreen";
-import { useNavigation, CommonActions } from '@react-navigation/native';
-
+import { useNavigation, CommonActions } from "@react-navigation/native";
+import { UserInfoContext } from "@/providers/UserInfo";
 
 const AuthRedirect: FC<{ children: React.ReactElement }> = ({ children }) => {
-  const router = useRouter();
   const state = useRootNavigationState();
   const routeName = state.routes[state.routes.length - 1].name;
-  const { isAuthentizating, session } = useContext(UserSessionContext);
-  const navigation = useNavigation()
+  const { isAuthenticating, session } = useContext(UserSessionContext);
+  const { userInfo } = useContext(UserInfoContext);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
-    if (!isAuthentizating) {
+    if (!isAuthenticating) {
       if (!session && !routeName.startsWith("auth")) {
         // Redirect to the auth screen if the user is not authenticated
         // and the current route is not the auth screen.
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{ name: 'auth' }],
+            routes: [{ name: "auth" }],
           })
         );
       } else if (session && routeName.startsWith("auth")) {
         // Redirect to the home screen if the user is authenticated
         // and the current route is the auth screen.
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: '(tabs)' }],
-          })
-        );
+        if (userInfo?.username) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "(tabs)" }],
+            })
+          );
+        } else {
+          // User needs to set a username
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "sign-up" }],
+            })
+          );
+        }
       }
     }
-  }, [isAuthentizating, session, routeName]);
+  }, [isAuthenticating, session, routeName, userInfo?.username]);
 
-  if (isAuthentizating) {
+  if (isAuthenticating) {
     return <LoadingScreen />;
   }
 

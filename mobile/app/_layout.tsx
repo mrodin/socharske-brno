@@ -45,6 +45,10 @@ const RootLayout: FC = () => {
                         name="sign-out"
                         options={{ headerShown: false }}
                       />
+                      <Stack.Screen
+                        name="sign-up"
+                        options={{ headerShown: false }}
+                      />
                     </Stack>
                   </SelectedStatueProvider>
                 </LocationProvider>
