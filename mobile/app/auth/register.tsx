@@ -7,8 +7,9 @@ import { GoogleIcon } from "@/icons/GoogleIcon";
 import { googleAuth } from "@/utils/googleAuth";
 import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { appleAuth } from "@/utils/appleAuth";
+import * as Linking from "expo-linking";
 
 const AuthRegister = () => {
   const [email, setEmail] = useState("");
@@ -23,11 +24,20 @@ const AuthRegister = () => {
     } = await supabase.auth.signUp({
       email: email,
       password: password,
+      options: {
+        emailRedirectTo: Linking.createURL("auth/email-signin"),
+      },
     });
-
-    if (error) Alert.alert(error.message);
-    if (!session) Alert.alert("Zkontrolujte si email a potvrďte registraci");
     setLoading(false);
+
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      if (!session) {
+        Alert.alert("Zkontrolujte si email a potvrďte registraci");
+      }
+      router.navigate({ pathname: "/auth/email-signin", params: { email } });
+    }
   };
 
   return (

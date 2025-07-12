@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import { Button } from "@/components/Button";
 
 import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { supabase } from "@/utils/supabase";
 
 const AuthEmailSignIn = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { email: emailFromUrl } = useLocalSearchParams<{ email?: string }>();
+
+  const [email, setEmail] = useState(emailFromUrl ?? "");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // User is coming from email registration (we already have the email)
+    if (emailFromUrl) {
+      setEmail(emailFromUrl);
+    }
+  }, [emailFromUrl]);
 
   const signInWithEmail = async () => {
     setLoading(true);
@@ -19,7 +28,6 @@ const AuthEmailSignIn = () => {
       email: email,
       password: password,
     });
-
     if (error) Alert.alert("Špatné heslo nebo email");
     setLoading(false);
   };
@@ -45,7 +53,9 @@ const AuthEmailSignIn = () => {
           autoCapitalize={"none"}
           secureTextEntry={true}
         />
-        <Pressable onPress={() => router.navigate("/auth/password-reset-request")}>
+        <Pressable
+          onPress={() => router.navigate("/auth/password-reset-request")}
+        >
           <Text className="underline text-white text-right">
             Zapomenuté heslo?
           </Text>

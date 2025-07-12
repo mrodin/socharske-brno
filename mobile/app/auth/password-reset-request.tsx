@@ -13,7 +13,6 @@ const PasswordResetRequest = () => {
 
   const handleResetPassword = async () => {
     const resetPasswordURL = Linking.createURL("auth/password-reset");
-    console.log(resetPasswordURL);
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetPasswordURL,
     });
