@@ -3,7 +3,6 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -32,36 +31,23 @@ export const StatueDetail: FC = () => {
     SelectedStatueContext
   );
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [alreadyCollected, setAlreadyCollected] = useState(false);
-
-  const { data: collectedStatues, refetch: refetchStatueIds } =
-    useGetCollectedStatues();
+  const {
+    data: collectedStatues,
+    refetch: refetchStatueIds,
+    isLoading: isCollectedStatuesLoading,
+  } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();
 
-  const handleCollect = async () => {
+  const isLoading = collectStatue.isPending;
+
+  const handleCollect = useCallback(async () => {
     if (!selectedStatue) {
-      return undefined;
+      throw new Error("No statue selected.");
     }
 
-    setIsLoading(true);
     await collectStatue.mutate(selectedStatue.id);
     await refetchStatueIds();
-    setIsLoading(false);
-    setAlreadyCollected(true);
-  };
-
-  useEffect(() => {
-    if (!selectedStatue) {
-      return undefined;
-    }
-
-    if (collectedStatues.some((cs) => cs.statue_id === selectedStatue.id)) {
-      setAlreadyCollected(true);
-    } else {
-      setAlreadyCollected(false);
-    }
-  }, [collectedStatues, selectedStatue]);
+  }, [collectStatue, refetchStatueIds, selectedStatue]);
 
   const imageUrl = `https://storage.googleapis.com/lovci-soch-images/${selectedStatue?.id}/thumb480/1.JPEG`;
 
@@ -73,6 +59,10 @@ export const StatueDetail: FC = () => {
   if (!selectedStatue) {
     return null;
   }
+
+  const isCollected = collectedStatues.some(
+    (statue) => statue.statue_id === selectedStatue.id
+  );
 
   return (
     <BottomSheet
@@ -92,7 +82,7 @@ export const StatueDetail: FC = () => {
             {selectedStatue.name}
           </Text>
 
-          {alreadyCollected ? (
+          {isCollected ? (
             <UnlockedStatueInfo statue={selectedStatue} />
           ) : (
             <View className="gap-6">
@@ -101,7 +91,7 @@ export const StatueDetail: FC = () => {
               </Text>
 
               <TouchableOpacity
-                disabled={alreadyCollected || isLoading}
+                disabled={isCollected || isLoading}
                 onPress={handleCollect}
                 className={collectButton({ isLoading })}
               >
