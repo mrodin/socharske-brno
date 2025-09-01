@@ -2,11 +2,12 @@ import { StyledInput } from "@/components/StyledInput";
 import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { useContext, useState } from "react";
 import { Button } from "@/components/Button";
-import { Link } from "expo-router";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { router } from "expo-router";
+import { WizardProviderContext } from "@/providers/WizardProvider";
 const SignUp = () => {
-  const { userInfo, updateProfile } = useContext(UserInfoContext);
+  const { updateProfile } = useContext(UserInfoContext);
+  const { setStep: setWizardStep } = useContext(WizardProviderContext);
 
   const [username, setUsername] = useState("");
 
@@ -15,6 +16,7 @@ const SignUp = () => {
       username,
     });
     router.push("/(tabs)");
+    setWizardStep(1);
   };
 
   return (

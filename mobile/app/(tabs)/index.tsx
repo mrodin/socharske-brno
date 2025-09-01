@@ -6,6 +6,7 @@ import { StatueDetail } from "@/components/StatueDetail";
 import { UserSessionContext } from "@/providers/UserSession";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { LoadingContext } from "@/providers/LoadingProvider";
+import Wizard from "app/wizard";
 
 const Home: FC = () => {
   const { loading } = useContext(LoadingContext);
@@ -19,6 +20,7 @@ const Home: FC = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Map />
       <StatueDetail />
+      <Wizard />
     </GestureHandlerRootView>
   );
 };
