@@ -14,6 +14,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Pressable,
+  LayoutChangeEvent,
 } from "react-native";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { tv } from "tailwind-variants";
@@ -31,13 +32,10 @@ export const StatueDetail: FC = () => {
     SelectedStatueContext
   );
 
-  const {
-    data: collectedStatues,
-    refetch: refetchStatueIds,
-    isLoading: isCollectedStatuesLoading,
-  } = useGetCollectedStatues();
-  const collectStatue = useCollectStatue();
+  const { data: collectedStatues, refetch: refetchStatueIds } =
+    useGetCollectedStatues();
 
+  const collectStatue = useCollectStatue();
   const isLoading = collectStatue.isPending;
 
   const handleCollect = useCallback(async () => {
@@ -56,13 +54,13 @@ export const StatueDetail: FC = () => {
     [imageUrl]
   );
 
+  const isCollected = collectedStatues.some(
+    (statue) => statue.statue_id === selectedStatue?.id
+  );
+
   if (!selectedStatue) {
     return null;
   }
-
-  const isCollected = collectedStatues.some(
-    (statue) => statue.statue_id === selectedStatue.id
-  );
 
   return (
     <BottomSheet
@@ -184,15 +182,51 @@ const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
 
 const Description: FC<{ children: ReactNode }> = ({ children }) => {
   const [expanded, setExpanded] = useState(false);
+  const [fullHeight, setFullHeight] = useState(0);
+  const [clampedHeight, setClampedHeight] = useState(0);
+
+  const handleFullLayout = (event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    setFullHeight(height);
+  };
+
+  const handleClampedLayout = (event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    if (!expanded) {
+      setClampedHeight(height);
+    }
+  };
+
+  // We compare full height and clamped height to determine if we
+  // should show the expand toggle. It's a bit of a hack, but
+  // there probably isn't a better way to do this in React Native.
+  const showToggle = fullHeight > clampedHeight;
 
   return (
     <View>
-      <Text className={description({ expanded })}>{children}</Text>
-      <Pressable onPress={() => setExpanded(!expanded)}>
-        <Text className="text-white underline">
-          {expanded ? "ZOBRAZIT MÉNĚ" : "ZOBRAZIT VÍCE"}
-        </Text>
-      </Pressable>
+      {/* hidden text to measure full height */}
+      <Text
+        className="absolute opacity-0 pointer-events-none"
+        onLayout={handleFullLayout}
+      >
+        {children}
+      </Text>
+
+      {/* visible text */}
+      <Text
+        className={description({ expanded })}
+        onLayout={handleClampedLayout}
+      >
+        {children}
+      </Text>
+
+      {showToggle && (
+        <Pressable onPress={() => setExpanded(!expanded)}>
+          <Text className="text-white underline">
+            {expanded ? "ZOBRAZIT MÉNĚ" : "ZOBRAZIT VÍCE"}
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };
