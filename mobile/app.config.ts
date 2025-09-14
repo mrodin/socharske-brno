@@ -16,12 +16,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   splash: {
     image: "./assets/splash.png",
     resizeMode: "contain",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#303030",
   },
   assetBundlePatterns: ["**/*"],
   ios: {
     buildNumber: "10",
     bundleIdentifier: "com.kulturnilenochodi.socharske-brno",
+    icon: "./assets/icon.png",
     config: {
       googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
@@ -37,6 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    icon: "./assets/icon.png",
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#ffffff",
@@ -47,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: "./assets/favicon.png",
   },
   plugins: [
+    "expo-router",
     "expo-font",
     "expo-apple-authentication",
     [
