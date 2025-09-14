@@ -101,7 +101,7 @@ export const StatueDetail: FC = () => {
                     textAlign: "center",
                   }}
                 >
-                  {isLoading ? "Loading..." : "Ulov sochu"}
+                  {isLoading ? "Nahrávám data" : "Ulov sochu"}
                 </Text>
               </TouchableOpacity>
             </View>
