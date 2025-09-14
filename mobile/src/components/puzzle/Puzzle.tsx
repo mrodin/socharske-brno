@@ -47,7 +47,6 @@ export const Puzzle: React.FC<PuzzleProps> = ({
     useImageBase64(imageUrl);
   const { data, correctPieces, progress, updatePuzzleData, reset } =
     usePuzzleData(handleComplete);
-
   const puzzleIsReady = !isImageLoading && !imageLoadError && imageBase64;
 
   useEffect(() => {
@@ -99,7 +98,7 @@ export const Puzzle: React.FC<PuzzleProps> = ({
           <View style={{ width: puzzleSize }} className="-mt-1">
             <View className="h-1 overflow-hidden ">
               <Animated.View
-                className="h-full bg-red"
+                className="h-full bg-red absolute"
                 style={{
                   width: animatedProgressBarComplete.interpolate({
                     inputRange: [0, 100],
@@ -108,7 +107,7 @@ export const Puzzle: React.FC<PuzzleProps> = ({
                 }}
               />
               <Animated.View
-                className="h-full bg-white -mt-1"
+                className="h-full bg-white absolute"
                 style={{
                   width: animatedProgressBarClosing.interpolate({
                     inputRange: [0, 100],

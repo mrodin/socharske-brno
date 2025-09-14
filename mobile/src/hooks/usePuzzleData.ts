@@ -15,12 +15,24 @@ type UsePuzzleDataResult = {
 };
 
 // Create initial puzzle data with 9 pieces
-const getInitialRandomizedData = (): PuzzlePiece[] =>
-  Array.from({ length: 9 }, (_, i) => ({
-    key: i.toString(),
-    disabledDrag: false,
-    disabledReSorted: false,
-  })).sort(() => Math.random() - 0.5); /* Randomize initial order*/
+const getInitialRandomizedData = (): PuzzlePiece[] => {
+  let attempts = 0;
+  const maxAttempts = 50;
+  while (true) {
+    attempts++;
+    const data = Array.from({ length: 9 }, (_, i) => ({
+      key: i.toString(),
+      disabledDrag: false,
+      disabledReSorted: false,
+    })).sort(() => Math.random() - 0.5); /* Randomize initial order*/
+    const notCorrect = data.some(
+      (item, index) => item.key === index.toString()
+    );
+    if (!notCorrect || attempts > maxAttempts) {
+      return data;
+    }
+  }
+};
 
 export const usePuzzleData = (onComplete: () => void): UsePuzzleDataResult => {
   // Initialize with shuffled pieces
