@@ -17,10 +17,7 @@ export interface Coordinate {
   lng: number;
 }
 
-export type MapPoint = supercluster.PointOrClusterFeature<StatueWithDistance, Cluster>;
-
-export type StyledComponentProps<ComponentStyle> = {
-  style?: StyleProp<ComponentStyle>;
-  className?: string;
-  children?: React.ReactNode;
-};
+export type MapPoint = supercluster.PointOrClusterFeature<
+  StatueWithDistance,
+  Cluster
+>;
