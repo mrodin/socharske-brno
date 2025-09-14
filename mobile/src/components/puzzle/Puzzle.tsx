@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -30,7 +30,7 @@ export const Puzzle: React.FC<PuzzleProps> = ({
   // Get screen dimensions
   const { width: puzzleSize } = useWindowDimensions();
 
-  const handleComplete = () => {
+  const handleComplete = useCallback(() => {
     onComplete();
     // Animate the closing of the progress bar
     Animated.timing(animatedProgressBarClosing, {
@@ -40,7 +40,7 @@ export const Puzzle: React.FC<PuzzleProps> = ({
     }).start(() => {
       onClose();
     });
-  };
+  }, [onComplete, onClose]);
 
   // Use custom hooks
   const { imageBase64, isImageLoading, imageLoadError } =
