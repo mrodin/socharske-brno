@@ -3,6 +3,7 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -25,6 +26,8 @@ import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
+import { useLocation } from "../hooks/useLocation";
+import { calculateDistance } from "../utils/math";
 
 export const StatueDetail: FC = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -38,6 +41,7 @@ export const StatueDetail: FC = () => {
 
   const collectStatue = useCollectStatue();
   const isLoading = collectStatue.isPending;
+  const userLocation = useLocation();
 
   const handleCollect = useCallback(async () => {
     if (!selectedStatue) {
@@ -58,6 +62,20 @@ export const StatueDetail: FC = () => {
   const isCollected = collectedStatues.some(
     (statue) => statue.statue_id === selectedStatue?.id
   );
+
+  const isCloseEnough = useMemo(() => {
+    if (!userLocation || !selectedStatue) return false;
+
+    const distanceKm = calculateDistance(
+      userLocation.coords.latitude,
+      userLocation.coords.longitude,
+      selectedStatue.lat,
+      selectedStatue.lng
+    );
+
+    const distanceMeters = distanceKm * 1000;
+    return distanceMeters <= 30;
+  }, [userLocation, selectedStatue]);
 
   if (!selectedStatue) {
     return null;
@@ -90,9 +108,11 @@ export const StatueDetail: FC = () => {
               </Text>
 
               <TouchableOpacity
-                disabled={isCollected || isLoading}
+                disabled={isCollected || isLoading || !isCloseEnough}
                 onPress={handleCollect}
-                className={collectButton({ isLoading })}
+                className={collectButton({
+                  disabled: isLoading || !isCloseEnough,
+                })}
               >
                 <Text
                   style={{
@@ -102,7 +122,11 @@ export const StatueDetail: FC = () => {
                     textAlign: "center",
                   }}
                 >
-                  {isLoading ? "Nahrávám data" : "Ulov sochu"}
+                  {isLoading
+                    ? "Nahrávám data"
+                    : !isCloseEnough
+                      ? "Přiblížte se k soše"
+                      : "Ulov sochu"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -251,7 +275,7 @@ const LabelValueRow: FC<LabelValueRowProps> = ({ label, value }) => (
 const collectButton = tv({
   base: "bg-red-light justify-center p-4 rounded-full",
   variants: {
-    isLoading: {
+    disabled: {
       true: "bg-red-dark",
     },
   },
