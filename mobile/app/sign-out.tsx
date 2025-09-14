@@ -1,10 +1,7 @@
-import { useEffect } from "react"
-import { View } from "react-native"
+import { useEffect } from "react";
+import { View } from "react-native";
 import { supabase } from "@/utils/supabase";
-import { useNavigation, CommonActions } from '@react-navigation/native';
-
-
-
+import { useNavigation, CommonActions } from "@react-navigation/native";
 
 const Signout = () => {
   const navigation = useNavigation();
@@ -15,19 +12,17 @@ const Signout = () => {
     const signOut = async () => {
       await supabase.auth.refreshSession();
       await supabase.auth.signOut();
-      
+
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'auth' }],
+          routes: [{ name: "auth" }],
         })
       );
     };
     signOut();
-  }, [])
-  return (
-    <View className="bg-gray w-full h-full"></View>
-  )
-}
+  }, []);
+  return <View className="bg-gray w-full h-full"></View>;
+};
 
 export default Signout;

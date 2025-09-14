@@ -12,6 +12,7 @@ import AuthRedirect from "@/components/AuthRedirect";
 import { LocationProvider } from "@/providers/LocationProvider";
 import { SelectedStatueProvider } from "@/providers/SelectedStatueProvider";
 import { LoadingProvider } from "@/providers/LoadingProvider";
+import { WizardProvider } from "@/providers/WizardProvider";
 
 const queryClient = new QueryClient();
 
@@ -32,24 +33,26 @@ const RootLayout: FC = () => {
               <UserAvatarProvider>
                 <LocationProvider>
                   <SelectedStatueProvider>
-                    <Stack>
-                      <Stack.Screen
-                        name="(tabs)"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="auth"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="sign-out"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="sign-up"
-                        options={{ headerShown: false }}
-                      />
-                    </Stack>
+                    <WizardProvider>
+                      <Stack>
+                        <Stack.Screen
+                          name="(tabs)"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="auth"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="sign-out"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="sign-up"
+                          options={{ headerShown: false }}
+                        />
+                      </Stack>
+                    </WizardProvider>
                   </SelectedStatueProvider>
                 </LocationProvider>
               </UserAvatarProvider>

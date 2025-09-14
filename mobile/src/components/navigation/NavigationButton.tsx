@@ -20,6 +20,7 @@ type NavigationButtonProps = {
   label: string;
   icon?: FC;
   accent?: boolean;
+  disabled?: boolean;
 };
 
 export const NavigationButton: FC<NavigationButtonProps> = ({
@@ -27,17 +28,19 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
   label,
   icon,
   accent,
+  disabled,
 }) => {
   const pathName = usePathname();
   const isRoot = route === "/";
 
-  const isActive = isRoot ? pathName == route : pathName.startsWith(route) ;
-  
+  const isActive = isRoot ? pathName == route : pathName.startsWith(route);
+
   const Icon = icon;
   return (
     <Pressable
       className="flex flex-col justify-center items-center gap-2"
-      onPress={() => isActive ? router.dismissAll() : router.navigate(route)}
+      disabled={disabled}
+      onPress={() => (isActive ? router.dismissAll() : router.navigate(route))}
     >
       {accent ? (
         <View className={accentButtonVariants({ isActive })}>
