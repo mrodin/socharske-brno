@@ -35,7 +35,8 @@ const Puzzle: FC = () => {
   const goToMap = () => router.push("/");
 
   if (!statue || !statue.image_url) {
-    // It can happen that the user was removed from the leaderboard
+    // If the statue is not found or the image URL is missing
+    // It should not happen, but just in case
     return (
       <View className="flex-1 justify-center items-center">
         <Text className="text-white">Socha nenalezena</Text>

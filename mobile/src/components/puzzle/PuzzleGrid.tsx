@@ -14,13 +14,13 @@ interface PuzzleProps {
   updatePuzzleData: (newData: PuzzlePiece[]) => void;
 }
 
+const NUM_COLUMNS = 3;
+
 export const PuzzleGrid: React.FC<PuzzleProps> = ({
   imageBase64,
   data,
   updatePuzzleData,
 }) => {
-  // Animated width for progress bar
-
   // Get screen dimensions
   const { width: screenWidth } = useWindowDimensions();
 
@@ -79,8 +79,8 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
               opacity: item.disabledDrag ? 1 : 0.8,
               width: puzzleSize,
               height: puzzleSize,
-              top: -row * pieceSize, // Offset based on row position
-              left: -col * pieceSize, // Offset based on column position
+              top: -row * pieceSize, // Offset based on row position, cutting  the image
+              left: -col * pieceSize, // Offset based on column position, cutting the image
             }}
           />
         </View>
@@ -90,7 +90,7 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
 
   return (
     <DraggableGrid
-      numColumns={3}
+      numColumns={NUM_COLUMNS}
       renderItem={renderItem}
       data={data}
       onDragRelease={(newData) => {
