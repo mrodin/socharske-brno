@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
   Animated,
+  Easing,
 } from "react-native";
 import { useImageBase64 } from "../../hooks/useImageBase64";
 import { usePuzzleData } from "../../hooks/usePuzzleData";
@@ -24,6 +25,8 @@ export const Puzzle: React.FC<PuzzleProps> = ({
   // Animated width for progress bar
   const animatedProgressBarComplete = useRef(new Animated.Value(0)).current;
   const animatedProgressBarClosing = useRef(new Animated.Value(0)).current;
+  // Animated opacity for puzzle grid
+  const animatedPuzzleOpacity = useRef(new Animated.Value(0)).current;
   // Get screen dimensions
   const { width: puzzleSize } = useWindowDimensions();
 
@@ -45,6 +48,8 @@ export const Puzzle: React.FC<PuzzleProps> = ({
   const { data, correctPieces, progress, updatePuzzleData, reset } =
     usePuzzleData(handleComplete);
 
+  const puzzleIsReady = !isImageLoading && !imageLoadError && imageBase64;
+
   useEffect(() => {
     reset();
   }, [imageUrl]);
@@ -58,34 +63,39 @@ export const Puzzle: React.FC<PuzzleProps> = ({
     }).start();
   }, [progress]);
 
-  const puzzleReady = !isImageLoading && !imageLoadError && imageBase64;
+  // Animate puzzle opacity when puzzle is ready
+  useEffect(() => {
+    if (puzzleIsReady) {
+      Animated.timing(animatedPuzzleOpacity, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.in(Easing.ease),
+        useNativeDriver: true,
+      }).start();
+    } else {
+      animatedPuzzleOpacity.setValue(0);
+    }
+  }, [puzzleIsReady]);
 
   return (
     <View className="flex-1 items-center justify-center bg-gray">
-      {isImageLoading && (
-        <Wrap className="items-center" puzzleSize={puzzleSize}>
-          <ActivityIndicator size="large" color="#0066cc" />
-        </Wrap>
-      )}
-
-      {imageLoadError && (
-        <Wrap className="items-center" puzzleSize={puzzleSize}>
-          <Text className="text-red-600 text-center">
-            Nepovedlo sena načíst obrázek puzzle.{"\n"}
-            Zkontrolujte své internetové připojení.
-          </Text>
-        </Wrap>
-      )}
-
-      {puzzleReady && (
+      {puzzleIsReady ? (
         <>
-          <Wrap puzzleSize={puzzleSize}>
+          {/** Puzzle grid and progress bar */}
+          <Animated.View
+            className="justify-center"
+            style={{
+              width: puzzleSize,
+              height: puzzleSize,
+              opacity: animatedPuzzleOpacity,
+            }}
+          >
             <PuzzleGrid
               data={data}
               updatePuzzleData={updatePuzzleData}
               imageBase64={imageBase64}
             />
-          </Wrap>
+          </Animated.View>
           <View style={{ width: puzzleSize }} className="-mt-1">
             <View className="h-1 overflow-hidden ">
               <Animated.View
@@ -112,25 +122,18 @@ export const Puzzle: React.FC<PuzzleProps> = ({
             </Text>
           </View>
         </>
+      ) : (
+        <View className="justify-center items-center">
+          {imageLoadError ? (
+            <Text className="text-red-600 text-center">
+              Nepovedlo sena načíst obrázek puzzle.{"\n"}
+              Zkontrolujte své internetové připojení.
+            </Text>
+          ) : (
+            <ActivityIndicator size="large" color="#D5232A" />
+          )}
+        </View>
       )}
-    </View>
-  );
-};
-
-const Wrap: React.FC<{
-  children: React.ReactNode;
-  puzzleSize: number;
-  className?: string;
-}> = ({ children, puzzleSize, className }) => {
-  return (
-    <View
-      className={"justify-center " + className}
-      style={{
-        width: puzzleSize,
-        height: puzzleSize,
-      }}
-    >
-      {children}
     </View>
   );
 };
