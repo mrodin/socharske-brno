@@ -2,7 +2,6 @@ import { FC } from "react";
 import { View, SafeAreaView, ScrollView } from "react-native";
 
 import { useGetLeaderboard } from "@/api/queries";
-import { RouteHeader } from "@/components/RouteHeader";
 import { Player } from "@/components/Player";
 import { Title } from "@/components/Title";
 import { router } from "expo-router";
