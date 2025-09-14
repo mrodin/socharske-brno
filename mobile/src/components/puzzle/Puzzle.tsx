@@ -13,9 +13,14 @@ import { PuzzleGrid } from "./PuzzleGrid";
 type PuzzleProps = {
   imageUrl: string;
   onComplete: () => void;
+  onClose: () => void;
 };
 
-export const Puzzle: React.FC<PuzzleProps> = ({ imageUrl, onComplete }) => {
+export const Puzzle: React.FC<PuzzleProps> = ({
+  imageUrl,
+  onComplete,
+  onClose,
+}) => {
   // Animated width for progress bar
   const animatedProgressBarComplete = useRef(new Animated.Value(0)).current;
   const animatedProgressBarClosing = useRef(new Animated.Value(0)).current;
@@ -23,13 +28,14 @@ export const Puzzle: React.FC<PuzzleProps> = ({ imageUrl, onComplete }) => {
   const { width: puzzleSize } = useWindowDimensions();
 
   const handleComplete = () => {
+    onComplete();
     // Animate the closing of the progress bar
     Animated.timing(animatedProgressBarClosing, {
       toValue: 100,
       duration: 4000,
       useNativeDriver: false,
     }).start(() => {
-      onComplete();
+      onClose();
     });
   };
 
