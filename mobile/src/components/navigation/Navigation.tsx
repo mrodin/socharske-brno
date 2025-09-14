@@ -5,7 +5,6 @@ import { CrownIcon } from "./CrownIcon";
 import { JostStatueIcon } from "./JostStatueIcon";
 import { MapIcon } from "./MapIcon";
 import { UserIcon } from "./UserIcon";
-import { router, usePathname } from "expo-router";
 import { NavigationButton } from "./NavigationButton";
 import { WizardProviderContext } from "@/providers/WizardProvider";
 import { tv } from "tailwind-variants";
@@ -13,7 +12,7 @@ import { tv } from "tailwind-variants";
 const wrapVariant = tv({
   base: "absolute bottom-0 left-0 w-full h-[110px]",
   variants: {
-    opacity: {
+    isTransparent: {
       true: "opacity-50",
       false: "opacity-100",
     },
@@ -26,7 +25,7 @@ export const Navigation: FC = () => {
   return (
     <View
       className={wrapVariant({
-        opacity: showWizard && wizardStep < 3,
+        isTransparent: showWizard && wizardStep < 3,
       })}
     >
       <View className="relative w-full h-0">

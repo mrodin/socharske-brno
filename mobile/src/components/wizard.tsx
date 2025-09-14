@@ -4,14 +4,15 @@ import { Button } from "@/components/Button";
 import { ArrowRight } from "@/icons/ArrowRight";
 import { WizardProviderContext } from "@/providers/WizardProvider";
 import { Close } from "@/icons/Close";
+import { cn } from "@/utils/cn";
 
 type TooltipProps = {
   onNext: () => void;
 };
 
 const WizardArrow: FC<{ className: string }> = ({ className }) => (
-  <View className={"absolute w-1 h-1 " + className}>
-    <View className=" bg-white w-[20px] h-[20px] ml-[-10px] mt-[-10px] rotate-45 "></View>
+  <View className={cn("absolute w-1 h-1", className)}>
+    <View className="bg-white w-[20px] h-[20px] ml-[-10px] mt-[-10px] rotate-45"></View>
   </View>
 );
 
@@ -48,9 +49,10 @@ const WizardWrapper: FC<{
   };
   return (
     <View
-      className={
-        "absolute bg-white w-[280px] gap-3 p-5 rounded-xl " + className
-      }
+      className={cn(
+        "absolute bg-white w-[280px] gap-3 p-5 rounded-xl",
+        className
+      )}
     >
       <CloseButton onClose={handleClose} />
       {children}
@@ -148,24 +150,11 @@ const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
   </>
 );
 
-export const Step1 = () => (
-  <View className="bg-white w-[280px] gap-3 p-5 rounded-xl mx-auto my-auto">
-    <Text className="text-xl font-bold">Vydej se na lov soch!</Text>
-    <Text className="text-base">
-      Objevuj Brno z nového úhlu pohledu. Sbírej sochy a soutěž s ostatními v
-      počtu ulovených soch.
-    </Text>
-    <Button variant="primary" className="mt-2" title="Jdu na to!" />
-  </View>
-);
-
 const Wizard = () => {
   const { step, setStep } = useContext(WizardProviderContext);
-  // We want to need to sign out out of the (tabs) layout and auth layout.
-  // Because after signing out, session is deleted and hooks not working
   if (step === null) return null;
   return (
-    <View className="absolute top-0 left-0   w-full h-full bg-[rgba(100,100,100,0.5)]">
+    <View className="absolute top-0 left-0 w-full h-full bg-[rgba(100,100,100,0.5)]">
       {step === 1 && <TooltipStep1 onNext={() => setStep(2)} />}
       {step === 2 && <TooltipStep2 onNext={() => setStep(3)} />}
       {step === 3 && <TooltipStep3 onNext={() => setStep(4)} />}
