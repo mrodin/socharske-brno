@@ -7,6 +7,7 @@ import { UserInfoContext } from "@/providers/UserInfo";
 import { supabase } from "@/utils/supabase";
 import { router } from "expo-router";
 import { Alert } from "react-native";
+import { track } from "@amplitude/analytics-react-native";
 
 const PasswordChange = ({}) => {
   const { userInfo } = useContext(UserInfoContext);
@@ -18,6 +19,10 @@ const PasswordChange = ({}) => {
     setNewPassword("");
   }, [userInfo]);
 
+  useEffect(() => {
+    track("Page View", { page: "Profile - Change Password" });
+  }, []);
+
   const handleChangePassword = async () => {
     try {
       const { error } = await supabase.auth.updateUser({
@@ -25,6 +30,7 @@ const PasswordChange = ({}) => {
       });
       if (error) {
         console.log(error.code);
+        track("Password Change Failed", { error });
         if (error.code === "weak_password") {
           Alert.alert("Heslo je příliš slabé, minimum je 6 znaků");
         } else if (error.code === "same_password") {
@@ -33,10 +39,12 @@ const PasswordChange = ({}) => {
           Alert.alert("Chyba při změně hesla");
         }
       } else {
+        track("Password Change Success");
         Alert.alert("Heslo bylo úspěšně změněno");
         router.back();
       }
     } catch (error) {
+      track("Password Change Failed", { error });
       Alert.alert("Chyba při změně hesla");
     }
   };

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 
 import { Button } from "@/components/Button";
@@ -6,6 +6,7 @@ import { StyledInput } from "@/components/StyledInput";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { router } from "expo-router";
 import Avatar from "@/components/Avatar";
+import { track } from "@amplitude/analytics-react-native";
 
 const EditProfile = ({}) => {
   const { userInfo, updateProfile } = useContext(UserInfoContext);
@@ -15,8 +16,13 @@ const EditProfile = ({}) => {
     updateProfile({
       username: userName,
     });
+    track("Profile Edit - Change Username", { username: userName });
     router.back();
   };
+
+  useEffect(() => {
+    track("Page View", { page: "Profile - Edit" });
+  }, []);
 
   if (!userInfo) return null;
 

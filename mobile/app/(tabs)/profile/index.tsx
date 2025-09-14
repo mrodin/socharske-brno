@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import { useGetCollectedStatues } from "@/api/queries";
 import { useUserStatistics } from "@/hooks/useUserStatistics";
 import { ProfileDetail } from "@/components/ProfileDetail";
+import { track } from "@amplitude/analytics-react-native";
 
 const Profile = () => {
   const { userInfo } = useContext(UserInfoContext);
@@ -21,7 +22,12 @@ const Profile = () => {
     }
   }, [userInfo]);
 
-  if (!userInfo || !userStatistics) return <View className="bg-gray h-full w-full"/>;
+  useEffect(() => {
+    track("Page View", { page: "Profile" });
+  }, []);
+
+  if (!userInfo || !userStatistics)
+    return <View className="bg-gray h-full w-full" />;
 
   return (
     <ScrollView automaticallyAdjustKeyboardInsets>

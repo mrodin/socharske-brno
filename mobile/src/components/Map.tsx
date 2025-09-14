@@ -23,6 +23,7 @@ import { calculateDistance } from "../utils/math";
 
 import { MapPoint } from "./MapPoint";
 import { GpsButton } from "./GpsButton";
+import { track } from "@amplitude/analytics-react-native";
 
 const MAP_WIDTH = Dimensions.get("window").width;
 const MAP_HEIGHT = Dimensions.get("window").height - 96;
@@ -172,7 +173,12 @@ export const Map: FC = () => {
           )}
         />
       </MapView>
-      <GpsButton onPress={() => goToRegion(searchRegion)} />
+      <GpsButton
+        onPress={() => {
+          track("Gps Button Click");
+          goToRegion(searchRegion);
+        }}
+      />
     </View>
   );
 };

@@ -5,6 +5,7 @@ import { GooglePlacesAutocompleteRef } from "react-native-google-places-autocomp
 import { LocationContext } from "@/providers/LocationProvider";
 import { router } from "expo-router";
 import { Region } from "react-native-maps";
+import { track } from "@amplitude/analytics-react-native";
 
 type SearchDrawerProps = {};
 
@@ -13,6 +14,7 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
   const { setSearchRegion } = useContext(LocationContext);
 
   useEffect(() => {
+    track("Page View", { page: "Search" });
     inputRef.current?.focus();
   }, []);
 
@@ -25,6 +27,10 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
             router.back();
           }}
           onSelect={({ lng, lat }) => {
+            track("Search Location Selected", {
+              latitude: lat,
+              longitude: lng,
+            });
             setSearchRegion((originRegion) => ({
               ...originRegion,
               latitude: lat,

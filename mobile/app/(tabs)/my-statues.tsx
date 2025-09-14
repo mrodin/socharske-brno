@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo } from "react";
+import { FC, useContext, useEffect, useMemo } from "react";
 import { SafeAreaView, View, Text, SectionList } from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
@@ -15,6 +15,7 @@ import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { LocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
 import { DEFAULT_ZOOM } from "@/utils/constants";
+import { track } from "@amplitude/analytics-react-native";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -41,6 +42,7 @@ const MyStatues: FC = () => {
   const findStatueById = (id: number) => {
     const statue = statues.find((statue) => statue.id === id);
     if (!statue) {
+      track("Statue Not Found", { statue_id: id });
       throw new Error(`Statue with id ${id} not found`);
     }
     return statue;
@@ -48,6 +50,7 @@ const MyStatues: FC = () => {
 
   // Handler for navigating to a statue on the map
   const handleNavigateToStatue = (statue: Statue | null) => {
+    track("Navigate to Statue", { statue_id: statue?.id, page: "My Statues" });
     router.navigate("/");
     setSelectedStatue(statue);
     if (statue) {
@@ -114,6 +117,10 @@ const MyStatues: FC = () => {
     ],
     [collectedStatuesList, undiscoveredStatues]
   );
+
+  useEffect(() => {
+    track("Page View", { page: "My Statues" });
+  }, []);
 
   return (
     <SafeAreaView className="bg-gray h-full">

@@ -5,6 +5,7 @@ import { Button } from "@/components/Button";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { router } from "expo-router";
 import { WizardProviderContext } from "@/providers/WizardProvider";
+import { track } from "@amplitude/analytics-react-native";
 const SignUp = () => {
   const { updateProfile } = useContext(UserInfoContext);
   const { setStep: setWizardStep } = useContext(WizardProviderContext);
@@ -12,6 +13,7 @@ const SignUp = () => {
   const [username, setUsername] = useState("");
 
   const handleSaveUsername = () => {
+    track("Sign Up", { username });
     updateProfile({
       username,
     });

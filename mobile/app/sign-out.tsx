@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { View } from "react-native";
 import { supabase } from "@/utils/supabase";
 import { useNavigation, CommonActions } from "@react-navigation/native";
+import { track } from "@amplitude/analytics-react-native";
 
 const Signout = () => {
   const navigation = useNavigation();
@@ -13,6 +14,7 @@ const Signout = () => {
       await supabase.auth.refreshSession();
       await supabase.auth.signOut();
 
+      track("Logout Success");
       navigation.dispatch(
         CommonActions.reset({
           index: 0,

@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import * as Linking from "expo-linking";
 import { supabase } from "@/utils/supabase";
 import { UserSessionContext } from "@/providers/UserSession";
+import { track } from "@amplitude/analytics-react-native";
 
 const parseSupabaseUrl = (url: string) => {
   // by https://blog.theodo.com/2023/03/supabase-reset-password-rn/
@@ -36,6 +37,10 @@ const PasswordReset = () => {
       console.log(queryParams); // Keep for debugging
 
       if (queryParams.error_description) {
+        track("Password Reset Failed", {
+          method: "Email",
+          error: queryParams.error_description,
+        });
         Alert.alert("Něco se pokazilo: " + queryParams.error_description);
         router.navigate("/auth");
       } else {
@@ -55,10 +60,15 @@ const PasswordReset = () => {
           const newSession = await supabase.auth.getSession();
           setSession(newSession.data.session);
 
+          track("Password Reset Success", { method: "Email" });
           Alert.alert("Jste přihlášen, nyní můžete změnit heslo");
           // Redirect to the profile page to change the password
         } else {
           console.log('"Invalid tokens", queryParams);');
+          track("Password Reset Failed", {
+            method: "Email",
+            error: "Invalid tokens",
+          });
           Alert.alert("Něco se pokazilo");
           router.navigate("/auth");
         }
@@ -68,6 +78,7 @@ const PasswordReset = () => {
     call().catch((err) => {
       // Handle other errors
       console.log("Unknown error", err);
+      track("Password Reset Failed", { method: "Email", error: err });
       Alert.alert("Něco se pokazilo");
       router.navigate("/auth");
     });
