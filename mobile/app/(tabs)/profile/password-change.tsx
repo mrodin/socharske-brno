@@ -19,10 +19,6 @@ const PasswordChange = ({}) => {
     setNewPassword("");
   }, [userInfo]);
 
-  useEffect(() => {
-    track("Page View", { page: "Profile - Change Password" });
-  }, []);
-
   const handleChangePassword = async () => {
     try {
       const { error } = await supabase.auth.updateUser({

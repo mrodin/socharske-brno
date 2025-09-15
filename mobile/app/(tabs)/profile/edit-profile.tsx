@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 
 import { Button } from "@/components/Button";
@@ -19,10 +19,6 @@ const EditProfile = ({}) => {
     track("Profile Edit - Change Username", { username: userName });
     router.back();
   };
-
-  useEffect(() => {
-    track("Page View", { page: "Profile - Edit" });
-  }, []);
 
   if (!userInfo) return null;
 

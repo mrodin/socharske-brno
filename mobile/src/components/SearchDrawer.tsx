@@ -14,7 +14,6 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
   const { setSearchRegion } = useContext(LocationContext);
 
   useEffect(() => {
-    track("Page View", { page: "Search" });
     inputRef.current?.focus();
   }, []);
 

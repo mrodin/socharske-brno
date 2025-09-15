@@ -1,10 +1,9 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { View, SafeAreaView, ScrollView, Text } from "react-native";
 
 import { useGetLeaderboard } from "@/api/queries";
 import { ProfileDetail } from "@/components/ProfileDetail";
 import { useLocalSearchParams } from "expo-router";
-import { track } from "@amplitude/analytics-react-native";
 
 const LeaderBoard: FC = () => {
   const { data: leaderboard } = useGetLeaderboard();
@@ -21,14 +20,6 @@ const LeaderBoard: FC = () => {
   }
 
   const currentUser = leaderboard[currentUserIndex];
-
-  useEffect(() => {
-    track("Page View", {
-      page: "Leaderboard - Profile",
-      userId: id,
-      rank: currentUserIndex + 1,
-    });
-  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-gray">

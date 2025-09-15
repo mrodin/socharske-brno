@@ -1,9 +1,9 @@
 import * as Font from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useGlobalSearchParams, usePathname } from "expo-router";
 import { FC, useEffect } from "react";
 import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { init } from "@amplitude/analytics-react-native";
+import { init, track } from "@amplitude/analytics-react-native";
 
 import { UserSessionProvider } from "@/providers/UserSession";
 import { UserInfoProvider } from "@/providers/UserInfo";
@@ -37,13 +37,21 @@ const useAnalytics = () => {
 const queryClient = new QueryClient();
 
 const RootLayout: FC = () => {
+  const pathname = usePathname();
+  const params = useGlobalSearchParams();
+
   useAnalytics();
+
   useEffect(() => {
     Font.loadAsync({
       "RethinkSans-Regular": require("../assets/fonts/RethinkSans-VariableFont_wght.ttf"),
       "KronaOne-Regular": require("../assets/fonts/KronaOne-Regular.ttf"),
     });
   }, []);
+
+  useEffect(() => {
+    track("Page View", { pathname, params });
+  }, [pathname, params]);
 
   return (
     <UserSessionProvider>

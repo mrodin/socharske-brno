@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 import { SafeAreaView, View, Text, SectionList } from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
@@ -117,10 +117,6 @@ const MyStatues: FC = () => {
     ],
     [collectedStatuesList, undiscoveredStatues]
   );
-
-  useEffect(() => {
-    track("Page View", { page: "My Statues" });
-  }, []);
 
   return (
     <SafeAreaView className="bg-gray h-full">

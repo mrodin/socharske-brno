@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { View, SafeAreaView, ScrollView } from "react-native";
 
 import { useGetLeaderboard } from "@/api/queries";
@@ -10,10 +10,6 @@ import { track } from "@amplitude/analytics-react-native";
 
 const LeaderBoard: FC = () => {
   const { data: leaderboard } = useGetLeaderboard();
-
-  useEffect(() => {
-    track("Page View", { page: "Leaderboard" });
-  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-gray">

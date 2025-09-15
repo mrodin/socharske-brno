@@ -3,7 +3,6 @@ import { ScrollView, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { UserInfoContext } from "@/providers/UserInfo";
-import { supabase } from "@/utils/supabase";
 import { router } from "expo-router";
 import { useGetCollectedStatues } from "@/api/queries";
 import { useUserStatistics } from "@/hooks/useUserStatistics";
@@ -21,10 +20,6 @@ const Profile = () => {
       setUsername(userInfo.username);
     }
   }, [userInfo]);
-
-  useEffect(() => {
-    track("Page View", { page: "Profile" });
-  }, []);
 
   if (!userInfo || !userStatistics)
     return <View className="bg-gray h-full w-full" />;
