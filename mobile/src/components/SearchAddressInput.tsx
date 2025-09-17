@@ -1,11 +1,12 @@
-import React, { forwardRef, useEffect, useMemo } from "react";
+import React, { forwardRef, useMemo } from "react";
 import {
   GooglePlaceData,
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
-import { TouchableOpacity, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { GoBack } from "./GoBack";
 
 interface SearchAddressInputProps {
   onClose: () => void;
@@ -18,28 +19,7 @@ export const SearchAddressInput = forwardRef<
 >(({ onClose, onSelect }, ref) => {
   const goBackButton = useMemo(
     () => () => {
-      return (
-        <TouchableOpacity
-          style={{
-            paddingVertical: 14,
-            paddingRight: 0,
-            paddingLeft: 30,
-            borderRadius: 5,
-          }}
-          onPress={onClose}
-        >
-          <Svg width="10" height="18" viewBox="0 0 10 18" fill="none">
-            <Path
-              d="M9 1L1 9L9 17"
-              stroke="#FEFBFB"
-              stroke-width="2"
-              stroke-miterlimit="10"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </Svg>
-        </TouchableOpacity>
-      );
+      return <GoBack onPress={onClose} />;
     },
     [onClose]
   );

@@ -23,6 +23,7 @@ export default function Layout() {
         <TabTrigger name="my-statues" href="/my-statues" />
         <TabTrigger name="profile" href="/profile" />
         <TabTrigger name="search" href="/search" />
+        <TabTrigger name="puzzle" href="/puzzle" />
       </TabList>
     </Tabs>
   );

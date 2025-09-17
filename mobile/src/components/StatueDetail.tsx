@@ -23,6 +23,7 @@ import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
+import { router } from "expo-router";
 
 export const StatueDetail: FC = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -31,11 +32,7 @@ export const StatueDetail: FC = () => {
     SelectedStatueContext
   );
 
-  const {
-    data: collectedStatues,
-    refetch: refetchStatueIds,
-    isLoading: isCollectedStatuesLoading,
-  } = useGetCollectedStatues();
+  const { data: collectedStatues } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();
 
   const isLoading = collectStatue.isPending;
@@ -44,10 +41,8 @@ export const StatueDetail: FC = () => {
     if (!selectedStatue) {
       throw new Error("No statue selected.");
     }
-
-    await collectStatue.mutate(selectedStatue.id);
-    await refetchStatueIds();
-  }, [collectStatue, refetchStatueIds, selectedStatue]);
+    router.navigate(`/puzzle?id=${selectedStatue.id}`);
+  }, [selectedStatue]);
 
   const imageUrl = `https://storage.googleapis.com/lovci-soch-images/${selectedStatue?.id}/thumb480/1.JPEG`;
 
