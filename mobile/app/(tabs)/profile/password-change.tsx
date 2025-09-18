@@ -26,7 +26,6 @@ const PasswordChange = ({}) => {
       });
       if (error) {
         console.log(error.code);
-        track("Password Change Failed", { error });
         if (error.code === "weak_password") {
           Alert.alert("Heslo je příliš slabé, minimum je 6 znaků");
         } else if (error.code === "same_password") {
