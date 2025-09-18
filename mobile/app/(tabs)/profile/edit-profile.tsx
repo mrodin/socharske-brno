@@ -6,6 +6,7 @@ import { StyledInput } from "@/components/StyledInput";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { router } from "expo-router";
 import Avatar from "@/components/Avatar";
+import { track } from "@amplitude/analytics-react-native";
 
 const EditProfile = ({}) => {
   const { userInfo, updateProfile } = useContext(UserInfoContext);
@@ -15,6 +16,7 @@ const EditProfile = ({}) => {
     updateProfile({
       username: userName,
     });
+    track("Profile Edit - Change Username", { username: userName });
     router.back();
   };
 

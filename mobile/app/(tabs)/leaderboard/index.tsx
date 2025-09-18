@@ -5,6 +5,7 @@ import { useGetLeaderboard } from "@/api/queries";
 import { Player } from "@/components/Player";
 import { Title } from "@/components/Title";
 import { router } from "expo-router";
+import { track } from "@amplitude/analytics-react-native";
 
 const LeaderBoard: FC = () => {
   const { data: leaderboard } = useGetLeaderboard();

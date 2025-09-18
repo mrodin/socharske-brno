@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Alert, Text, View } from "react-native";
+import * as Linking from "expo-linking";
+import { track } from "@amplitude/analytics-react-native";
+
 import { supabase } from "@/utils/supabase";
 import { Button } from "@/components/Button";
 import { AppleIcon } from "@/icons/AppleIcon";
@@ -9,7 +12,6 @@ import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
 import { Link, router } from "expo-router";
 import { appleAuth } from "@/utils/appleAuth";
-import * as Linking from "expo-linking";
 
 const AuthRegister = () => {
   const [email, setEmail] = useState("");
@@ -31,11 +33,13 @@ const AuthRegister = () => {
     setLoading(false);
 
     if (error) {
+      track("Sign Up Failed", { method: "Email", error: error.message });
       Alert.alert(error.message);
     } else {
       if (!session) {
         Alert.alert("Zkontrolujte si email a potvrďte registraci");
       }
+      track("Sign Up Success", { method: "Email", userId: session?.user?.id });
       router.navigate({ pathname: "/auth/email-signin", params: { email } });
     }
   };

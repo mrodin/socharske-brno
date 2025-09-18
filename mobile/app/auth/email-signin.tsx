@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import { Button } from "@/components/Button";
+import { setUserId, track } from "@amplitude/analytics-react-native";
 
 import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
@@ -24,11 +25,17 @@ const AuthEmailSignIn = () => {
 
   const signInWithEmail = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
-    if (error) Alert.alert("Špatné heslo nebo email");
+    if (error) {
+      track("Login Failed", { method: "Email", error });
+      Alert.alert("Špatné heslo nebo email");
+    } else {
+      setUserId(data?.user.id);
+      track("Login Success", { method: "Email", userId: data?.user.id });
+    }
     setLoading(false);
   };
 
@@ -64,7 +71,7 @@ const AuthEmailSignIn = () => {
           variant="secondary"
           title="Přihlásit"
           disabled={loading}
-          onPress={() => signInWithEmail()}
+          onPress={signInWithEmail}
         />
         <Text className="text-white text-xl text-center mb-4 mt-10 font-krona">
           JSI TU POPRVÉ?

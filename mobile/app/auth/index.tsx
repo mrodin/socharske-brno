@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { track } from "@amplitude/analytics-react-native";
 
 import { Button } from "@/components/Button";
 import { AppleIcon } from "@/icons/AppleIcon";
@@ -13,6 +14,16 @@ import { appleAuth } from "@/utils/appleAuth";
 
 const Auth = () => {
   const router = useRouter();
+
+  const onEmailRedirect = () => {
+    track("Login Redirect", { method: "Email" });
+    router.navigate("/auth/email-signin");
+  };
+
+  const onRegisterRedirect = () => {
+    track("Register Redirect", { from: "Login Screen" });
+    router.navigate("/auth/register");
+  };
 
   return (
     <AuthWrap showSubtitle>
@@ -31,7 +42,7 @@ const Auth = () => {
           title="Přihlásit se přes Google"
         />
         <Button
-          onPress={() => router.navigate("/auth/email-signin")}
+          onPress={onEmailRedirect}
           icon={<MailIcon className="top" />}
           title="Přihlásit se přes Email"
         />
@@ -41,7 +52,7 @@ const Auth = () => {
       </Text>
       <Button
         variant="primary"
-        onPress={() => router.navigate("/auth/register")}
+        onPress={onRegisterRedirect}
         title="Vytvořit účet"
       />
     </AuthWrap>

@@ -7,6 +7,7 @@ import { UserInfoContext } from "@/providers/UserInfo";
 import { supabase } from "@/utils/supabase";
 import { router } from "expo-router";
 import { Alert } from "react-native";
+import { track } from "@amplitude/analytics-react-native";
 
 const PasswordChange = ({}) => {
   const { userInfo } = useContext(UserInfoContext);
@@ -33,10 +34,12 @@ const PasswordChange = ({}) => {
           Alert.alert("Chyba při změně hesla");
         }
       } else {
+        track("Password Change Success");
         Alert.alert("Heslo bylo úspěšně změněno");
         router.back();
       }
     } catch (error) {
+      track("Password Change Failed", { error });
       Alert.alert("Chyba při změně hesla");
     }
   };

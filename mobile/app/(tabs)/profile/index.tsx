@@ -3,11 +3,11 @@ import { ScrollView, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { UserInfoContext } from "@/providers/UserInfo";
-import { supabase } from "@/utils/supabase";
 import { router } from "expo-router";
 import { useGetCollectedStatues } from "@/api/queries";
 import { useUserStatistics } from "@/hooks/useUserStatistics";
 import { ProfileDetail } from "@/components/ProfileDetail";
+import { track } from "@amplitude/analytics-react-native";
 
 const Profile = () => {
   const { userInfo } = useContext(UserInfoContext);
@@ -21,7 +21,8 @@ const Profile = () => {
     }
   }, [userInfo]);
 
-  if (!userInfo || !userStatistics) return <View className="bg-gray h-full w-full"/>;
+  if (!userInfo || !userStatistics)
+    return <View className="bg-gray h-full w-full" />;
 
   return (
     <ScrollView automaticallyAdjustKeyboardInsets>

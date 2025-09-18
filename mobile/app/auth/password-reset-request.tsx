@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { track } from "@amplitude/analytics-react-native";
 
 import { Button } from "@/components/Button";
 import { StyledInput } from "@/components/StyledInput";
@@ -19,12 +20,15 @@ const PasswordResetRequest = () => {
 
     if (error) {
       if (error.code === "validation_failed") {
+        track("Password Reset Failed", { method: "Email", error });
         Alert.alert("Email je špatně zadaný");
       } else {
+        track("Password Reset Failed", { method: "Email", error });
         Alert.alert("Něco se pokazilo: " + error.message);
         console.log(error.message);
       }
     } else {
+      track("Password Reset Requested", { method: "Email", email });
       Alert.alert("Odkaz na přihlášení byl odeslán na váš email");
     }
   };

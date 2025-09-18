@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { Map } from "@/components/Map";
@@ -7,6 +7,7 @@ import { UserSessionContext } from "@/providers/UserSession";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { LoadingContext } from "@/providers/LoadingProvider";
 import Wizard from "@/components/wizard";
+import { track } from "@amplitude/analytics-react-native";
 
 const Home: FC = () => {
   const { loading } = useContext(LoadingContext);
