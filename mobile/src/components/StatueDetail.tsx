@@ -23,9 +23,11 @@ import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 export const StatueDetail: FC = () => {
+  const router = useRouter();
+
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const { selectedStatue, setSelectedStatue } = useContext(

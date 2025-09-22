@@ -80,6 +80,10 @@ const RootLayout: FC = () => {
                           name="sign-up"
                           options={{ headerShown: false }}
                         />
+                        <Stack.Screen
+                          name="puzzle"
+                          options={{ headerShown: false }}
+                        />
                       </Stack>
                     </WizardProvider>
                   </SelectedStatueProvider>

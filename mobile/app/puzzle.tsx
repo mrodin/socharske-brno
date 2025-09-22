@@ -22,8 +22,6 @@ const Puzzle: FC = () => {
   const state = useRootNavigationState();
   const routeName = state.routes[state.routes.length - 1];
 
-  console.log("Route name:", routeName);
-
   const { refetch: refetchStatueIds } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();
 
