@@ -1,8 +1,10 @@
+import { useRouter } from "expo-router";
 import React, {
   FC,
   ReactNode,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -14,6 +16,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   Pressable,
+  LayoutChangeEvent,
+  Linking,
 } from "react-native";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { tv } from "tailwind-variants";
@@ -23,7 +27,8 @@ import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
-import { useRouter } from "expo-router";
+import { useLocation } from "../hooks/useLocation";
+import { calculateDistance } from "../utils/math";
 
 export const StatueDetail: FC = () => {
   const router = useRouter();
@@ -36,8 +41,8 @@ export const StatueDetail: FC = () => {
 
   const { data: collectedStatues } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();
-
   const isLoading = collectStatue.isPending;
+  const userLocation = useLocation();
 
   const handleCollect = useCallback(async () => {
     if (!selectedStatue) {
@@ -53,13 +58,27 @@ export const StatueDetail: FC = () => {
     [imageUrl]
   );
 
+  const isCollected = collectedStatues.some(
+    (statue) => statue.statue_id === selectedStatue?.id
+  );
+
+  const isCloseEnough = useMemo(() => {
+    if (!userLocation || !selectedStatue) return false;
+
+    const distanceKm = calculateDistance(
+      userLocation.coords.latitude,
+      userLocation.coords.longitude,
+      selectedStatue.lat,
+      selectedStatue.lng
+    );
+
+    const distanceMeters = distanceKm * 1000;
+    return distanceMeters <= 30;
+  }, [userLocation, selectedStatue]);
+
   if (!selectedStatue) {
     return null;
   }
-
-  const isCollected = collectedStatues.some(
-    (statue) => statue.statue_id === selectedStatue.id
-  );
 
   return (
     <BottomSheet
@@ -88,9 +107,11 @@ export const StatueDetail: FC = () => {
               </Text>
 
               <TouchableOpacity
-                disabled={isCollected || isLoading}
+                disabled={isLoading || !isCloseEnough}
                 onPress={handleCollect}
-                className={collectButton({ isLoading })}
+                className={collectButton({
+                  disabled: isLoading || !isCloseEnough,
+                })}
               >
                 <Text
                   style={{
@@ -100,7 +121,11 @@ export const StatueDetail: FC = () => {
                     textAlign: "center",
                   }}
                 >
-                  {isLoading ? "Loading..." : "Ulov sochu"}
+                  {isLoading
+                    ? "Nahrávám data"
+                    : !isCloseEnough
+                      ? "Přibližte se k soše"
+                      : "Ulov sochu"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -138,7 +163,7 @@ const Handle: FC<{ imageUrl: string }> = ({ imageUrl }) => (
 );
 
 const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
-  const { description, author, year, material, type } = statue;
+  const { author, description, material, type, year, wiki_url } = statue;
 
   return (
     <View className="gap-6">
@@ -153,18 +178,22 @@ const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
         </View>
       </View>
 
-      {/* TODO: martin.rodin: Add link to wikipedia */}
-      <Pressable className="flex flex-row gap-2 items-center">
-        <Text className="text-red-light underline text-lg">
-          Zjistit více v internetové encyklopedii
-        </Text>
-        <Svg width={20} height={20} viewBox="0 0 17 17">
-          <Path
-            d="M12.75 7.66416C12.5621 7.66416 12.3819 7.73878 12.2491 7.87162C12.1163 8.00446 12.0416 8.18463 12.0416 8.37249V13.4583C12.0416 13.6462 11.967 13.8264 11.8342 13.9592C11.7013 14.092 11.5212 14.1667 11.3333 14.1667H3.54163C3.35376 14.1667 3.1736 14.092 3.04076 13.9592C2.90792 13.8264 2.83329 13.6462 2.83329 13.4583V5.66666C2.83329 5.47879 2.90792 5.29863 3.04076 5.16579C3.1736 5.03295 3.35376 4.95832 3.54163 4.95832H8.62746C8.81532 4.95832 8.99549 4.8837 9.12833 4.75086C9.26116 4.61802 9.33579 4.43785 9.33579 4.24999C9.33579 4.06213 9.26116 3.88196 9.12833 3.74912C8.99549 3.61628 8.81532 3.54166 8.62746 3.54166H3.54163C2.97804 3.54166 2.43754 3.76554 2.03902 4.16405C1.64051 4.56257 1.41663 5.10307 1.41663 5.66666V13.4583C1.41663 14.0219 1.64051 14.5624 2.03902 14.9609C2.43754 15.3594 2.97804 15.5833 3.54163 15.5833H11.3333C11.8969 15.5833 12.4374 15.3594 12.8359 14.9609C13.2344 14.5624 13.4583 14.0219 13.4583 13.4583V8.37249C13.4583 8.18463 13.3837 8.00446 13.2508 7.87162C13.118 7.73878 12.9378 7.66416 12.75 7.66416ZM15.5266 1.85582C15.4547 1.68274 15.3172 1.5452 15.1441 1.47332C15.059 1.43703 14.9675 1.41778 14.875 1.41666H10.625C10.4371 1.41666 10.2569 1.49128 10.1241 1.62412C9.99125 1.75696 9.91663 1.93713 9.91663 2.12499C9.91663 2.31285 9.99125 2.49302 10.1241 2.62586C10.2569 2.7587 10.4371 2.83332 10.625 2.83332H13.1679L5.87204 10.1221C5.80565 10.1879 5.75296 10.2663 5.71699 10.3526C5.68103 10.4389 5.66252 10.5315 5.66252 10.625C5.66252 10.7185 5.68103 10.8111 5.71699 10.8974C5.75296 10.9837 5.80565 11.0621 5.87204 11.1279C5.93789 11.1943 6.01623 11.247 6.10255 11.283C6.18887 11.3189 6.28145 11.3374 6.37496 11.3374C6.46847 11.3374 6.56105 11.3189 6.64737 11.283C6.73368 11.247 6.81203 11.1943 6.87788 11.1279L14.1666 3.83207V6.37499C14.1666 6.56285 14.2413 6.74302 14.3741 6.87586C14.5069 7.0087 14.6871 7.08332 14.875 7.08332C15.0628 7.08332 15.243 7.0087 15.3758 6.87586C15.5087 6.74302 15.5833 6.56285 15.5833 6.37499V2.12499C15.5822 2.03243 15.5629 1.94098 15.5266 1.85582Z"
-            fill="#DF4237"
-          />
-        </Svg>
-      </Pressable>
+      {wiki_url && (
+        <Pressable
+          className="flex flex-row gap-2 items-center"
+          onPress={() => Linking.openURL(wiki_url)}
+        >
+          <Text className="text-red-light underline text-lg">
+            Zjistit více v internetové encyklopedii
+          </Text>
+          <Svg width={20} height={20} viewBox="0 0 17 17">
+            <Path
+              d="M12.75 7.66416C12.5621 7.66416 12.3819 7.73878 12.2491 7.87162C12.1163 8.00446 12.0416 8.18463 12.0416 8.37249V13.4583C12.0416 13.6462 11.967 13.8264 11.8342 13.9592C11.7013 14.092 11.5212 14.1667 11.3333 14.1667H3.54163C3.35376 14.1667 3.1736 14.092 3.04076 13.9592C2.90792 13.8264 2.83329 13.6462 2.83329 13.4583V5.66666C2.83329 5.47879 2.90792 5.29863 3.04076 5.16579C3.1736 5.03295 3.35376 4.95832 3.54163 4.95832H8.62746C8.81532 4.95832 8.99549 4.8837 9.12833 4.75086C9.26116 4.61802 9.33579 4.43785 9.33579 4.24999C9.33579 4.06213 9.26116 3.88196 9.12833 3.74912C8.99549 3.61628 8.81532 3.54166 8.62746 3.54166H3.54163C2.97804 3.54166 2.43754 3.76554 2.03902 4.16405C1.64051 4.56257 1.41663 5.10307 1.41663 5.66666V13.4583C1.41663 14.0219 1.64051 14.5624 2.03902 14.9609C2.43754 15.3594 2.97804 15.5833 3.54163 15.5833H11.3333C11.8969 15.5833 12.4374 15.3594 12.8359 14.9609C13.2344 14.5624 13.4583 14.0219 13.4583 13.4583V8.37249C13.4583 8.18463 13.3837 8.00446 13.2508 7.87162C13.118 7.73878 12.9378 7.66416 12.75 7.66416ZM15.5266 1.85582C15.4547 1.68274 15.3172 1.5452 15.1441 1.47332C15.059 1.43703 14.9675 1.41778 14.875 1.41666H10.625C10.4371 1.41666 10.2569 1.49128 10.1241 1.62412C9.99125 1.75696 9.91663 1.93713 9.91663 2.12499C9.91663 2.31285 9.99125 2.49302 10.1241 2.62586C10.2569 2.7587 10.4371 2.83332 10.625 2.83332H13.1679L5.87204 10.1221C5.80565 10.1879 5.75296 10.2663 5.71699 10.3526C5.68103 10.4389 5.66252 10.5315 5.66252 10.625C5.66252 10.7185 5.68103 10.8111 5.71699 10.8974C5.75296 10.9837 5.80565 11.0621 5.87204 11.1279C5.93789 11.1943 6.01623 11.247 6.10255 11.283C6.18887 11.3189 6.28145 11.3374 6.37496 11.3374C6.46847 11.3374 6.56105 11.3189 6.64737 11.283C6.73368 11.247 6.81203 11.1943 6.87788 11.1279L14.1666 3.83207V6.37499C14.1666 6.56285 14.2413 6.74302 14.3741 6.87586C14.5069 7.0087 14.6871 7.08332 14.875 7.08332C15.0628 7.08332 15.243 7.0087 15.3758 6.87586C15.5087 6.74302 15.5833 6.56285 15.5833 6.37499V2.12499C15.5822 2.03243 15.5629 1.94098 15.5266 1.85582Z"
+              fill="#DF4237"
+            />
+          </Svg>
+        </Pressable>
+      )}
 
       <View className="flex flex-row gap-2">
         <Text className="text-white text-lg">
@@ -181,15 +210,51 @@ const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
 
 const Description: FC<{ children: ReactNode }> = ({ children }) => {
   const [expanded, setExpanded] = useState(false);
+  const [fullHeight, setFullHeight] = useState(0);
+  const [clampedHeight, setClampedHeight] = useState(0);
+
+  const handleFullLayout = (event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    setFullHeight(height);
+  };
+
+  const handleClampedLayout = (event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    if (!expanded) {
+      setClampedHeight(height);
+    }
+  };
+
+  // We compare full height and clamped height to determine if we
+  // should show the expand toggle. It's a bit of a hack, but
+  // there probably isn't a better way to do this in React Native.
+  const showToggle = fullHeight > clampedHeight;
 
   return (
     <View>
-      <Text className={description({ expanded })}>{children}</Text>
-      <Pressable onPress={() => setExpanded(!expanded)}>
-        <Text className="text-white underline">
-          {expanded ? "ZOBRAZIT MÉNĚ" : "ZOBRAZIT VÍCE"}
-        </Text>
-      </Pressable>
+      {/* hidden text to measure full height */}
+      <Text
+        className="absolute opacity-0 pointer-events-none"
+        onLayout={handleFullLayout}
+      >
+        {children}
+      </Text>
+
+      {/* visible text */}
+      <Text
+        className={description({ expanded })}
+        onLayout={handleClampedLayout}
+      >
+        {children}
+      </Text>
+
+      {showToggle && (
+        <Pressable onPress={() => setExpanded(!expanded)}>
+          <Text className="text-white underline">
+            {expanded ? "ZOBRAZIT MÉNĚ" : "ZOBRAZIT VÍCE"}
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -209,7 +274,7 @@ const LabelValueRow: FC<LabelValueRowProps> = ({ label, value }) => (
 const collectButton = tv({
   base: "bg-red-light justify-center p-4 rounded-full",
   variants: {
-    isLoading: {
+    disabled: {
       true: "bg-red-dark",
     },
   },
