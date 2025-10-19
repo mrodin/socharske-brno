@@ -230,7 +230,6 @@ const UnlockedStatueInfo: FC<UnlockedStatueInfoProps> = ({
         <Text className="text-white text-lg">
           Chybí ti tu nějaká informace?
         </Text>
-        {/* TODO: martin.rodin: Add link to contact form */}
         <Pressable className="flex flex-row gap-2 items-center">
           <Text className="text-white underline text-lg">Napiš nám.</Text>
         </Pressable>
@@ -281,7 +280,7 @@ const Description: FC<{ children: ReactNode }> = ({ children }) => {
 
       {showToggle && (
         <Pressable onPress={() => setExpanded(!expanded)}>
-          <Text className="text-white underline">
+          <Text className="text-white underline pt-1">
             {expanded ? "ZOBRAZIT MÉNĚ" : "ZOBRAZIT VÍCE"}
           </Text>
         </Pressable>
@@ -318,7 +317,7 @@ const collectButton = tv({
 });
 
 const description = tv({
-  base: "text-white",
+  base: "text-white leading-6",
   variants: {
     expanded: {
       true: "line-clamp-none",
