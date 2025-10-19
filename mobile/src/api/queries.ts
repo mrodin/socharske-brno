@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { UserSessionContext } from "../providers/UserSession";
 import { CollectedStatue, Statue } from "../types/statues";
@@ -76,5 +76,23 @@ export const useCollectStatue = () => {
       await leaderboard.refetch();
       await collectedStatues.refetch();
     },
+  });
+};
+
+type SendStatueFeedbackParams = {
+  message: string;
+  statueId: number;
+};
+
+export const useSendStatueFeedback = () => {
+  const session = useSession();
+
+  return useMutation<void, Error, SendStatueFeedbackParams>({
+    mutationFn: ({ message, statueId }) =>
+      fetchWithAuth(
+        "https://europe-west3-socharske-brno.cloudfunctions.net/send_statue_feedback",
+        session.access_token,
+        { method: "POST", body: { statue_id: statueId, message } }
+      ),
   });
 };

@@ -14,6 +14,7 @@ import { LocationProvider } from "@/providers/LocationProvider";
 import { SelectedStatueProvider } from "@/providers/SelectedStatueProvider";
 import { LoadingProvider } from "@/providers/LoadingProvider";
 import { WizardProvider } from "@/providers/WizardProvider";
+import { stackScreenOptions } from "@/utils/theme";
 
 const useAnalytics = () => {
   useEffect(() => {
@@ -66,10 +67,14 @@ const RootLayout: FC = () => {
                       <Stack>
                         <Stack.Screen
                           name="(tabs)"
-                          options={{ headerShown: false }}
+                          options={{ headerShown: false, title: "Mapa" }}
                         />
                         <Stack.Screen
                           name="auth"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="puzzle"
                           options={{ headerShown: false }}
                         />
                         <Stack.Screen
@@ -80,10 +85,7 @@ const RootLayout: FC = () => {
                           name="sign-up"
                           options={{ headerShown: false }}
                         />
-                        <Stack.Screen
-                          name="puzzle"
-                          options={{ headerShown: false }}
-                        />
+                        <Stack.Screen name="statue-feedback" />
                       </Stack>
                     </WizardProvider>
                   </SelectedStatueProvider>

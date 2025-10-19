@@ -116,7 +116,7 @@ export const StatueDetail: FC = () => {
                 <Text
                   style={{
                     color: theme.white,
-                    fontWeight: "bold",
+                    fontWeight: "600",
                     fontSize: 17,
                     textAlign: "center",
                   }}
@@ -163,6 +163,8 @@ const Handle: FC<{ imageUrl: string }> = ({ imageUrl }) => (
 );
 
 const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
+  const router = useRouter();
+
   const { author, description, material, type, year, wiki_url } = statue;
 
   return (
@@ -199,7 +201,10 @@ const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
         <Text className="text-white text-lg">
           Chybí ti tu nějaká informace?
         </Text>
-        <Pressable className="flex flex-row gap-2 items-center">
+        <Pressable
+          className="flex flex-row gap-2 items-center"
+          onPress={() => router.push("/statue-feedback")}
+        >
           <Text className="text-red-light underline text-lg">Napiš nám.</Text>
         </Pressable>
       </View>
