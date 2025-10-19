@@ -6,7 +6,7 @@ from supabase import Client, create_client
 
 
 @functions_framework.http
-def send_feedback(request: flask.Request) -> dict:
+def send_statue_feedback(request: flask.Request) -> dict:
     """Collect a statue."""
     supabase_url, supabase_key = (
         os.environ.get("SUPABASE_URL"),
