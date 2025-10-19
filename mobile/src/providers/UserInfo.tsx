@@ -9,6 +9,7 @@ type UserInfo = {
   email: string;
   provider?: string;
   id: string;
+  devMode: boolean;
 };
 
 export const UserInfoContext = createContext<{
@@ -40,7 +41,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
 
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`username, avatar_url`)
+        .select(`username, avatar_url, dev_mode`)
         .eq("id", session?.user.id)
         .single();
       if (error && status !== 406) {
@@ -52,6 +53,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
           username: data.username,
           avatarUrl: data.avatar_url,
           email: session?.user?.email || "",
+          devMode: data.dev_mode,
           provider: session.user.app_metadata.provider,
           id: session.user.id,
         });

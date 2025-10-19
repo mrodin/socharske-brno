@@ -29,6 +29,9 @@ import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { useLocation } from "../hooks/useLocation";
 import { calculateDistance } from "../utils/math";
+import { UserInfoContext } from "@/providers/UserInfo";
+
+const STATUE_DISTANCE_THRESHOLD_METERS = 20;
 
 export const StatueDetail: FC = () => {
   const router = useRouter();
@@ -38,7 +41,7 @@ export const StatueDetail: FC = () => {
   const { selectedStatue, setSelectedStatue } = useContext(
     SelectedStatueContext
   );
-
+  const { userInfo } = useContext(UserInfoContext);
   const { data: collectedStatues } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();
   const isLoading = collectStatue.isPending;
@@ -73,8 +76,10 @@ export const StatueDetail: FC = () => {
     );
 
     const distanceMeters = distanceKm * 1000;
-    return distanceMeters <= 30;
-  }, [userLocation, selectedStatue]);
+    return (
+      userInfo?.devMode || distanceMeters <= STATUE_DISTANCE_THRESHOLD_METERS
+    );
+  }, [userLocation, selectedStatue, userInfo?.devMode]);
 
   if (!selectedStatue) {
     return null;
@@ -124,7 +129,7 @@ export const StatueDetail: FC = () => {
                   {isLoading
                     ? "Nahrávám data"
                     : !isCloseEnough
-                      ? "Přibližte se k soše"
+                      ? `Přibližte se k soše na ${STATUE_DISTANCE_THRESHOLD_METERS} metrů`
                       : "Ulov sochu"}
                 </Text>
               </TouchableOpacity>
@@ -275,7 +280,7 @@ const collectButton = tv({
   base: "bg-red-light justify-center p-4 rounded-full",
   variants: {
     disabled: {
-      true: "bg-red-dark",
+      true: "opacity-50",
     },
   },
 });
