@@ -71,3 +71,21 @@ export const useCollectStatue = () => {
     },
   });
 };
+
+type SendStatueFeedbackParams = {
+  message: string;
+  statueId: number;
+};
+
+export const useSendStatueFeedback = () => {
+  const session = useSession();
+
+  return useMutation<void, Error, SendStatueFeedbackParams>({
+    mutationFn: ({ message, statueId }) =>
+      fetchWithAuth(
+        "https://europe-west3-socharske-brno.cloudfunctions.net/send_statue_feedback",
+        session.access_token,
+        { method: "POST", body: { statue_id: statueId, message } }
+      ),
+  });
+};
