@@ -47,7 +47,7 @@ const Puzzle: FC = () => {
       <GoBack onPress={goToMap} className="absolute top-10 left-0 z-10" />
       <View className="flex flex-row items-center gap-4">
         <Text className="text-white text-lg text-center w-full ">
-          Vyreš puzzle a odemkni sochu
+          Vyřeš skládačku a odemkni sochu
         </Text>
       </View>
 

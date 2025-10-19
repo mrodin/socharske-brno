@@ -1,16 +1,14 @@
 import React from "react";
-import {
-  View,
-  Image,
-  ActivityIndicator,
-  useWindowDimensions,
-} from "react-native";
+import { View, ActivityIndicator, useWindowDimensions } from "react-native";
+import { FilterImage } from "react-native-svg/filter-image";
 import { DraggableGrid } from "react-native-draggable-grid";
 import { PuzzlePiece } from "../../hooks/usePuzzleData";
+import { CheckIconOutline } from "./CheckIconOutline";
 
 interface PuzzleProps {
   imageBase64: string;
   data: PuzzlePiece[];
+  progress: number;
   updatePuzzleData: (newData: PuzzlePiece[]) => void;
 }
 
@@ -19,6 +17,7 @@ const NUM_COLUMNS = 3;
 export const PuzzleGrid: React.FC<PuzzleProps> = ({
   imageBase64,
   data,
+  progress,
   updatePuzzleData,
 }) => {
   // Get screen dimensions
@@ -49,6 +48,8 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
       );
     }
 
+    const hasCorrectPosition = item.disabledDrag;
+
     // Parse the item name as number (1-9) to determine position
     const index = parseInt(item.key);
     // Calculate the row and column for a 3x3 grid
@@ -58,7 +59,7 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
     // The full image is treated as a 3x3 grid, showing only the correct portion
     return (
       <View
-        className="justify-center items-center overflow-hidden"
+        className="relative marker:justify-center items-center overflow-hidden"
         style={{
           width: pieceSize,
           height: pieceSize,
@@ -66,17 +67,17 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
         key={item.key}
       >
         <View
-          className="overflow-hidden relative bg-red"
+          className="overflow-hidden relative"
           style={{
             width: pieceSize,
             height: pieceSize,
           }}
         >
-          <Image
+          <FilterImage
             source={{ uri: imageBase64 }}
             className="absolute"
             style={{
-              opacity: item.disabledDrag ? 1 : 0.8,
+              filter: hasCorrectPosition ? "grayscale(0%)" : "grayscale(90%)", // for some reason setting filter to none crash the app
               width: puzzleSize,
               height: puzzleSize,
               top: -row * pieceSize, // Offset based on row position, cutting  the image
@@ -84,6 +85,7 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
             }}
           />
         </View>
+        {hasCorrectPosition && progress < 1 && <CheckIconOutline />}
       </View>
     );
   };
@@ -93,6 +95,7 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
       numColumns={NUM_COLUMNS}
       renderItem={renderItem}
       data={data}
+      delayLongPress={75}
       onDragRelease={(newData) => {
         updatePuzzleData(newData);
       }}
