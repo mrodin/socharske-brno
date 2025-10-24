@@ -200,7 +200,7 @@ const TabButton: FC<{
       "flex-1 items-center relative",
       isActive
         ? "border-b-4 border-red-light"
-        : "border-b-[1px] border-[#d1d1d14c]"
+        : "border-b-[1px] border-gray-light"
     )}
   >
     <Pressable
