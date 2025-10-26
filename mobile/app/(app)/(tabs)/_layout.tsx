@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/navigation/Navigation";
-import SignUp from "@/components/SignUp";
+import SignUp from "@/screens/SignUp";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { Tabs, TabList, TabTrigger, TabSlot } from "expo-router/ui";
