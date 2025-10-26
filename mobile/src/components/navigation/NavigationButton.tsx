@@ -33,14 +33,25 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
   const pathName = usePathname();
   const isRoot = route === "/";
 
-  const isActive = isRoot ? pathName == route : pathName.startsWith(route);
+  const isActive = isRoot ? pathName === route : pathName.startsWith(route);
+  const isSubroute =
+    !isRoot && pathName !== route && pathName.startsWith(route);
 
   const Icon = icon;
+
+  const handlePress = () => {
+    if (isActive && isSubroute) {
+      router.dismissAll();
+    } else if (!isActive) {
+      router.navigate(route);
+    }
+  };
+
   return (
     <Pressable
       className="flex flex-col justify-center items-center gap-2"
       disabled={disabled}
-      onPress={() => (isActive ? router.dismissAll() : router.navigate(route))}
+      onPress={handlePress}
     >
       {accent ? (
         <View className={accentButtonVariants({ isActive })}>
