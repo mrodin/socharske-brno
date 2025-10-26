@@ -13,7 +13,7 @@ const wrapVariant = tv({
   base: "absolute bottom-0 left-0 w-full h-[110px]",
   variants: {
     isTransparent: {
-      true: "opacity-50",
+      true: "opacity-[96%]",
       false: "opacity-100",
     },
   },

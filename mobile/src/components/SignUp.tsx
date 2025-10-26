@@ -12,12 +12,12 @@ const SignUp = () => {
 
   const [username, setUsername] = useState("");
 
-  const handleSaveUsername = () => {
+  const handleSaveUsername = async () => {
     track("Sign Up", { username });
-    updateProfile({
+    await updateProfile({
       username,
     });
-    router.push("/(tabs)");
+    router.push("/(app)/(tabs)");
     setWizardStep(1);
   };
 

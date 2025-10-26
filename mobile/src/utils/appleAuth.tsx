@@ -26,7 +26,7 @@ export const appleAuth = async () => {
         setUserId(user?.id);
         track("Login Success", { method: "Apple", userId: user?.id });
         // User is signed in.
-        console.log("User signed in", user);
+        console.log("User signed in", user?.email);
       } else {
         track("Login Failed", { method: "Apple", error: error.message });
         console.error("Error during Apple sign-in", error);

@@ -109,20 +109,20 @@ const TooltipStep2: FC<TooltipProps> = ({ onNext }) => (
 
 const TooltipStep3: FC<TooltipProps> = ({ onNext }) => (
   <>
-    <WizardWrapper className="left-[50%] absolute bottom-[130px] -translate-x-1/2">
+    <WizardWrapper className="left-[50%] absolute bottom-[30px] -translate-x-1/2">
       <StepNumber>2/4</StepNumber>
 
       <Header>Moje sochy</Header>
       <Description>Sem se sbírají sochy, které jsi ulovil/a.</Description>
       <Next onPress={onNext} text="Dále" />
     </WizardWrapper>
-    <WizardArrow className="bottom-[128px] left-[50%]" />
+    <WizardArrow className="bottom-[28px] left-[50%]" />
   </>
 );
 
 const TooltipStep4: FC<TooltipProps> = ({ onNext }) => (
   <>
-    <WizardWrapper className="left-[10px] absolute bottom-[130px]">
+    <WizardWrapper className="left-[10px] absolute bottom-[30px]">
       <StepNumber>3/4</StepNumber>
       <Header>Vyhledávání</Header>
       <Description>
@@ -131,13 +131,13 @@ const TooltipStep4: FC<TooltipProps> = ({ onNext }) => (
       </Description>
       <Next onPress={onNext} text="Dále" />
     </WizardWrapper>
-    <WizardArrow className="bottom-[128px] left-[30%]" />
+    <WizardArrow className="bottom-[28px] left-[30%]" />
   </>
 );
 
 const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
   <>
-    <WizardWrapper className="right-[10px] absolute bottom-[130px]">
+    <WizardWrapper className="right-[10px] absolute bottom-[30px]">
       <StepNumber>4/4</StepNumber>
       <Header>Vyhledávání</Header>
       <Description>
@@ -146,7 +146,7 @@ const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
       </Description>
       <Next onPress={onNext} text="Pustit se do lovu" />
     </WizardWrapper>
-    <WizardArrow className="bottom-[128px] right-[30%]" />
+    <WizardArrow className="bottom-[28px] right-[30%]" />
   </>
 );
 

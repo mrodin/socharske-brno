@@ -1,5 +1,7 @@
 import { Navigation } from "@/components/navigation/Navigation";
-import { LoadingContext } from "@/providers/LoadingProvider";
+import SignUp from "@/components/SignUp";
+import { UserInfoContext } from "@/providers/UserInfo";
+import { LoadingScreen } from "@/screens/LoadingScreen";
 import { Tabs, TabList, TabTrigger, TabSlot } from "expo-router/ui";
 import { useContext } from "react";
 import { View } from "react-native";
@@ -10,13 +12,22 @@ const NAVIGATION_HEIGHT = 96;
 // You still need define route here to make it work
 // Navigation is fully styled and using router.navigate to navigate
 export default function Layout() {
-  const { loading } = useContext(LoadingContext);
+  const { userInfo } = useContext(UserInfoContext);
+
+  if (!userInfo) {
+    return <LoadingScreen />;
+  }
+
+  if (userInfo && !userInfo.username) {
+    return <SignUp />;
+  }
+
   return (
     <Tabs>
       <View className={`w-full h-full pb-[${NAVIGATION_HEIGHT}px]`}>
         <TabSlot />
       </View>
-      {!loading && <Navigation />}
+      <Navigation />
       <TabList style={{ display: "none" }}>
         <TabTrigger name="home" href="/" />
         <TabTrigger name="leaderboard" href="/leaderboard" />
