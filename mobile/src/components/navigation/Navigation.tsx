@@ -8,6 +8,7 @@ import { UserIcon } from "./UserIcon";
 import { NavigationButton } from "./NavigationButton";
 import { WizardProviderContext } from "@/providers/WizardProvider";
 import { tv } from "tailwind-variants";
+import { MyStatuesIcon } from "./MyStatuesIcon";
 
 const wrapVariant = tv({
   base: "absolute bottom-0 left-0 w-full h-[110px]",
@@ -34,20 +35,20 @@ export const Navigation: FC = () => {
       <View className="flex flex-row justify-between items-end px-7">
         <NavigationButton
           disabled={showWizard}
-          label="Do mapy"
-          icon={MapIcon}
-          route="/"
-        />
-        <NavigationButton
-          disabled={showWizard}
           route="/search"
           label="Hledat"
           icon={SearchIcon}
         />
         <NavigationButton
           disabled={showWizard}
-          route="/my-statues"
           label="Moje sochy"
+          icon={MyStatuesIcon}
+          route="/my-statues"
+        />
+        <NavigationButton
+          disabled={showWizard}
+          route="/"
+          label="Do mapy"
           icon={JostStatueIcon}
           accent
         />
