@@ -97,8 +97,8 @@ const TooltipStep2: FC<TooltipProps> = ({ onNext }) => (
 
       <Header>Sochy</Header>
       <Description>
-        Pod otazníky se skrývají sochy, které můžeš sbírat tím, že se k nim
-        přiblížíš, klikneš na otazník a potom na „Ulov sochu“
+        Pod otazníky se skrývají sochy. Ulovíš je tím, že se k nim přiblížíš na
+        20 metrů a vyřešíš skládačku.
       </Description>
 
       <Next onPress={onNext} text="Dále" />
@@ -109,14 +109,16 @@ const TooltipStep2: FC<TooltipProps> = ({ onNext }) => (
 
 const TooltipStep3: FC<TooltipProps> = ({ onNext }) => (
   <>
-    <WizardWrapper className="left-[50%] absolute bottom-[30px] -translate-x-1/2">
+    <WizardWrapper className="left-[10px] absolute bottom-[30px]">
       <StepNumber>2/4</StepNumber>
 
       <Header>Moje sochy</Header>
-      <Description>Sem se sbírají sochy, které jsi ulovil/a.</Description>
+      <Description>
+        Tady najdeš sochy, které jsi ulovil/a, nebo které zbývá ulovit.
+      </Description>
       <Next onPress={onNext} text="Dále" />
     </WizardWrapper>
-    <WizardArrow className="bottom-[28px] left-[50%]" />
+    <WizardArrow className="bottom-[28px] left-[30%]" />
   </>
 );
 
@@ -125,13 +127,10 @@ const TooltipStep4: FC<TooltipProps> = ({ onNext }) => (
     <WizardWrapper className="left-[10px] absolute bottom-[30px]">
       <StepNumber>3/4</StepNumber>
       <Header>Vyhledávání</Header>
-      <Description>
-        Vyhledávat můžeš pomocí adresy a zároveň si zobrazit svojí aktuální
-        polohu.
-      </Description>
+      <Description>Vyhledávat můžeš podle adresy.</Description>
       <Next onPress={onNext} text="Dále" />
     </WizardWrapper>
-    <WizardArrow className="bottom-[28px] left-[30%]" />
+    <WizardArrow className="bottom-[28px] left-[13%]" />
   </>
 );
 
@@ -141,12 +140,11 @@ const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
       <StepNumber>4/4</StepNumber>
       <Header>Vyhledávání</Header>
       <Description>
-        Objevuj Brno z nového úhlu pohledu. Sbírej sochy a soutěž s ostatními v
-        počtu ulovených soch.
+        Tady si můžeš nastavit svůj profil anebo funkce aplikace.
       </Description>
       <Next onPress={onNext} text="Pustit se do lovu" />
     </WizardWrapper>
-    <WizardArrow className="bottom-[28px] right-[30%]" />
+    <WizardArrow className="bottom-[28px] right-[13%]" />
   </>
 );
 
