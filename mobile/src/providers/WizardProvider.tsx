@@ -1,6 +1,4 @@
-import { Session } from "@supabase/supabase-js";
 import { createContext, ReactNode, useContext, useState } from "react";
-import { SelectedStatueContext } from "./SelectedStatueProvider";
 import { LocationContext } from "./LocationProvider";
 import { DEFAULT_ZOOM } from "@/utils/constants";
 

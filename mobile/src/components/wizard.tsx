@@ -154,7 +154,7 @@ const Wizard = () => {
   const { step, setStep } = useContext(WizardProviderContext);
   if (step === null) return null;
   return (
-    <View className="absolute top-0 left-0 w-full h-full bg-[rgba(100,100,100,0.5)]">
+    <View className="absolute top-0 left-0 w-full h-full">
       {step === 1 && <TooltipStep1 onNext={() => setStep(2)} />}
       {step === 2 && <TooltipStep2 onNext={() => setStep(3)} />}
       {step === 3 && <TooltipStep3 onNext={() => setStep(4)} />}
