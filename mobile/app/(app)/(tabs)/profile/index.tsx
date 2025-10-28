@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import { useGetCollectedStatues } from "@/api/queries";
 import { useUserStatistics } from "@/hooks/useUserStatistics";
 import { ProfileDetail } from "@/components/ProfileDetail";
-import { track } from "@amplitude/analytics-react-native";
 
 const Profile = () => {
   const { userInfo } = useContext(UserInfoContext);
@@ -46,7 +45,7 @@ const Profile = () => {
           <Button
             variant="primary"
             title="Odhlásit se"
-            onPress={() => {
+            onPress={async () => {
               router.replace("/sign-out");
             }}
           />

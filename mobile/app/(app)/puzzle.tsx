@@ -20,7 +20,6 @@ const Puzzle: FC = () => {
   const statueId = Number(id);
   const statue = statues.find((statue) => statue.id === statueId);
   const state = useRootNavigationState();
-  const routeName = state.routes[state.routes.length - 1];
 
   const { refetch: refetchStatueIds } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();

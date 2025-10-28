@@ -1,63 +1,77 @@
-import { FC, useContext } from "react";
-import { View, Text, Pressable } from "react-native";
+import { FC } from "react";
+import { View } from "react-native";
 import { SearchIcon } from "./SearchIcon";
 import { CrownIcon } from "./CrownIcon";
 import { JostStatueIcon } from "./JostStatueIcon";
-import { MapIcon } from "./MapIcon";
 import { UserIcon } from "./UserIcon";
 import { NavigationButton } from "./NavigationButton";
-import { WizardProviderContext } from "@/providers/WizardProvider";
-import { tv } from "tailwind-variants";
+import { MyStatuesIcon } from "./MyStatuesIcon";
+import { cn } from "@/utils/cn";
 
-const wrapVariant = tv({
-  base: "absolute bottom-0 left-0 w-full h-[110px]",
-  variants: {
-    isTransparent: {
-      true: "opacity-50",
-      false: "opacity-100",
-    },
-  },
-});
+export type NavigationRoute =
+  | "/"
+  | "/search"
+  | "/my-statues"
+  | "/leaderboard"
+  | "/profile";
 
-export const Navigation: FC = () => {
-  const { step: wizardStep } = useContext(WizardProviderContext);
-  const showWizard = wizardStep !== null;
+type NavigationProps = {
+  onPress: (routeName: NavigationRoute) => void;
+  selectedRoute: NavigationRoute | null;
+  disabled?: boolean;
+  className?: string;
+};
+
+export const Navigation: FC<NavigationProps> = ({
+  onPress,
+  selectedRoute,
+  disabled,
+  className,
+}) => {
   return (
     <View
-      className={wrapVariant({
-        isTransparent: showWizard && wizardStep < 3,
-      })}
+      className={cn("absolute bottom-0 left-0 w-full h-[110px]", className)}
     >
       <View className="relative w-full h-0">
         <View className="absolute top-4 left-0 w-full h-[102px] bg-gray shadow-[0px_-2px_5px_0px_rgba(0,0,0,0.15)]"></View>
       </View>
       <View className="flex flex-row justify-between items-end px-7">
         <NavigationButton
-          disabled={showWizard}
-          label="Do mapy"
-          icon={MapIcon}
-          route="/"
-        />
-        <NavigationButton
-          disabled={showWizard}
-          route="/search"
+          disabled={disabled}
           label="Hledat"
+          onPress={() => onPress("/search")}
           icon={SearchIcon}
+          isActive={selectedRoute === "/search"}
         />
         <NavigationButton
-          disabled={showWizard}
-          route="/my-statues"
+          disabled={disabled}
           label="Moje sochy"
-          icon={JostStatueIcon}
-          accent
+          icon={MyStatuesIcon}
+          onPress={() => onPress("/my-statues")}
+          isActive={selectedRoute === "/my-statues"}
         />
         <NavigationButton
-          disabled={showWizard}
-          route="/leaderboard"
+          disabled={disabled}
+          label="Do mapy"
+          icon={JostStatueIcon}
+          onPress={() => onPress("/")}
+          accent
+          isActive={selectedRoute === "/"}
+        />
+        <NavigationButton
+          disabled={disabled}
           label="Leaderboard"
           icon={CrownIcon}
+          onPress={() => onPress("/leaderboard")}
+          isActive={selectedRoute === "/leaderboard"}
         />
-        <NavigationButton route="/profile" label="Profil" icon={UserIcon} />
+        <NavigationButton
+          disabled={disabled}
+          label="Profil"
+          icon={UserIcon}
+          onPress={() => onPress("/profile")}
+          isActive={selectedRoute === "/profile"}
+        />
       </View>
     </View>
   );
