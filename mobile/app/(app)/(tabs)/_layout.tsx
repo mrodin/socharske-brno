@@ -19,28 +19,11 @@ const getRootPath = (pathname: string): string => {
   return segments.length > 0 ? `/${segments[0]}` : "/";
 };
 
-// For now Tablist is hidden, since it's impossible to style it properly
-// You still need define route here to make it work
-// Navigation is fully styled and using router.navigate to navigate
 export default function Layout() {
   const { userInfo } = useContext(UserInfoContext);
   const wizard = useContext(WizardProviderContext);
 
   const pathName = usePathname();
-
-  if (!userInfo) {
-    return <LoadingScreen />;
-  }
-
-  // If user has no username, show sign-up screen
-  if (userInfo && !userInfo.username) {
-    return <SignUp />;
-  }
-
-  // Show wizard if it's active
-  if (wizard.step !== null) {
-    return <Wizard />;
-  }
 
   const handlePressMenu = (route: NavigationRoute) => {
     const isRoot = route === "/";
@@ -57,6 +40,20 @@ export default function Layout() {
     }
   };
 
+  if (!userInfo) {
+    return <LoadingScreen />;
+  }
+
+  // If user has no username, show sign-up screen
+  if (userInfo && !userInfo.username) {
+    return <SignUp />;
+  }
+
+  // Show wizard if it's active
+  if (wizard.step !== null) {
+    return <Wizard />;
+  }
+
   return (
     <Tabs>
       <View className={`w-full h-full pb-[${NAVIGATION_HEIGHT}px]`}>
@@ -66,7 +63,12 @@ export default function Layout() {
         onPress={handlePressMenu}
         selectedRoute={getRootPath(pathName) as NavigationRoute}
       />
-      <TabList style={{ display: "none" }}>
+      {/*
+        For now Tablist is hidden, since it's impossible to style it properly
+        You still need define route here to make it work
+        Navigation is fully styled and using router.navigate to navigate
+      */}
+      <TabList>
         <TabTrigger name="home" href="/" />
         <TabTrigger name="leaderboard" href="/leaderboard" />
         <TabTrigger name="my-statues" href="/my-statues" />
