@@ -214,3 +214,94 @@ export function useUserInfo() {
 
   return { userInfo, loading, updateProfile };
 }
+
+export function useUserInfo() {
+  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const { session } = useContext(UserSessionContext);
+
+  useEffect(() => {
+    if (session) getProfile();
+  }, [session]);
+
+  async function getProfile() {
+    try {
+      setLoading(true);
+      if (!session?.user) throw new Error("No user on the session!");
+
+      const { data, error, status } = await supabase
+        .from("profiles")
+        .select(`username, avatar_url`)
+        .eq("id", session?.user.id)
+        .single();
+      if (error && status !== 406) {
+        throw error;
+      }
+
+      if (data) {
+        setUserInfo({
+          username: data.username,
+          avatarUrl: data.avatar_url,
+          email: session?.user?.email || "",
+          provider: session.user.app_metadata.provider,
+          id: session.user.id,
+        });
+
+        if (session?.user.user_metadata?.avatar_url && !data.avatar_url) {
+          // set provider avatar_url if not set
+          await updateProfile({
+            avatar_url: session?.user.user_metadata.avatar_url,
+          });
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateProfile({
+    username,
+    avatar_url,
+  }: {
+    username?: string;
+    avatar_url?: string;
+  }) {
+    try {
+      setLoading(true);
+      if (!session?.user) throw new Error("No user on the session!");
+
+      const updates = {
+        id: session?.user.id,
+        username: username ?? userInfo?.username,
+        avatar_url: avatar_url ?? userInfo?.avatarUrl,
+        updated_at: new Date(),
+      };
+
+      const { error } = await supabase.from("profiles").upsert(updates);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+      console.log("Error", error);
+    } finally {
+      setUserInfo({
+        ...userInfo,
+        email: userInfo?.email || "",
+        username: username ?? userInfo?.username ?? "",
+        avatarUrl: avatar_url ?? userInfo?.avatarUrl ?? "",
+        id: userInfo?.id || "",
+      });
+      setLoading(false);
+    }
+  }
+
+  return { userInfo, loading, updateProfile };
+}
