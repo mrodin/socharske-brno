@@ -32,7 +32,7 @@ export default function Layout() {
     return <LoadingScreen />;
   }
 
-  // If user has no username, redirect to sign-up screen
+  // If user has no username, show sign-up screen
   if (userInfo && !userInfo.username) {
     return <SignUp />;
   }
