@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { supabase } from "@/utils/supabase";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import { track } from "@amplitude/analytics-react-native";
+import { LoadingScreen } from "@/screens/LoadingScreen";
 
 const Signout = () => {
   const navigation = useNavigation();
@@ -24,7 +25,7 @@ const Signout = () => {
     };
     signOut();
   }, []);
-  return <View className="bg-gray w-full h-full"></View>;
+  return <LoadingScreen />;
 };
 
 export default Signout;

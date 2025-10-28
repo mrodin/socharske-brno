@@ -1,19 +1,20 @@
 import * as Font from "expo-font";
-import { Stack, useGlobalSearchParams, usePathname } from "expo-router";
+import {
+  Slot,
+  useGlobalSearchParams,
+  usePathname,
+  useRouter,
+  useSegments,
+} from "expo-router";
 import { FC, useEffect } from "react";
 import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { init, track } from "@amplitude/analytics-react-native";
 
-import { UserSessionProvider } from "@/providers/UserSession";
-import { UserInfoProvider } from "@/providers/UserInfo";
-import { UserAvatarProvider } from "@/providers/UserAvatar";
+import { UserSessionContext } from "@/providers/UserSession";
 import "../global.css";
-import AuthRedirect from "@/components/AuthRedirect";
-import { LocationProvider } from "@/providers/LocationProvider";
-import { SelectedStatueProvider } from "@/providers/SelectedStatueProvider";
-import { LoadingProvider } from "@/providers/LoadingProvider";
-import { WizardProvider } from "@/providers/WizardProvider";
+import { useUserSession } from "@/hooks/useUserSession";
+import { LoadingScreen } from "@/screens/LoadingScreen";
 
 const useAnalytics = () => {
   useEffect(() => {
@@ -39,6 +40,9 @@ const queryClient = new QueryClient();
 const RootLayout: FC = () => {
   const pathname = usePathname();
   const params = useGlobalSearchParams();
+  const router = useRouter();
+  const segments = useSegments();
+  const { user, loading, session, setSession } = useUserSession();
 
   useAnalytics();
 
@@ -53,47 +57,36 @@ const RootLayout: FC = () => {
     track("Page View", { pathname, params });
   }, [pathname, params]);
 
+  useEffect(() => {
+    if (loading) return;
+
+    if (pathname === "/") {
+      if (user) {
+        router.replace("/(app)/(tabs)");
+      } else {
+        router.replace("/auth");
+      }
+    }
+    const inAuthGroup = segments[0] === "auth";
+    if (!user && !inAuthGroup) {
+      // Redirect to auth if not authenticated
+      router.replace("/auth");
+    } else if (user && inAuthGroup) {
+      // Redirect to app if authenticated
+      router.replace("/(app)/(tabs)");
+    }
+  }, [user, loading, segments, router]);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <UserSessionProvider>
+    <UserSessionContext.Provider value={{ loading, session, setSession }}>
       <QueryClientProvider client={queryClient}>
-        <LoadingProvider>
-          <UserInfoProvider>
-            <AuthRedirect>
-              <UserAvatarProvider>
-                <LocationProvider>
-                  <SelectedStatueProvider>
-                    <WizardProvider>
-                      <Stack>
-                        <Stack.Screen
-                          name="(tabs)"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="auth"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="sign-out"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="sign-up"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="puzzle"
-                          options={{ headerShown: false }}
-                        />
-                      </Stack>
-                    </WizardProvider>
-                  </SelectedStatueProvider>
-                </LocationProvider>
-              </UserAvatarProvider>
-            </AuthRedirect>
-          </UserInfoProvider>
-        </LoadingProvider>
+        <Slot />
       </QueryClientProvider>
-    </UserSessionProvider>
+    </UserSessionContext.Provider>
   );
 };
 

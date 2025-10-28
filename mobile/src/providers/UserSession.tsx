@@ -1,14 +1,15 @@
 import { Session } from "@supabase/supabase-js";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
+import { LoadingScreen } from "@/screens/LoadingScreen";
 
 export const UserSessionContext = createContext<{
   session: Session | null;
-  isAuthenticating: boolean;
+  loading: boolean;
   setSession: (session: Session | null) => void;
 }>({
   session: null,
-  isAuthenticating: true,
+  loading: true,
   setSession: () => {},
 });
 
@@ -29,7 +30,7 @@ export function UserSessionProvider({ children }: { children: ReactNode }) {
 
   return (
     <UserSessionContext.Provider
-      value={{ isAuthenticating, session, setSession }}
+      value={{ loading: isAuthenticating, session, setSession }}
     >
       {children}
     </UserSessionContext.Provider>
