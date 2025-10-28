@@ -3,22 +3,20 @@ import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { useContext, useState } from "react";
 import { Button } from "@/components/Button";
 import { UserInfoContext } from "@/providers/UserInfo";
-import { router } from "expo-router";
 import { WizardProviderContext } from "@/providers/WizardProvider";
 import { track } from "@amplitude/analytics-react-native";
 const SignUp = () => {
   const { updateProfile } = useContext(UserInfoContext);
-  const { setStep: setWizardStep } = useContext(WizardProviderContext);
+  const { show: showWizard } = useContext(WizardProviderContext);
 
   const [username, setUsername] = useState("");
 
   const handleSaveUsername = async () => {
+    showWizard();
     track("Sign Up", { username });
     await updateProfile({
       username,
     });
-    router.push("/(app)/(tabs)");
-    setWizardStep(1);
   };
 
   return (
