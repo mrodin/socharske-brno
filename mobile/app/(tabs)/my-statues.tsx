@@ -1,11 +1,15 @@
-import { FC, useContext, useMemo } from "react";
-import { SafeAreaView, View, Text, SectionList } from "react-native";
+import { FC, useContext, useMemo, useState } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Pressable,
+  VirtualizedList,
+} from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
 
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
-import { Label } from "@/components/Label";
-import { Title } from "@/components/Title";
 import { UserTag } from "@/components/UserTag";
 import { RouteHeader } from "@/components/RouteHeader";
 import { calculateDistance } from "@/utils/math";
@@ -16,6 +20,7 @@ import { LocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
 import { DEFAULT_ZOOM } from "@/utils/constants";
 import { track } from "@amplitude/analytics-react-native";
+import { cn } from "@/utils/cn";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -26,27 +31,18 @@ type StatueListItem = {
   distance: number;
 };
 
-type SectionData = {
-  title: string;
-  count: number;
-  data: StatueListItem[];
-};
-
 const MyStatues: FC = () => {
   const { data: statues = [] } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
   const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
   const { setSearchRegion } = useContext(LocationContext);
+  const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
 
-  const findStatueById = (id: number) => {
-    const statue = statues.find((statue) => statue.id === id);
-    if (!statue) {
-      track("Statue Not Found", { statue_id: id });
-      throw new Error(`Statue with id ${id} not found`);
-    }
-    return statue;
-  };
+  const findStatueById = useMemo(() => {
+    const statueMap = new Map(statues.map((statue) => [statue.id, statue]));
+    return (id: number): Statue | undefined => statueMap.get(id);
+  }, [statues]);
 
   // Handler for navigating to a statue on the map
   const handleNavigateToStatue = (statue: Statue | null) => {
@@ -67,13 +63,22 @@ const MyStatues: FC = () => {
     if (statues.length === 0) {
       return [];
     }
-    return collectedStatues.map((collectedStatue) => ({
-      ...collectedStatue,
-      isCollected: true,
-      distance: 0,
-      statueInfo: findStatueById(collectedStatue.statue_id),
-    }));
-  }, [statues, collectedStatues]);
+    return collectedStatues
+      .map((collectedStatue) => {
+        const statueInfo = findStatueById(collectedStatue.statue_id);
+        if (!statueInfo) {
+          track("Statue Not Found", { statue_id: collectedStatue.statue_id });
+          return null;
+        }
+        return {
+          ...collectedStatue,
+          isCollected: true,
+          distance: 0,
+          statueInfo,
+        };
+      })
+      .filter((item): item is StatueListItem => item !== null);
+  }, [statues, collectedStatues, findStatueById]);
 
   const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
     if (statues.length === 0) {
@@ -101,52 +106,50 @@ const MyStatues: FC = () => {
       .sort((a, b) => a.distance - b.distance);
   }, [statues, collectedStatues, location?.coords]);
 
-  // Create sections for SectionList
-  const sections: SectionData[] = useMemo(
-    () => [
-      {
-        title: "Moje sochy",
-        count: collectedStatuesList.length,
-        data: collectedStatuesList,
-      },
-      {
-        title: "Zbývá ulovit",
-        count: undiscoveredStatues.length,
-        data: undiscoveredStatues,
-      },
-    ],
-    [collectedStatuesList, undiscoveredStatues]
-  );
-
   return (
-    <SafeAreaView className="bg-gray h-full">
+    <SafeAreaView className="bg-gray h-full pb-[96px]">
       <RouteHeader route="Moje sochy" />
       <View className="flex flex-row justify-between items-center px-4 mb-4">
         <UserTag />
       </View>
+      <View className="flex flex-row pt-4 pb-0">
+        <TabButton
+          label={`Zbývá ulovit (${undiscoveredStatues.length})`}
+          isActive={tab === "undiscovered"}
+          onPress={() => setTab("undiscovered")}
+        />
 
-      <SectionList
-        sections={sections}
-        keyExtractor={(item) => item.statueInfo.id.toString()}
-        renderItem={({ item }) =>
-          item.isCollected ? (
-            <CollectedStatueItem
-              item={item}
-              onNavigate={handleNavigateToStatue}
-            />
-          ) : (
-            <UndiscoveredStatueItem
-              item={item}
-              onNavigate={handleNavigateToStatue}
-            />
-          )
-        }
-        renderSectionHeader={({ section }) => (
-          <SectionHeader section={section} />
-        )}
-        contentContainerStyle={{ paddingHorizontal: 18, gap: 4 }}
-        stickySectionHeadersEnabled={true}
-      />
+        <TabButton
+          label={`Moje sochy (${collectedStatuesList.length})`}
+          isActive={tab === "collected"}
+          onPress={() => setTab("collected")}
+        />
+      </View>
+      <View className="flex-1">
+        <VirtualizedList
+          data={
+            tab === "undiscovered" ? undiscoveredStatues : collectedStatuesList
+          }
+          getItem={(data, index) => data[index]}
+          renderItem={({ item, index }) => (
+            <View className={cn("px-4", index === 0 && "mt-4")}>
+              {tab === "undiscovered" ? (
+                <UndiscoveredStatueItem
+                  item={item}
+                  onNavigate={handleNavigateToStatue}
+                />
+              ) : (
+                <CollectedStatueItem
+                  item={item}
+                  onNavigate={handleNavigateToStatue}
+                />
+              )}
+            </View>
+          )}
+          getItemCount={(data) => data?.length || 0}
+          keyExtractor={(item) => `${item.statue_id}`}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -187,11 +190,33 @@ const UndiscoveredStatueItem: FC<{
   />
 );
 
-// Section header component
-const SectionHeader: FC<{ section: SectionData }> = ({ section }) => (
-  <View className="flex flex-row gap-3 items-center py-3 bg-gray">
-    <Title>{section.title}</Title>
-    <Label>{section.count}</Label>
+const TabButton: FC<{
+  label: string;
+  isActive: boolean;
+  onPress: () => void;
+}> = ({ label, isActive, onPress }) => (
+  <View
+    className={cn(
+      "flex-1 items-center relative",
+      isActive
+        ? "border-b-4 border-red-light"
+        : "border-b-[1px] border-gray-light"
+    )}
+  >
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: isActive }}
+    >
+      <Text
+        className={cn(
+          "pb-2",
+          isActive ? "text-red-light font-bold" : "text-gray-pale"
+        )}
+      >
+        {label}
+      </Text>
+    </Pressable>
   </View>
 );
 
