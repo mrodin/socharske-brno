@@ -93,6 +93,7 @@ export const Puzzle: React.FC<PuzzleProps> = ({
               data={data}
               updatePuzzleData={updatePuzzleData}
               imageBase64={imageBase64}
+              progress={progress}
             />
           </Animated.View>
           <View style={{ width: puzzleSize }} className="-mt-1">
