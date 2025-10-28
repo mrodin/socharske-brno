@@ -3,7 +3,7 @@ import {
   NavigationRoute,
 } from "@/components/navigation/Navigation";
 import { View } from "react-native";
-import WizardComponent from "@/components/wizard";
+import WizardComponent from "@/components/WizardSteps";
 import { Map } from "@/components/Map";
 import { useContext } from "react";
 import { WizardProviderContext } from "@/providers/WizardProvider";
