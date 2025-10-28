@@ -24,6 +24,5 @@ export const stackScreenOptions = {
   },
   contentStyle: {
     backgroundColor: "#393939",
-    paddingBottom: 96, // to match the bottom navigation height
   },
 } as const;
