@@ -176,7 +176,7 @@ export const Map: FC = () => {
       <GpsButton
         onPress={() => {
           track("Gps Button Click");
-          goToRegion(searchRegion);
+          goToRegion(region);
         }}
       />
     </View>
