@@ -92,11 +92,10 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
 
   return (
     <DraggableGrid
-      delayLongPress={100}
       numColumns={NUM_COLUMNS}
       renderItem={renderItem}
       data={data}
-      delayLongPress={75}
+      delayLongPress={0}
       onDragRelease={(newData) => {
         updatePuzzleData(newData);
       }}
