@@ -24,7 +24,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: "com.kulturnilenochodi.socharske-brno",
     icon: "./assets/icon.png",
     config: {
-      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+      googleMapsApiKey: process.env.EXPO_PUBLIC_IOS_GOOGLE_MAPS_API_KEY,
     },
     supportsTablet: true,
     usesAppleSignIn: true,

@@ -8,10 +8,8 @@ import { setUserId, track } from "@amplitude/analytics-react-native";
 export const googleAuth = async () => {
   GoogleSignin.configure({
     scopes: [],
-    webClientId:
-      "865962598053-fg140kggdgaa2q9039gjjroq5ctqn4lp.apps.googleusercontent.com", // 👉 z "Web" OAuth clienta v Google Cloud Console
-    iosClientId:
-      "865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c.apps.googleusercontent.com",
+    webClientId: process.env.EXPO_PUBLIC_ANDROID_GOOGLE_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_IOS_GOOGLE_CLIENT_ID,
   });
   try {
     await GoogleSignin.hasPlayServices();

@@ -27,13 +27,34 @@ npm start
    following variables:
 
 ```
-EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=<<GOOGLE_MAPS_API_KEY>>
+EXPO_PUBLIC_IOS_GOOGLE_MAPS_API_KEY=<<GOOGLE_MAPS_API_KEY>>
 EXPO_PUBLIC_ANDROID_GOOGLE_MAPS_API_KEY=<<GOOGLE_ANDROID_API_KEY>>
 EXPO_PUBLIC_NEARBY_PLACES_API=<<NEARBY_PLACES_API_KEY>>
 EXPO_PUBLIC_SUPABASE_ANON_KEY=<<SUPABASE_ANON_KEY>>
 EXPO_PUBLIC_SUPABASE_URL=<<SUPABASE_URL>>
 EXPO_PUBLIC_AMPLITUDE_API_KEY=<<AMPLITUDE_API_KEY>>
 EXPO_PUBLIC_AMPLITUDE_USER_ID=<<AMPLITUDE_USER_ID>>
+```
+
+````
+
+### Android Studio
+
+1. Install Android Studio from (on MacOS `brew install --cask android-studio`)
+2. Open Android Studio and accept the setup wizard to install the necessary SDKs and tools. You should see Welcome to Android Studio window.
+3. Follow instructions of Expo setup https://docs.expo.dev/workflow/android-studio-emulator/
+4. Create a build by running `npm run android` (it's necessary to run this command at least once to download required dependencies `npm start` alone is not enough)
+
+### macOS used commands
+```bash
+brew install --cask android-studio
+brew install --cask zulu@17
+brew install watchman
+echo "export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home" >> ~/.bash_profile # or ~/.zshrc
+echo "export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+" >> ~/.bash_profile # or ~/.zshrc
 ```
 
 ## Structure
@@ -58,3 +79,4 @@ EXPO_PUBLIC_AMPLITUDE_USER_ID=<<AMPLITUDE_USER_ID>>
 - Naming Conventions: Use consistent naming conventions for files and components to improve readability.
 - Scalability: Structure your code to accommodate future growth.
 - Third-Party Libraries: Additional folders or files might be associated with third-party libraries you use.
+````
