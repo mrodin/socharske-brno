@@ -17,7 +17,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const results = [];
 
-fs.createReadStream("statues_final.csv")
+fs.createReadStream("./data/statues_20251109.csv")
   .pipe(csv())
   .on("data", (data) => results.push(data))
   .on("end", async () => {
@@ -26,19 +26,20 @@ fs.createReadStream("statues_final.csv")
 
     for (const result of results) {
       const row = {
-        name: result.nazev,
-        lng: parseFloat(result.x),
-        lat: parseFloat(result.y),
-        visible: true,
-        description: convertEmptyStringToNull(result.popis_objektu),
+        id: parseInt(result.id, 10),
+        name: result.name,
+        lng: parseFloat(result.lng),
+        lat: parseFloat(result.lat),
+        visible: convertStringToBoolean(result.visible),
+        description: convertEmptyStringToNull(result.description),
         material: convertEmptyStringToNull(result.material),
-        type: convertEmptyStringToNull(result.typ),
-        category: convertEmptyStringToNull(result.druh),
-        author: convertEmptyStringToNull(result.autor_dila),
-        year: convertEmptyStringToNull(result.rok_vytvoreni),
-        place: convertEmptyStringToNull(result.umisteni),
-        wiki_url: convertEmptyStringToNull(result.url_odkaz_enc),
-        image_url: convertEmptyStringToNull(result.obr_id1),
+        type: convertEmptyStringToNull(result.type),
+        category: convertEmptyStringToNull(result.category),
+        author: convertEmptyStringToNull(result.author),
+        year: convertEmptyStringToNull(result.year),
+        place: convertEmptyStringToNull(result.place),
+        wiki_url: convertEmptyStringToNull(result.wiki_url),
+        image_url: convertEmptyStringToNull(result.image_url),
       };
 
       // Using upsert with name as the unique identifier to match existing records
@@ -66,4 +67,12 @@ const convertEmptyStringToNull = (value) => {
   }
 
   return value;
+};
+
+const convertStringToBoolean = (value) => {
+  if (value === "true") {
+    return true;
+  }
+
+  return false;
 };
