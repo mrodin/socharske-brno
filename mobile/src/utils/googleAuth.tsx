@@ -8,6 +8,8 @@ import { setUserId, track } from "@amplitude/analytics-react-native";
 export const googleAuth = async () => {
   GoogleSignin.configure({
     scopes: [],
+    webClientId:
+      "865962598053-fg140kggdgaa2q9039gjjroq5ctqn4lp.apps.googleusercontent.com", // 👉 z "Web" OAuth clienta v Google Cloud Console
     iosClientId:
       "865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c.apps.googleusercontent.com",
   });
@@ -27,7 +29,6 @@ export const googleAuth = async () => {
         setUserId(user?.id);
         track("Login Success", { method: "Google", userId: user?.id });
         // User is signed in.
-        console.log("User signed in", user);
       } else {
         track("Login Failed", { method: "Google", error: error.message });
         console.error("Error during Google sign-in", error);

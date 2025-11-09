@@ -43,7 +43,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
-    package: "com.anonymous.mobile",
+    config: {
+      googleMaps: {
+        apiKey: process.env.EXPO_PUBLIC_ANDROID_GOOGLE_MAPS_API_KEY,
+      },
+    },
+    package: "com.kulturnilenochodi.socharskebrno",
   },
   web: {
     favicon: "./assets/favicon.png",

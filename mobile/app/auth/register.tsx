@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, Platform, Text, View } from "react-native";
 import * as Linking from "expo-linking";
 import { track } from "@amplitude/analytics-react-native";
 
@@ -72,11 +72,13 @@ const AuthRegister = () => {
           onPress={signUpWithEmail}
         />
         <Text className="text-white text-center">nebo</Text>
-        <Button
-          onPress={appleAuth}
-          icon={<AppleIcon />}
-          title="Registrovat se přes Apple"
-        />
+        {Platform.OS === "ios" && (
+          <Button
+            onPress={appleAuth}
+            icon={<AppleIcon />}
+            title="Registrovat se přes Apple"
+          />
+        )}
         <Button
           onPress={googleAuth}
           icon={<GoogleIcon className="top-[2px]" />}
