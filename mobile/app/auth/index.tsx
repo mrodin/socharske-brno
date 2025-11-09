@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { track } from "@amplitude/analytics-react-native";
 
 import { Button } from "@/components/Button";
@@ -31,11 +31,13 @@ const Auth = () => {
         PŘIHLÁSIT SE
       </Text>
       <View className="gap-4">
-        <Button
-          onPress={appleAuth}
-          icon={<AppleIcon className="top-[2px]" />}
-          title="Přihlásit se přes Apple"
-        />
+        {Platform.OS === "ios" && (
+          <Button
+            onPress={appleAuth}
+            icon={<AppleIcon className="top-[2px]" />}
+            title="Přihlásit se přes Apple"
+          />
+        )}
         <Button
           onPress={googleAuth}
           icon={<GoogleIcon className="top-[2px]" />}
