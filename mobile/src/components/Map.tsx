@@ -175,8 +175,15 @@ export const Map: FC = () => {
       </MapView>
       <GpsButton
         onPress={() => {
-          track("Gps Button Click");
-          goToRegion(region);
+          if (userLocation) {
+            track("Gps Button Click");
+            const userRegion = {
+              ...userLocation,
+              latitudeDelta: DEFAULT_ZOOM,
+              longitudeDelta: DEFAULT_ZOOM,
+            };
+            goToRegion(userRegion);
+          }
         }}
       />
     </View>
