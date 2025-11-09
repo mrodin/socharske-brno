@@ -13,11 +13,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
-  splash: {
-    image: "./assets/splash.png",
-    resizeMode: "contain",
-    backgroundColor: "#303030",
-  },
   assetBundlePatterns: ["**/*"],
   ios: {
     buildNumber: "10",
@@ -41,7 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: "./assets/icon.png",
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
-      backgroundColor: "#ffffff",
+      backgroundColor: "#DF3F34",
     },
     config: {
       googleMaps: {
@@ -62,6 +57,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         iosUrlScheme:
           "com.googleusercontent.apps.865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c",
+      },
+    ],
+    [
+      "expo-splash-screen",
+      {
+        ios: {
+          backgroundColor: "#393939",
+          image: "./assets/splash.png",
+          resizeMode: "cover",
+        },
+        android: {
+          backgroundColor: "#393939",
+          image: "./assets/android-splash-icon.png",
+          imageWidth: 130,
+        },
       },
     ],
   ],
