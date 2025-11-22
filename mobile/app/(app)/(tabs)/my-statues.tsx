@@ -18,9 +18,9 @@ import { useLocation } from "@/hooks/useLocation";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { LocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
-import { DEFAULT_ZOOM } from "@/utils/constants";
 import { track } from "@amplitude/analytics-react-native";
 import { cn } from "@/utils/cn";
+import { getThumbnailUrl } from "@/utils/images";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -32,40 +32,30 @@ type StatueListItem = {
 };
 
 const MyStatues: FC = () => {
-  const { data: statues = [] } = useGetAllStatues();
+  const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
   const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
-  const { setSearchRegion } = useContext(LocationContext);
+  const { animateToRegion } = useContext(LocationContext);
   const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
-
-  const findStatueById = useMemo(() => {
-    const statueMap = new Map(statues.map((statue) => [statue.id, statue]));
-    return (id: number): Statue | undefined => statueMap.get(id);
-  }, [statues]);
 
   // Handler for navigating to a statue on the map
   const handleNavigateToStatue = (statue: Statue | null) => {
     track("Navigate to Statue", { statue_id: statue?.id, page: "My Statues" });
-    router.navigate("/");
     setSelectedStatue(statue);
     if (statue) {
-      setSearchRegion({
-        latitude: statue.lat,
-        longitude: statue.lng,
-        latitudeDelta: DEFAULT_ZOOM,
-        longitudeDelta: DEFAULT_ZOOM,
-      });
+      router.navigate("/");
+      animateToRegion({ latitude: statue.lat, longitude: statue.lng });
     }
   };
 
   const collectedStatuesList = useMemo<StatueListItem[]>(() => {
-    if (statues.length === 0) {
+    if (Object.keys(statueMap).length === 0) {
       return [];
     }
     return collectedStatues
       .map((collectedStatue) => {
-        const statueInfo = findStatueById(collectedStatue.statue_id);
+        const statueInfo = statueMap[collectedStatue.statue_id];
         if (!statueInfo) {
           track("Statue Not Found", { statue_id: collectedStatue.statue_id });
           return null;
@@ -77,17 +67,17 @@ const MyStatues: FC = () => {
           statueInfo,
         };
       })
-      .filter((item): item is StatueListItem => item !== null);
-  }, [statues, collectedStatues, findStatueById]);
+      .filter((statue): statue is StatueListItem => statue !== null);
+  }, [statueMap, collectedStatues]);
 
   const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
-    if (statues.length === 0) {
+    if (Object.keys(statueMap).length === 0) {
       return [];
     }
     const collectedIds = new Set(collectedStatues.map((cs) => cs.statue_id));
 
-    return statues
-      .filter((statue) => !collectedIds.has(statue.id))
+    return Object.values(statueMap)
+      .filter((statue) => statue.visible && !collectedIds.has(statue.id))
       .map((statue) => ({
         isCollected: false,
         statue_id: statue.id,
@@ -104,7 +94,7 @@ const MyStatues: FC = () => {
           : 0,
       }))
       .sort((a, b) => a.distance - b.distance);
-  }, [statues, collectedStatues, location?.coords]);
+  }, [statueMap, collectedStatues, location?.coords]);
 
   return (
     <SafeAreaView className="bg-gray h-full">
@@ -135,12 +125,12 @@ const MyStatues: FC = () => {
             <View className={cn("px-4", index === 0 && "mt-4")}>
               {tab === "undiscovered" ? (
                 <UndiscoveredStatueItem
-                  item={item}
+                  statue={item}
                   onNavigate={handleNavigateToStatue}
                 />
               ) : (
                 <CollectedStatueItem
-                  item={item}
+                  statue={item}
                   onNavigate={handleNavigateToStatue}
                 />
               )}
@@ -156,35 +146,33 @@ const MyStatues: FC = () => {
 
 // Component to render collected statue entry
 const CollectedStatueItem: FC<{
-  item: StatueListItem;
+  statue: StatueListItem;
   onNavigate: (statue: Statue) => void;
-}> = ({ item, onNavigate }) => (
+}> = ({ statue, onNavigate }) => (
   <StatueEntry
-    onPress={() => onNavigate(item.statueInfo)}
+    name={statue.statueInfo.name}
+    onPress={() => onNavigate(statue.statueInfo)}
+    score={statue.value}
+    subtitle={format(new Date(statue.created_at), "dd.MM.yyyy")}
+    thumbnailUrl={getThumbnailUrl(statue.statueInfo.id, 96)}
     variant="primary"
-    name={item.statueInfo.name}
-    thumbnail={
-      item.statueInfo.image_url ? { uri: item.statueInfo.image_url } : undefined
-    }
-    score={item.value}
-    subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
   />
 );
 
 // Component to render undiscovered statue entry
 const UndiscoveredStatueItem: FC<{
-  item: StatueListItem;
+  statue: StatueListItem;
   onNavigate: (statue: Statue) => void;
-}> = ({ item, onNavigate }) => (
+}> = ({ statue, onNavigate }) => (
   <StatueEntry
-    score={item.statueInfo.score}
-    onPress={() => onNavigate(item.statueInfo)}
+    score={statue.statueInfo.score}
+    onPress={() => onNavigate(statue.statueInfo)}
     variant="secondary"
     name="???"
     subtitle={
       <>
         vzdálenost{" "}
-        <Text className="font-bold">{item.distance.toFixed(2)}km</Text>
+        <Text className="font-bold">{statue.distance.toFixed(2)}km</Text>
       </>
     }
   />

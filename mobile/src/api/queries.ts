@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { UserSessionContext } from "../providers/UserSession";
 import { CollectedStatue, Statue } from "../types/statues";
@@ -18,7 +18,8 @@ const useSession = () => {
 export const useGetAllStatues = () => {
   const session = useSession();
 
-  return useQuery<Statue[], Error>({
+  return useQuery<Statue[], Error, Record<number, Statue>>({
+    initialData: [],
     queryKey: ["statues"],
     queryFn: () =>
       fetchWithAuth(
@@ -26,7 +27,14 @@ export const useGetAllStatues = () => {
         session.access_token,
         { method: "GET" }
       ),
-    initialData: [],
+    select: (data) =>
+      data.reduce(
+        (acc, statue) => {
+          acc[statue.id] = statue;
+          return acc;
+        },
+        {} as Record<number, Statue>
+      ),
   });
 };
 

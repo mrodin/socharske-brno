@@ -24,28 +24,28 @@ const statueEntryContainer = tv({
 
 type StatueEntryProps = {
   name: string;
-  thumbnail?: ImageSourcePropType;
-  subtitle: React.ReactNode;
   score: number;
+  subtitle: React.ReactNode;
   variant: "primary" | "secondary";
   onPress?: () => void;
+  thumbnailUrl?: string;
 };
 
 export const StatueEntry: FC<StatueEntryProps> = ({
   name,
-  thumbnail,
-  subtitle,
   score,
+  subtitle,
   variant = "primary",
   onPress,
+  thumbnailUrl,
 }) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View className={statueEntryContainer({ variant })}>
-        {thumbnail ? (
+        {thumbnailUrl ? (
           <Image
-            source={thumbnail}
             className="rounded-[50px] h-[54px] w-[54px]"
+            source={{ uri: thumbnailUrl }}
           />
         ) : (
           <View className="rounded-[50px] h-[54px] w-[54px] justify-center items-center bg-red-light">

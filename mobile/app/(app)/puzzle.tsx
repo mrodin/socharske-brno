@@ -6,20 +6,15 @@ import {
   useGetAllStatues,
   useGetCollectedStatues,
 } from "@/api/queries";
-import {
-  router,
-  useLocalSearchParams,
-  useRootNavigationState,
-} from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Puzzle as PuzzleGame } from "@/components/puzzle/Puzzle";
 import { GoBack } from "@/components/GoBack";
 
 const Puzzle: FC = () => {
-  const { data: statues = [] } = useGetAllStatues();
+  const { data: statueMap } = useGetAllStatues();
   const { id } = useLocalSearchParams<{ id: string }>();
   const statueId = Number(id);
-  const statue = statues.find((statue) => statue.id === statueId);
-  const state = useRootNavigationState();
+  const statue = statueMap[statueId];
 
   const { refetch: refetchStatueIds } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();

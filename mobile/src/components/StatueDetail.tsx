@@ -30,6 +30,7 @@ import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { useLocation } from "../hooks/useLocation";
 import { calculateDistance } from "../utils/math";
 import { UserInfoContext } from "@/providers/UserInfo";
+import { getThumbnailUrl } from "@/utils/images";
 
 const STATUE_DISTANCE_THRESHOLD_METERS = 20;
 
@@ -54,12 +55,16 @@ export const StatueDetail: FC = () => {
     router.navigate(`/puzzle?id=${selectedStatue.id}`);
   }, [selectedStatue]);
 
-  const imageUrl = `${process.env.EXPO_PUBLIC_IMAGES_STORAGE_URL}/${selectedStatue?.id}/thumb480/1.JPEG`;
+  const imageUrl = selectedStatue?.id
+    ? getThumbnailUrl(selectedStatue.id, 480)
+    : undefined;
 
-  const HandleWithImage = useCallback(
-    () => <Handle imageUrl={imageUrl} />,
-    [imageUrl]
-  );
+  const HandleWithImage = useCallback(() => {
+    if (!imageUrl) {
+      return null;
+    }
+    return <Handle imageUrl={imageUrl} />;
+  }, [imageUrl]);
 
   const isCollected = collectedStatues.some(
     (statue) => statue.statue_id === selectedStatue?.id
