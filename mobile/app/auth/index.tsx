@@ -11,6 +11,7 @@ import AuthWrap from "@/components/auth/Wrap";
 import { useRouter } from "expo-router";
 
 import { appleAuth } from "@/utils/appleAuth";
+import { IS_IOS } from "@/utils/platform";
 
 const Auth = () => {
   const router = useRouter();
@@ -31,11 +32,13 @@ const Auth = () => {
         PŘIHLÁSIT SE
       </Text>
       <View className="gap-4">
-        <Button
-          onPress={appleAuth}
-          icon={<AppleIcon className="top-[2px]" />}
-          title="Přihlásit se přes Apple"
-        />
+        {IS_IOS && (
+          <Button
+            onPress={appleAuth}
+            icon={<AppleIcon className="top-[2px]" />}
+            title="Přihlásit se přes Apple"
+          />
+        )}
         <Button
           onPress={googleAuth}
           icon={<GoogleIcon className="top-[2px]" />}

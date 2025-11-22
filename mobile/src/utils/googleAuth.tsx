@@ -8,8 +8,8 @@ import { setUserId, track } from "@amplitude/analytics-react-native";
 export const googleAuth = async () => {
   GoogleSignin.configure({
     scopes: [],
-    iosClientId:
-      "865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c.apps.googleusercontent.com",
+    webClientId: process.env.EXPO_PUBLIC_ANDROID_GOOGLE_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_IOS_GOOGLE_CLIENT_ID,
   });
   try {
     await GoogleSignin.hasPlayServices();
@@ -27,7 +27,6 @@ export const googleAuth = async () => {
         setUserId(user?.id);
         track("Login Success", { method: "Google", userId: user?.id });
         // User is signed in.
-        console.log("User signed in", user);
       } else {
         track("Login Failed", { method: "Google", error: error.message });
         console.error("Error during Google sign-in", error);
