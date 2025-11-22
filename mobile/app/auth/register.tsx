@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Platform, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import * as Linking from "expo-linking";
 import { track } from "@amplitude/analytics-react-native";
 
@@ -12,6 +12,7 @@ import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
 import { Link, router } from "expo-router";
 import { appleAuth } from "@/utils/appleAuth";
+import { IS_IOS } from "@/utils/platform";
 
 const AuthRegister = () => {
   const [email, setEmail] = useState("");
@@ -72,7 +73,7 @@ const AuthRegister = () => {
           onPress={signUpWithEmail}
         />
         <Text className="text-white text-center">nebo</Text>
-        {Platform.OS === "ios" && (
+        {IS_IOS && (
           <Button
             onPress={appleAuth}
             icon={<AppleIcon />}

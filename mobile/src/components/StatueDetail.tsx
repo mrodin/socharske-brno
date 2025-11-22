@@ -54,7 +54,7 @@ export const StatueDetail: FC = () => {
     router.navigate(`/puzzle?id=${selectedStatue.id}`);
   }, [selectedStatue]);
 
-  const imageUrl = `https://storage.googleapis.com/lovci-soch-images/${selectedStatue?.id}/thumb480/1.JPEG`;
+  const imageUrl = `${process.env.EXPO_PUBLIC_IMAGES_STORAGE_URL}/${selectedStatue?.id}/thumb480/1.JPEG`;
 
   const HandleWithImage = useCallback(
     () => <Handle imageUrl={imageUrl} />,

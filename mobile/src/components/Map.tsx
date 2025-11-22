@@ -23,6 +23,7 @@ import { calculateDistance, formatDistance } from "../utils/math";
 import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
+import { StatueWithDistance } from "@/types/statues";
 
 type EnhancedMapView = ClusteredMapView & {
   animateToRegion: (region: Region, duration: number) => void;
@@ -76,7 +77,7 @@ export const Map: FC = () => {
   );
 
   const onMapPointPress = useCallback(
-    (statue: any) => {
+    (statue: StatueWithDistance) => {
       setSelectedStatue(statue);
     },
     [setSelectedStatue]
@@ -164,7 +165,7 @@ export const Map: FC = () => {
               <Image
                 className="rounded-full h-16 w-16 border-2 border-red"
                 source={{
-                  uri: `https://storage.googleapis.com/lovci-soch-images/${statue.id}/thumb96/1.JPEG`,
+                  uri: `${process.env.EXPO_PUBLIC_IMAGES_STORAGE_URL}/${statue.id}/thumb96/1.JPEG`,
                 }}
               />
             ) : (
@@ -177,7 +178,6 @@ export const Map: FC = () => {
                         {formatDistance(statue.distance)}
                       </Text>
                     </View>
-                    <View className="w-0 h-0 bg-transparent border-solid border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-gray-lighter self-center -mt-px -z-10" />
                   </View>
                 ) : null}
               </View>

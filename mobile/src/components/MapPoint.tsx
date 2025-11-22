@@ -4,29 +4,17 @@ import { Marker as MapsMarker } from "react-native-maps";
 
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 import { formatDistance } from "@/utils/math";
-
-type StatueData = {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  distance?: number;
-  isCollected: boolean;
-  [key: string]: any;
-};
+import { StatueWithDistance } from "@/types/statues";
 
 type MapPointProps = {
-  statue: StatueData;
-  onPress: (statue: StatueData) => void;
+  statue: StatueWithDistance;
+  onPress: (statue: StatueWithDistance) => void;
 };
 
 export const MapPoint: FC<MapPointProps> = memo(
   ({ onPress, statue }) => {
-    const testRef = useRef(null);
-
     return (
       <MapsMarker
-        ref={testRef}
         coordinate={{
           latitude: statue.lat,
           longitude: statue.lng,
@@ -49,7 +37,7 @@ export const MapPoint: FC<MapPointProps> = memo(
 );
 
 type MarkerContentProps = {
-  statue: StatueData;
+  statue: StatueWithDistance;
 };
 
 const MarkerContent: FC<MarkerContentProps> = ({ statue }) => {
@@ -58,7 +46,7 @@ const MarkerContent: FC<MarkerContentProps> = ({ statue }) => {
       <Image
         className="rounded-full h-16 w-16 border-2 border-red"
         source={{
-          uri: `https://storage.googleapis.com/lovci-soch-images/${statue.id}/thumb96/1.JPEG`,
+          uri: `${process.env.EXPO_PUBLIC_IMAGES_STORAGE_URL}/${statue.id}/thumb96/1.JPEG`,
         }}
       />
     );

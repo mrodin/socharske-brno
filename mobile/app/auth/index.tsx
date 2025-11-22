@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { track } from "@amplitude/analytics-react-native";
 
 import { Button } from "@/components/Button";
@@ -11,6 +11,7 @@ import AuthWrap from "@/components/auth/Wrap";
 import { useRouter } from "expo-router";
 
 import { appleAuth } from "@/utils/appleAuth";
+import { IS_IOS } from "@/utils/platform";
 
 const Auth = () => {
   const router = useRouter();
@@ -31,7 +32,7 @@ const Auth = () => {
         PŘIHLÁSIT SE
       </Text>
       <View className="gap-4">
-        {Platform.OS === "ios" && (
+        {IS_IOS && (
           <Button
             onPress={appleAuth}
             icon={<AppleIcon className="top-[2px]" />}
