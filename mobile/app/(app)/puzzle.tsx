@@ -11,10 +11,10 @@ import { Puzzle as PuzzleGame } from "@/components/puzzle/Puzzle";
 import { GoBack } from "@/components/GoBack";
 
 const Puzzle: FC = () => {
-  const { data: statues = [] } = useGetAllStatues();
+  const { data: statueMap } = useGetAllStatues();
   const { id } = useLocalSearchParams<{ id: string }>();
   const statueId = Number(id);
-  const statue = statues[statueId];
+  const statue = statueMap[statueId];
 
   const { refetch: refetchStatueIds } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();

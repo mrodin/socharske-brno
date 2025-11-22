@@ -32,7 +32,7 @@ type StatueListItem = {
 };
 
 const MyStatues: FC = () => {
-  const { data: statues = [] } = useGetAllStatues();
+  const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
   const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
@@ -50,12 +50,12 @@ const MyStatues: FC = () => {
   };
 
   const collectedStatuesList = useMemo<StatueListItem[]>(() => {
-    if (Object.keys(statues).length === 0) {
+    if (Object.keys(statueMap).length === 0) {
       return [];
     }
     return collectedStatues
       .map((collectedStatue) => {
-        const statueInfo = statues[collectedStatue.statue_id];
+        const statueInfo = statueMap[collectedStatue.statue_id];
         if (!statueInfo) {
           track("Statue Not Found", { statue_id: collectedStatue.statue_id });
           return null;
@@ -68,15 +68,15 @@ const MyStatues: FC = () => {
         };
       })
       .filter((statue): statue is StatueListItem => statue !== null);
-  }, [statues, collectedStatues]);
+  }, [statueMap, collectedStatues]);
 
   const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
-    if (Object.keys(statues).length === 0) {
+    if (Object.keys(statueMap).length === 0) {
       return [];
     }
     const collectedIds = new Set(collectedStatues.map((cs) => cs.statue_id));
 
-    return Object.values(statues)
+    return Object.values(statueMap)
       .filter((statue) => statue.visible && !collectedIds.has(statue.id))
       .map((statue) => ({
         isCollected: false,
@@ -94,7 +94,7 @@ const MyStatues: FC = () => {
           : 0,
       }))
       .sort((a, b) => a.distance - b.distance);
-  }, [statues, collectedStatues, location?.coords]);
+  }, [statueMap, collectedStatues, location?.coords]);
 
   return (
     <SafeAreaView className="bg-gray h-full">

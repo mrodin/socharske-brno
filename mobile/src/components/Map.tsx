@@ -36,7 +36,7 @@ export const Map: FC = () => {
   // heading (compass direction) of the user
   const [userHeading, setUserHeading] = useState<number | undefined>(undefined);
 
-  const { data: statues } = useGetAllStatues();
+  const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
 
   const statuesPoints = useMemo(() => {
@@ -45,7 +45,7 @@ export const Map: FC = () => {
       collectedStatues.map((cs) => cs.statue_id)
     );
 
-    return Object.values(statues)
+    return Object.values(statueMap)
       .filter((statue) => statue.visible)
       .map((statue) => ({
         ...statue,
@@ -61,7 +61,7 @@ export const Map: FC = () => {
           : undefined,
         isCollected: collectedStatueIds.has(statue.id),
       }));
-  }, [collectedStatues, statues, userLocation]);
+  }, [collectedStatues, statueMap, userLocation]);
 
   const onMapPointPress = useCallback(
     (statue: StatueWithDistance) => {
