@@ -39,6 +39,8 @@ export const Map: FC = () => {
   const [userLocation, setUserLocation] = useState<
     Location.LocationObjectCoords | undefined
   >(undefined);
+  // heading (compass direction) of the user
+  const [userHeading, setUserHeading] = useState<number | undefined>(undefined);
   // region of the map (might not be centered on the user)
   const [region, setRegion] = useState<Region>(searchRegion);
 
@@ -102,9 +104,21 @@ export const Map: FC = () => {
     };
 
     Location.watchPositionAsync(
-      { accuracy: Location.Accuracy.High, timeInterval: 1000 },
+      {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 1000,
+        // Enable heading updates
+        distanceInterval: 0,
+      },
       (newLocation) => {
         setUserLocation(newLocation.coords);
+        // Update heading if available
+        if (
+          newLocation.coords.heading !== null &&
+          newLocation.coords.heading !== undefined
+        ) {
+          setUserHeading(newLocation.coords.heading);
+        }
       }
     );
 
@@ -142,10 +156,13 @@ export const Map: FC = () => {
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
             }}
+            anchor={{ x: 0.5, y: 0.5 }}
+            rotation={userHeading || 0}
+            flat={true}
           >
             <Image
-              className="w-12 h-12"
-              source={require("../../assets/current-location-marker.png")}
+              className="w-[60px] h-[60px]"
+              source={require("../../assets/current-location.png")}
             />
           </Marker>
         )}
