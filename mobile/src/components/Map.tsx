@@ -22,6 +22,7 @@ import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 import { StatueWithDistance } from "@/types/statues";
+import { getThumbnailUrl } from "@/utils/images";
 
 export const Map: FC = () => {
   const { animateToRegion, initialRegion, mapRef } =
@@ -156,9 +157,7 @@ export const Map: FC = () => {
             {statue.isCollected ? (
               <Image
                 className="rounded-full h-16 w-16 border-2 border-red"
-                source={{
-                  uri: `${process.env.EXPO_PUBLIC_IMAGES_STORAGE_URL}/${statue.id}/thumb96/1.JPEG`,
-                }}
+                source={{ uri: getThumbnailUrl(statue.id, 96) }}
               />
             ) : (
               <View className="w-20 h-48 items-center justify-center">

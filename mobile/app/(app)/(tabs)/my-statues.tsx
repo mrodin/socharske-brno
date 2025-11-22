@@ -18,9 +18,9 @@ import { useLocation } from "@/hooks/useLocation";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { LocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
-import { DEFAULT_ZOOM } from "@/utils/constants";
 import { track } from "@amplitude/analytics-react-native";
 import { cn } from "@/utils/cn";
+import { getThumbnailUrl } from "@/utils/images";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -125,7 +125,7 @@ const MyStatues: FC = () => {
             <View className={cn("px-4", index === 0 && "mt-4")}>
               {tab === "undiscovered" ? (
                 <UndiscoveredStatueItem
-                  item={item}
+                  statue={item}
                   onNavigate={handleNavigateToStatue}
                 />
               ) : (
@@ -150,33 +150,29 @@ const CollectedStatueItem: FC<{
   onNavigate: (statue: Statue) => void;
 }> = ({ statue, onNavigate }) => (
   <StatueEntry
-    onPress={() => onNavigate(statue.statueInfo)}
-    variant="primary"
     name={statue.statueInfo.name}
-    thumbnail={
-      statue.statueInfo.image_url
-        ? { uri: statue.statueInfo.image_url }
-        : undefined
-    }
+    onPress={() => onNavigate(statue.statueInfo)}
     score={statue.value}
     subtitle={format(new Date(statue.created_at), "dd.MM.yyyy")}
+    thumbnailUrl={getThumbnailUrl(statue.statueInfo.id, 96)}
+    variant="primary"
   />
 );
 
 // Component to render undiscovered statue entry
 const UndiscoveredStatueItem: FC<{
-  item: StatueListItem;
+  statue: StatueListItem;
   onNavigate: (statue: Statue) => void;
-}> = ({ item, onNavigate }) => (
+}> = ({ statue, onNavigate }) => (
   <StatueEntry
-    score={item.statueInfo.score}
-    onPress={() => onNavigate(item.statueInfo)}
+    score={statue.statueInfo.score}
+    onPress={() => onNavigate(statue.statueInfo)}
     variant="secondary"
     name="???"
     subtitle={
       <>
         vzdálenost{" "}
-        <Text className="font-bold">{item.distance.toFixed(2)}km</Text>
+        <Text className="font-bold">{statue.distance.toFixed(2)}km</Text>
       </>
     }
   />
