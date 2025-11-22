@@ -39,11 +39,6 @@ const MyStatues: FC = () => {
   const { setSearchRegion } = useContext(LocationContext);
   const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
 
-  const findStatueById = useMemo(() => {
-    const statueMap = new Map(statues.map((statue) => [statue.id, statue]));
-    return (id: number): Statue | undefined => statueMap.get(id);
-  }, [statues]);
-
   // Handler for navigating to a statue on the map
   const handleNavigateToStatue = (statue: Statue | null) => {
     track("Navigate to Statue", { statue_id: statue?.id, page: "My Statues" });
@@ -60,12 +55,12 @@ const MyStatues: FC = () => {
   };
 
   const collectedStatuesList = useMemo<StatueListItem[]>(() => {
-    if (statues.length === 0) {
+    if (Object.keys(statues).length === 0) {
       return [];
     }
     return collectedStatues
       .map((collectedStatue) => {
-        const statueInfo = findStatueById(collectedStatue.statue_id);
+        const statueInfo = statues[collectedStatue.statue_id];
         if (!statueInfo) {
           track("Statue Not Found", { statue_id: collectedStatue.statue_id });
           return null;
@@ -77,17 +72,17 @@ const MyStatues: FC = () => {
           statueInfo,
         };
       })
-      .filter((item): item is StatueListItem => item !== null);
-  }, [statues, collectedStatues, findStatueById]);
+      .filter((statue): statue is StatueListItem => statue !== null);
+  }, [statues, collectedStatues]);
 
   const undiscoveredStatues = useMemo<StatueListItem[]>(() => {
-    if (statues.length === 0) {
+    if (Object.keys(statues).length === 0) {
       return [];
     }
     const collectedIds = new Set(collectedStatues.map((cs) => cs.statue_id));
 
-    return statues
-      .filter((statue) => !collectedIds.has(statue.id))
+    return Object.values(statues)
+      .filter((statue) => statue.visible && !collectedIds.has(statue.id))
       .map((statue) => ({
         isCollected: false,
         statue_id: statue.id,
@@ -140,7 +135,7 @@ const MyStatues: FC = () => {
                 />
               ) : (
                 <CollectedStatueItem
-                  item={item}
+                  statue={item}
                   onNavigate={handleNavigateToStatue}
                 />
               )}
@@ -156,18 +151,20 @@ const MyStatues: FC = () => {
 
 // Component to render collected statue entry
 const CollectedStatueItem: FC<{
-  item: StatueListItem;
+  statue: StatueListItem;
   onNavigate: (statue: Statue) => void;
-}> = ({ item, onNavigate }) => (
+}> = ({ statue, onNavigate }) => (
   <StatueEntry
-    onPress={() => onNavigate(item.statueInfo)}
+    onPress={() => onNavigate(statue.statueInfo)}
     variant="primary"
-    name={item.statueInfo.name}
+    name={statue.statueInfo.name}
     thumbnail={
-      item.statueInfo.image_url ? { uri: item.statueInfo.image_url } : undefined
+      statue.statueInfo.image_url
+        ? { uri: statue.statueInfo.image_url }
+        : undefined
     }
-    score={item.value}
-    subtitle={format(new Date(item.created_at), "dd.MM.yyyy")}
+    score={statue.value}
+    subtitle={format(new Date(statue.created_at), "dd.MM.yyyy")}
   />
 );
 
