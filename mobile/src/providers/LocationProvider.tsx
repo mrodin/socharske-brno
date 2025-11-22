@@ -1,12 +1,4 @@
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { createContext, ReactNode, useCallback, useRef } from "react";
 import ClusteredMapView from "react-native-map-clustering";
 import { LatLng, Region } from "react-native-maps";
 
@@ -38,6 +30,9 @@ export function LocationProvider({ children }: { children: ReactNode }) {
 
   const animateToRegion = useCallback(
     (latLng: LatLng) => {
+      // setTimeout needs to be there to start animation in new event loop.
+      // Otherwise, the animateToRegion won't work after routing
+      // (switching screens).
       setTimeout(() => {
         mapRef.current?.animateToRegion(
           {

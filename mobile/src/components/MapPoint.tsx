@@ -5,6 +5,7 @@ import { Marker as MapsMarker } from "react-native-maps";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 import { formatDistance } from "@/utils/math";
 import { StatueWithDistance } from "@/types/statues";
+import { getThumbnailUrl } from "@/utils/images";
 
 type MapPointProps = {
   statue: StatueWithDistance;
@@ -45,9 +46,7 @@ const MarkerContent: FC<MarkerContentProps> = ({ statue }) => {
     return (
       <Image
         className="rounded-full h-16 w-16 border-2 border-red"
-        source={{
-          uri: `${process.env.EXPO_PUBLIC_IMAGES_STORAGE_URL}/${statue.id}/thumb96/1.JPEG`,
-        }}
+        source={{ uri: getThumbnailUrl(statue.id, 96) }}
       />
     );
   }
