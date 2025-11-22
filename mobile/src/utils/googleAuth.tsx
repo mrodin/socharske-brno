@@ -8,8 +8,8 @@ import { setUserId, track } from "@amplitude/analytics-react-native";
 export const googleAuth = async () => {
   GoogleSignin.configure({
     scopes: [],
-    webClientId: process.env.EXPO_PUBLIC_ANDROID_GOOGLE_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_IOS_GOOGLE_CLIENT_ID,
+    webClientId: process.env.EXPO_PUBLIC_AUTH_ANDROID_GOOGLE_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_AUTH_IOS_GOOGLE_CLIENT_ID,
   });
   try {
     await GoogleSignin.hasPlayServices();
