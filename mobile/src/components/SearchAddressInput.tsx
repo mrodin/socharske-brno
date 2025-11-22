@@ -43,7 +43,7 @@ export const SearchAddressInput = forwardRef<
       fetchDetails={true}
       nearbyPlacesAPI="GoogleReverseGeocoding"
       query={{
-        key: process.env.EXPO_PUBLIC_NEARBY_PLACES_API,
+        key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
         language: "cs-CZ",
         types: "geocode",
         components: "country:cz",

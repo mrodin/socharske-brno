@@ -19,7 +19,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: "com.kulturnilenochodi.socharske-brno",
     icon: "./assets/icon.png",
     config: {
-      googleMapsApiKey: process.env.EXPO_PUBLIC_IOS_GOOGLE_MAPS_API_KEY,
+      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
     },
     supportsTablet: true,
     usesAppleSignIn: true,
@@ -40,7 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     config: {
       googleMaps: {
-        apiKey: process.env.EXPO_PUBLIC_ANDROID_GOOGLE_MAPS_API_KEY,
+        apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
       },
     },
     package: "com.kulturnilenochodi.socharskebrno",
@@ -55,8 +55,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "@react-native-google-signin/google-signin",
       {
-        iosUrlScheme:
-          "com.googleusercontent.apps.865962598053-cpic88pj6c8raaqlsca0qhua9mk1id7c",
+        iosUrlScheme: process.env.EXPO_IOS_URL_SCHEME,
       },
     ],
     [
