@@ -8,28 +8,23 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, Image, View } from "react-native";
-import { Clusterer, isPointCluster } from "react-native-clusterer";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import { Image, Text, View } from "react-native";
+import ClusteredMapView from "react-native-map-clustering";
+import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
 import { LocationContext } from "@/providers/LocationProvider";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
-import { MapPoint as MapPointType } from "@/types/common";
 import { DEFAULT_ZOOM } from "@/utils/constants";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
-import { calculateDistance } from "../utils/math";
+import { calculateDistance, formatDistance } from "../utils/math";
 
-import { MapPoint } from "./MapPoint";
 import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
+import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 
-const MAP_WIDTH = Dimensions.get("window").width;
-const MAP_HEIGHT = Dimensions.get("window").height - 96;
-const MAP_DIMENSIONS = { width: MAP_WIDTH, height: MAP_HEIGHT };
-
-type EnhancedMapView = MapView & {
+type EnhancedMapView = ClusteredMapView & {
   animateToRegion: (region: Region, duration: number) => void;
 };
 
@@ -56,23 +51,18 @@ export const Map: FC = () => {
     );
 
     return statues.map((statue) => ({
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [statue.lng, statue.lat],
-      },
-      properties: {
-        ...statue,
-        distance: userLocation
-          ? calculateDistance(
-              userLocation.latitude,
-              userLocation.longitude,
-              statue.lat,
-              statue.lng
-            )
-          : undefined,
-        isCollected: collectedStatueIds.has(statue.id),
-      },
+      ...statue,
+      latitude: statue.lat,
+      longitude: statue.lng,
+      distance: userLocation
+        ? calculateDistance(
+            userLocation.latitude,
+            userLocation.longitude,
+            statue.lat,
+            statue.lng
+          )
+        : undefined,
+      isCollected: collectedStatueIds.has(statue.id),
     }));
   }, [collectedStatues, statues, userLocation]);
 
@@ -86,15 +76,10 @@ export const Map: FC = () => {
   );
 
   const onMapPointPress = useCallback(
-    (point: MapPointType) => {
-      if (isPointCluster(point)) {
-        const region = point.properties.getExpansionRegion();
-        goToRegion(region);
-      } else {
-        setSelectedStatue(point.properties);
-      }
+    (statue: any) => {
+      setSelectedStatue(statue);
     },
-    [goToRegion, setSelectedStatue]
+    [setSelectedStatue]
   );
 
   useEffect(() => {
@@ -134,16 +119,24 @@ export const Map: FC = () => {
   // otherwise cause issues with positioning.
   return (
     <View className="size-full relative">
-      <MapView
+      <ClusteredMapView
         ref={mapRef}
         customMapStyle={customGoogleMapStyle}
         initialRegion={initialRegion}
         onRegionChangeComplete={setRegion}
         provider={PROVIDER_GOOGLE}
-        style={MAP_DIMENSIONS}
+        style={{ width: "100%", height: "100%" }}
+        radius={40}
+        extent={512}
+        nodeSize={64}
+        clusterColor="#8B8B8B"
+        clusterTextColor="#FFFFFF"
+        spiralEnabled={false}
+        animationEnabled={false}
       >
         {userLocation && (
           <Marker
+            tracksViewChanges={false}
             coordinate={{
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
@@ -155,24 +148,43 @@ export const Map: FC = () => {
             />
           </Marker>
         )}
-        <Clusterer
-          data={statuesPoints}
-          region={region}
-          options={{ radius: 30 }}
-          mapDimensions={MAP_DIMENSIONS}
-          renderItem={(point) => (
-            <MapPoint
-              key={
-                isPointCluster(point)
-                  ? `cluster-${point.properties.cluster_id}`
-                  : `point-${point.properties.id}`
-              }
-              onPress={onMapPointPress}
-              point={point}
-            />
-          )}
-        />
-      </MapView>
+        {statuesPoints.map((statue) => (
+          <Marker
+            key={`point-${statue.id}`}
+            coordinate={{
+              latitude: statue.latitude,
+              longitude: statue.longitude,
+            }}
+            onPress={() => onMapPointPress(statue)}
+            anchor={{ x: 0.5, y: 0.5 }}
+            calloutOffset={{ x: 0.5, y: 0.5 }}
+            tracksViewChanges={false}
+          >
+            {statue.isCollected ? (
+              <Image
+                className="rounded-full h-16 w-16 border-2 border-red"
+                source={{
+                  uri: `https://storage.googleapis.com/lovci-soch-images/${statue.id}/thumb96/1.JPEG`,
+                }}
+              />
+            ) : (
+              <View className="w-20 h-48 items-center justify-center">
+                <UndiscoveredStatueIcon />
+                {statue.distance ? (
+                  <View className="absolute left-0 bottom-[120px]">
+                    <View className="bg-gray-lighter rounded-3xl w-20 h-[32px] justify-center items-center">
+                      <Text className="text-md text-center text-white">
+                        {formatDistance(statue.distance)}
+                      </Text>
+                    </View>
+                    <View className="w-0 h-0 bg-transparent border-solid border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-gray-lighter self-center -mt-px -z-10" />
+                  </View>
+                ) : null}
+              </View>
+            )}
+          </Marker>
+        ))}
+      </ClusteredMapView>
       <GpsButton
         onPress={() => {
           if (userLocation) {

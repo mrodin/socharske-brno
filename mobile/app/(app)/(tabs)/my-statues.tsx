@@ -107,7 +107,7 @@ const MyStatues: FC = () => {
   }, [statues, collectedStatues, location?.coords]);
 
   return (
-    <SafeAreaView className="bg-gray h-full pb-[96px]">
+    <SafeAreaView className="bg-gray h-full">
       <RouteHeader route="Moje sochy" />
       <View className="flex flex-row justify-between items-center px-4 mb-4">
         <UserTag />
