@@ -53,20 +53,22 @@ export const Map: FC = () => {
       collectedStatues.map((cs) => cs.statue_id)
     );
 
-    return statues.map((statue) => ({
-      ...statue,
-      latitude: statue.lat,
-      longitude: statue.lng,
-      distance: userLocation
-        ? calculateDistance(
-            userLocation.latitude,
-            userLocation.longitude,
-            statue.lat,
-            statue.lng
-          )
-        : undefined,
-      isCollected: collectedStatueIds.has(statue.id),
-    }));
+    return Object.values(statues)
+      .filter((statue) => statue.visible)
+      .map((statue) => ({
+        ...statue,
+        latitude: statue.lat,
+        longitude: statue.lng,
+        distance: userLocation
+          ? calculateDistance(
+              userLocation.latitude,
+              userLocation.longitude,
+              statue.lat,
+              statue.lng
+            )
+          : undefined,
+        isCollected: collectedStatueIds.has(statue.id),
+      }));
   }, [collectedStatues, statues, userLocation]);
 
   const goToRegion = useCallback(
