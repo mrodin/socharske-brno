@@ -169,9 +169,9 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
       columns={NUM_COLUMNS}
       renderItem={renderItem}
       onDragEnd={({ indexToKey }) => {
-        const newData = indexToKey.map(
-          (key) => data.find((item) => item.key === key)!
-        );
+        const newData = indexToKey
+          .map((key) => data.find((item) => item.key === key))
+          .filter((item): item is PuzzlePiece => item !== undefined);
         updatePuzzleData(newData);
       }}
       rowGap={0}
