@@ -10,6 +10,7 @@ import { FC, useEffect } from "react";
 import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { init, track } from "@amplitude/analytics-react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { UserSessionContext } from "@/providers/UserSession";
 import "../global.css";
@@ -82,11 +83,13 @@ const RootLayout: FC = () => {
   }
 
   return (
-    <UserSessionContext.Provider value={{ loading, session, setSession }}>
-      <QueryClientProvider client={queryClient}>
-        <Slot />
-      </QueryClientProvider>
-    </UserSessionContext.Provider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <UserSessionContext.Provider value={{ loading, session, setSession }}>
+        <QueryClientProvider client={queryClient}>
+          <Slot />
+        </QueryClientProvider>
+      </UserSessionContext.Provider>
+    </GestureHandlerRootView>
   );
 };
 
