@@ -4,14 +4,13 @@ import React, { FC, useContext, useEffect } from "react";
 import { GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
 import { LocationContext } from "@/providers/LocationProvider";
 import { router } from "expo-router";
-import { Region } from "react-native-maps";
 import { track } from "@amplitude/analytics-react-native";
 
 type SearchDrawerProps = {};
 
 export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
   const inputRef = React.useRef<GooglePlacesAutocompleteRef | null>(null);
-  const { setSearchRegion } = useContext(LocationContext);
+  const { animateToRegion } = useContext(LocationContext);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -30,12 +29,8 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
               latitude: lat,
               longitude: lng,
             });
-            setSearchRegion((originRegion) => ({
-              ...originRegion,
-              latitude: lat,
-              longitude: lng,
-            }));
             router.navigate("/");
+            animateToRegion({ latitude: lat, longitude: lng });
           }}
         />
       </View>

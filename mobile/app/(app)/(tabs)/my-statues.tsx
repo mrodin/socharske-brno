@@ -36,21 +36,16 @@ const MyStatues: FC = () => {
   const { data: collectedStatues = [] } = useGetCollectedStatues();
   const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
-  const { setSearchRegion } = useContext(LocationContext);
+  const { animateToRegion } = useContext(LocationContext);
   const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
 
   // Handler for navigating to a statue on the map
   const handleNavigateToStatue = (statue: Statue | null) => {
     track("Navigate to Statue", { statue_id: statue?.id, page: "My Statues" });
-    router.navigate("/");
     setSelectedStatue(statue);
     if (statue) {
-      setSearchRegion({
-        latitude: statue.lat,
-        longitude: statue.lng,
-        latitudeDelta: DEFAULT_ZOOM,
-        longitudeDelta: DEFAULT_ZOOM,
-      });
+      router.navigate("/");
+      animateToRegion({ latitude: statue.lat, longitude: statue.lng });
     }
   };
 

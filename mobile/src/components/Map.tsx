@@ -5,16 +5,14 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { Image, Text, View } from "react-native";
 import ClusteredMapView from "react-native-map-clustering";
-import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import { LocationContext } from "@/providers/LocationProvider";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
-import { DEFAULT_ZOOM } from "@/utils/constants";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
@@ -25,22 +23,15 @@ import { track } from "@amplitude/analytics-react-native";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 import { StatueWithDistance } from "@/types/statues";
 
-type EnhancedMapView = ClusteredMapView & {
-  animateToRegion: (region: Region, duration: number) => void;
-};
-
 export const Map: FC = () => {
-  const mapRef = useRef<EnhancedMapView | null>(null);
-
-  const { initialRegion, searchRegion } = useContext(LocationContext);
+  const { animateToRegion, initialRegion, mapRef } =
+    useContext(LocationContext);
   const { setSelectedStatue } = useContext(SelectedStatueContext);
 
   // location of the user marker
   const [userLocation, setUserLocation] = useState<
     Location.LocationObjectCoords | undefined
   >(undefined);
-  // region of the map (might not be centered on the user)
-  const [region, setRegion] = useState<Region>(searchRegion);
 
   const { data: statues } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
@@ -69,15 +60,6 @@ export const Map: FC = () => {
       }));
   }, [collectedStatues, statues, userLocation]);
 
-  const goToRegion = useCallback(
-    (region: Region) => {
-      if (mapRef.current) {
-        mapRef.current.animateToRegion(region, 500);
-      }
-    },
-    [mapRef]
-  );
-
   const onMapPointPress = useCallback(
     (statue: StatueWithDistance) => {
       setSelectedStatue(statue);
@@ -95,11 +77,9 @@ export const Map: FC = () => {
 
       const location = await Location.getCurrentPositionAsync();
       setUserLocation(location.coords);
-      goToRegion({
+      animateToRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: DEFAULT_ZOOM,
-        longitudeDelta: DEFAULT_ZOOM,
       });
     };
 
@@ -113,11 +93,6 @@ export const Map: FC = () => {
     getCurrentLocation();
   }, []);
 
-  // goes to the region of the search
-  useEffect(() => {
-    goToRegion(searchRegion);
-  }, [goToRegion, searchRegion]);
-
   // additional elements needs to be rendered outside of the MapView
   // otherwise cause issues with positioning.
   return (
@@ -126,7 +101,6 @@ export const Map: FC = () => {
         ref={mapRef}
         customMapStyle={customGoogleMapStyle}
         initialRegion={initialRegion}
-        onRegionChangeComplete={setRegion}
         provider={PROVIDER_GOOGLE}
         style={{ width: "100%", height: "100%" }}
         radius={40}
@@ -134,8 +108,6 @@ export const Map: FC = () => {
         nodeSize={64}
         clusterColor="#8B8B8B"
         clusterTextColor="#FFFFFF"
-        spiralEnabled={false}
-        animationEnabled={false}
       >
         {userLocation && (
           <Marker
@@ -191,12 +163,10 @@ export const Map: FC = () => {
         onPress={() => {
           if (userLocation) {
             track("Gps Button Click");
-            const userRegion = {
-              ...userLocation,
-              latitudeDelta: DEFAULT_ZOOM,
-              longitudeDelta: DEFAULT_ZOOM,
-            };
-            goToRegion(userRegion);
+            animateToRegion({
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            });
           }
         }}
       />
