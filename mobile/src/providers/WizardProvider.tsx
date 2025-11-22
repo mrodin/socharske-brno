@@ -16,17 +16,15 @@ export const WizardProviderContext = createContext<{
 
 export function WizardProvider({ children }: { children: ReactNode }) {
   const [step, setStep] = useState<null | number>(null);
-  const { setSearchRegion } = useContext(LocationContext);
+  const { animateToRegion } = useContext(LocationContext);
 
   const handleSetStep = (step: number | null) => {
     if (step === 2) {
       // Go to Statue detail
       if (statueWizardDetail) {
-        setSearchRegion({
+        animateToRegion({
           latitude: statueWizardDetail.lat,
           longitude: statueWizardDetail.lng,
-          latitudeDelta: DEFAULT_ZOOM,
-          longitudeDelta: DEFAULT_ZOOM,
         });
       }
     }
