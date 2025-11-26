@@ -15,3 +15,7 @@
 3. Run `eas build --platform=ios` to start the Expo build. You can see the running build and its result in Expo: `https://expo.dev/accounts/kulturni-lenochodi/projects/mobile/builds`. Alternatively, you can run the build from Expo GUI by using button `Build from GitHub`.
 4. Publish build to TestFlight by running `eas submit --platform=ios`. This can only be done from command line and you need to have Apple dev account credentials (registered to Katka at the moment).
 5. TestFlight builds can be checked in App Store Connect `https://appstoreconnect.apple.com/teams/fb266649-098d-4d89-8b98-c7eeea58e6c1/apps/6743340624/testflight/ios`. Publish to TestFlight might take some time.
+
+# Supabase deploy
+
+`npx supabase functions deploy` - Deploy / Update edge functions
