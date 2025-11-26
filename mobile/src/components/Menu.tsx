@@ -22,7 +22,11 @@ const Item = ({
   textClassName?: string;
 }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={typeof children === "string" ? children : undefined}
+    >
       <View className="flex-row justify-between py-3">
         <Text className={cn("text-white", textClassName)}>{children}</Text>
         <ArrowRight className="ml-1" color="white" width={8} height={12} />

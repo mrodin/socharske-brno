@@ -77,14 +77,13 @@ const DeleteProfile = () => {
             pro nás důležitá a pomůže nám ve zlepšování aplikace.
           </Text>
           <TextInput
-            editable
             multiline
             value={message}
             maxLength={MAX_MESSAGE_LENGTH}
-            readOnly={submitting}
+            editable={!submitting}
             placeholder="Důvod, proč chci smazat účet (dobrovolné)"
             onChangeText={setMessage}
-            className="bg-white h-[120px] p-5 rounded-lg text-lg "
+            className="bg-white h-[120px] p-5 rounded-lg text-lg"
           />
           <View className="gap-5 text-center items-center">
             <Button
