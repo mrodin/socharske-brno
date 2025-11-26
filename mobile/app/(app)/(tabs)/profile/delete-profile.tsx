@@ -7,6 +7,8 @@ import { track } from "@amplitude/analytics-react-native";
 import { UserSessionContext } from "@/providers/UserSession";
 import { supabase } from "@/utils/supabase";
 
+const MAX_MESSAGE_LENGTH = 500;
+
 const DeleteProfile = () => {
   const [message, setMessage] = useState("");
   const [step, setStep] = useState<"intro" | "confirm">("intro");
@@ -20,6 +22,7 @@ const DeleteProfile = () => {
 
     setSubmitting(true);
     try {
+      // Delete profile via Supabase Function
       const { error } = await supabase.functions.invoke("delete-profile", {
         headers: { Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ message }),
@@ -77,7 +80,7 @@ const DeleteProfile = () => {
             editable
             multiline
             value={message}
-            maxLength={500}
+            maxLength={MAX_MESSAGE_LENGTH}
             readOnly={submitting}
             placeholder="Důvod, proč chci smazat účet (dobrovolné)"
             onChangeText={setMessage}
