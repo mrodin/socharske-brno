@@ -25,16 +25,20 @@ export const UserTag = () => {
           }
           className="w-[54px] h-[54px] rounded-full"
         />
-        <View className="pl-2">
-          <Text className="color-white text-2xl font-bold">
+        <View className="py-2 flex-1">
+          <Text
+            className="color-white text-2xl font-bold"
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
             {userInfo?.username}
           </Text>
           <Text className="color-red-pale">{userStatistics?.rank}. místo</Text>
         </View>
+        <Text className="color-white text-2xl pr-6">
+          {userStatistics?.score}b
+        </Text>
       </View>
-      <Text className="color-white text-2xl pr-6">
-        {userStatistics?.score}b
-      </Text>
     </View>
   );
 };
