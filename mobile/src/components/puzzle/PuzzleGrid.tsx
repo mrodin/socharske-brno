@@ -1,7 +1,10 @@
 import React from "react";
 import { View, ActivityIndicator, useWindowDimensions } from "react-native";
 import { FilterImage } from "react-native-svg/filter-image";
-import Sortable, { useCommonValuesContext, DragActivationState } from "react-native-sortables";
+import Sortable, {
+  useCommonValuesContext,
+  DragActivationState,
+} from "react-native-sortables";
 import { useSharedValue, useAnimatedReaction } from "react-native-reanimated";
 import { PuzzlePiece } from "../../hooks/usePuzzleData";
 import { CheckIconOutline } from "./CheckIconOutline";
@@ -16,26 +19,43 @@ interface PuzzleProps {
 const NUM_COLUMNS = 3;
 
 const usePuzzleStrategy = () => {
-  const { indexToKey, containerWidth, touchPosition, activationState, activeItemKey } = useCommonValuesContext();
+  const {
+    indexToKey,
+    containerWidth,
+    touchPosition,
+    activationState,
+    activeItemKey,
+  } = useCommonValuesContext();
   const baseOrderSnapshot = useSharedValue<string[]>([]);
 
   useAnimatedReaction(
     () => activationState.value,
     (state, prev) => {
       // Snapshot base order when drag starts
-      if (state === DragActivationState.TOUCHED && prev !== DragActivationState.TOUCHED) {
+      if (
+        state === DragActivationState.TOUCHED &&
+        prev !== DragActivationState.TOUCHED
+      ) {
         baseOrderSnapshot.value = indexToKey.value;
       }
     }
   );
 
-  return ({ activeIndex, position, dimensions }: { activeIndex: number, position: { x: number, y: number }, dimensions: { width: number, height: number } }) => {
+  return ({
+    activeIndex,
+    position,
+    dimensions,
+  }: {
+    activeIndex: number;
+    position: { x: number; y: number };
+    dimensions: { width: number; height: number };
+  }) => {
     "worklet";
     const width = containerWidth.value;
     if (!width) return;
 
     const pieceSize = width / NUM_COLUMNS;
-    
+
     // Use touch position if available, otherwise fallback to item center
     let x, y;
     if (touchPosition.value) {
@@ -53,7 +73,7 @@ const usePuzzleStrategy = () => {
 
     const targetIndex = row * NUM_COLUMNS + col;
     const baseKeys = baseOrderSnapshot.value;
-    
+
     // Safety check
     if (baseKeys.length === 0) return;
 
@@ -65,8 +85,8 @@ const usePuzzleStrategy = () => {
     if (originIndex === -1) return;
 
     if (targetIndex === originIndex) {
-        // If we are back at origin, restore base order
-        return baseKeys;
+      // If we are back at origin, restore base order
+      return baseKeys;
     }
 
     const targetKey = baseKeys[targetIndex];
@@ -127,9 +147,7 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
 
     // The full image is treated as a 3x3 grid, showing only the correct portion
     return (
-      <Sortable.Handle
-        mode={item.disabledDrag ? "non-draggable" : "draggable"}
-      >
+      <Sortable.Handle mode={item.disabledDrag ? "non-draggable" : "draggable"}>
         <View
           className="relative marker:justify-center items-center overflow-hidden"
           style={{
