@@ -12,6 +12,7 @@ STORAGE_URL = "https://storage.googleapis.com"
 def upload_avatar(request: flask.Request) -> list[int] | str:
     supabase_url = os.getenv("SUPABASE_URL")
     supabase_key = os.getenv("SUPABASE_KEY")
+    bucket_name = os.getenv("BUCKET_NAME")
 
     supabase: Client = create_client(supabase_url, supabase_key)
     jwt = request.headers["Authorization"].removeprefix("Bearer ")
@@ -40,7 +41,7 @@ def upload_avatar(request: flask.Request) -> list[int] | str:
     try:
         # Initialize with explicit credentials
         storage_client = storage.Client()
-        bucket = storage_client.bucket("lovci-soch-avatars")
+        bucket = storage_client.bucket(bucket_name)
 
         # Create a unique filename to avoid collisions
         blob = bucket.blob(f"{os.urandom(20).hex()}.jpg")

@@ -1,3 +1,4 @@
+import { supabase } from "@/utils/supabase";
 import * as ImageManipulator from "expo-image-manipulator";
 
 const MAX_AVATAR_SIZE = 400;
@@ -16,22 +17,17 @@ export const uploadAvatar = async (imageUri: string, token: string) => {
     name: "avatar.jpg",
   } as unknown as Blob);
 
-  const response = await fetch(
-    "https://us-central1-socharske-brno.cloudfunctions.net/upload_avatar",
-    {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const { error, data } = await supabase.functions.invoke("upload_avatar", {
+    method: "POST",
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  const data = await response.json();
-
-  if (response.status !== 200) {
-    throw new Error(`Failed to upload avatar: ${data.error}`);
+  if (error) {
+    console.log(error);
+    throw new Error(`Failed to upload avatar: ${error}`);
   }
 
   return data.url as string;
