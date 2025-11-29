@@ -19,3 +19,35 @@
 # Supabase deploy
 
 `npx supabase functions deploy` - Deploy / Update edge functions
+
+## Supabase schedule function
+
+Tutorial is here https://supabase.com/docs/guides/functions/schedule-functions
+
+### SQL commands
+
+```sql
+-- Project URL
+select vault.create_secret('<PROJECT_URL>', 'project_url');
+
+-- Service ROLE key
+select vault.create_secret('<SERVICE_KEY>', 'service_role_key');
+
+-- Call it every day
+select
+  cron.schedule(
+    'update-statue-scores-daily',
+    '0 1 * * *',
+    $$
+    select
+      net.http_post(
+        url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/update_statue_scores',
+        headers := jsonb_build_object(
+          'Content-Type', 'application/json',
+          'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'service_role_key')
+        ),
+        body := '{}'::jsonb
+      ) as request_id;
+    $$
+  );
+```
