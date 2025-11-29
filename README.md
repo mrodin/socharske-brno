@@ -22,7 +22,7 @@
 
 ## Supabase schedule function
 
-Tutorial is here https://supabase.com/docs/guides/functions/schedule-functions
+The function that recalculates scores is called via a cron schedule. Tutorial is here https://supabase.com/docs/guides/functions/schedule-functions
 
 ### SQL commands
 
