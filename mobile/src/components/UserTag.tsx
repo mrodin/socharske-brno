@@ -14,12 +14,12 @@ export const UserTag = () => {
   return (
     <View className="flex-row justify-between items-center border-[2px] w-full border-gray-light rounded-full ">
       <View className="flex-row items-center">
-        {url && (
-          <Image
-            source={{ uri: url }}
-            className="w-[54px] h-[54px] rounded-full"
-          />
-        )}
+        <Image
+          source={{
+            uri: url ?? require("../../assets/images/spravedlnost.png"),
+          }}
+          className="w-[54px] h-[54px] rounded-full"
+        />
         <View className="pl-2">
           <Text className="color-white text-2xl font-bold">
             {userInfo?.username}
