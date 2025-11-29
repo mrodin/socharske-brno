@@ -103,7 +103,7 @@ export const Map: FC = () => {
       });
     };
 
-    Location.watchPositionAsync(
+    const subscription = Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.High,
         timeInterval: 1000,
@@ -113,16 +113,17 @@ export const Map: FC = () => {
       (newLocation) => {
         setUserLocation(newLocation.coords);
         // Update heading if available
-        if (
-          newLocation.coords.heading !== null &&
-          newLocation.coords.heading !== undefined
-        ) {
+        if (newLocation.coords.heading !== null) {
           setUserHeading(newLocation.coords.heading);
         }
       }
     );
 
     getCurrentLocation();
+
+    return () => {
+      subscription.then((sub) => sub.remove());
+    };
   }, []);
 
   // goes to the region of the search
