@@ -21,6 +21,7 @@ import { Statue } from "@/types/statues";
 import { track } from "@amplitude/analytics-react-native";
 import { cn } from "@/utils/cn";
 import { getThumbnailUrl } from "@/utils/images";
+import { Button } from "@/components/Button";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -96,6 +97,9 @@ const MyStatues: FC = () => {
       .sort((a, b) => a.distance - b.distance);
   }, [statueMap, collectedStatues, location?.coords]);
 
+  const showNoStatuesMessage =
+    collectedStatuesList.length === 0 && tab === "collected";
+
   return (
     <SafeAreaView className="bg-gray h-full">
       <RouteHeader route="Moje sochy" />
@@ -116,29 +120,35 @@ const MyStatues: FC = () => {
         />
       </View>
       <View className="flex-1">
-        <VirtualizedList
-          data={
-            tab === "undiscovered" ? undiscoveredStatues : collectedStatuesList
-          }
-          getItem={(data, index) => data[index]}
-          renderItem={({ item, index }) => (
-            <View className={cn("px-4", index === 0 && "mt-4")}>
-              {tab === "undiscovered" ? (
-                <UndiscoveredStatueItem
-                  statue={item}
-                  onNavigate={handleNavigateToStatue}
-                />
-              ) : (
-                <CollectedStatueItem
-                  statue={item}
-                  onNavigate={handleNavigateToStatue}
-                />
-              )}
-            </View>
-          )}
-          getItemCount={(data) => data?.length || 0}
-          keyExtractor={(item) => `${item.statue_id}`}
-        />
+        {showNoStatuesMessage ? (
+          <NoCollectedStatuesInfo />
+        ) : (
+          <VirtualizedList
+            data={
+              tab === "undiscovered"
+                ? undiscoveredStatues
+                : collectedStatuesList
+            }
+            getItem={(data, index) => data[index]}
+            renderItem={({ item, index }) => (
+              <View className={cn("px-4", index === 0 && "mt-4")}>
+                {tab === "undiscovered" ? (
+                  <UndiscoveredStatueItem
+                    statue={item}
+                    onNavigate={handleNavigateToStatue}
+                  />
+                ) : (
+                  <CollectedStatueItem
+                    statue={item}
+                    onNavigate={handleNavigateToStatue}
+                  />
+                )}
+              </View>
+            )}
+            getItemCount={(data) => data?.length || 0}
+            keyExtractor={(item) => `${item.statue_id}`}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -205,6 +215,21 @@ const TabButton: FC<{
         {label}
       </Text>
     </Pressable>
+  </View>
+);
+
+const NoCollectedStatuesInfo = () => (
+  <View className="flex flex-1 justify-center items-center gap-4 px-6">
+    <Text className="text-gray-pale text-center">
+      Zatím nemáš ulovené žádné sochy.
+      {"\n"}
+      Honem to utíkej napravit!
+    </Text>
+    <Button
+      variant="primary"
+      title="Vydej se na lov"
+      onPress={() => router.push("/")}
+    />
   </View>
 );
 

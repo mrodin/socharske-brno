@@ -33,7 +33,7 @@ export const Player: FC<PlayerProps> = ({
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          className="text-[22px] text-white max-w-[180px]"
+          className="text-[22px] text-white flex-1"
         >
           {name}
         </Text>
@@ -44,7 +44,7 @@ export const Player: FC<PlayerProps> = ({
 };
 
 const player = tv({
-  base: "h-[60px] flex-row justify-between items-center rounded-full pl-1.5 pr-6",
+  base: "h-[60px] flex-row gap-6 justify-between items-center rounded-full pl-1.5 pr-6",
   variants: {
     isWinner: {
       true: "bg-red-light",

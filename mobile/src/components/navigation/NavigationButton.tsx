@@ -1,3 +1,4 @@
+import { cn } from "@/utils/cn";
 import { router, usePathname } from "expo-router";
 import { FC } from "react";
 import { Pressable, View, Text } from "react-native";
@@ -17,7 +18,7 @@ const accentButtonVariants = tv({
 
 type NavigationButtonProps = {
   label: string;
-  icon?: FC;
+  icon?: FC<{ color?: string }>;
   accent?: boolean;
   disabled?: boolean;
   isActive: boolean;
@@ -49,12 +50,20 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
           className="w-[50px] h-[50px] flex justify-end items-center"
           style={{ opacity: isActive ? 1 : 0.5 }}
         >
-          {Icon && <Icon />}
+          {Icon && (
+            <Icon
+              color={
+                isActive ? "rgba(223, 66, 55, 1)" : "rgba(209, 209, 209, 1)" // Tailwind --color values not working here
+              }
+            />
+          )}
         </View>
       )}
       <Text
-        className="text-gray-pale text-[10px]"
-        style={{ opacity: isActive ? 1 : 0.6 }}
+        className={cn(
+          "text-gray-pale text-[10px]",
+          isActive ? "text-red-light" : "text-gray-lighter"
+        )}
       >
         {label}
       </Text>
