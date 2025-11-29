@@ -1,3 +1,4 @@
+import { Image as ExpoImage } from "expo-image";
 import * as Location from "expo-location";
 import React, {
   FC,
@@ -23,6 +24,42 @@ import { track } from "@amplitude/analytics-react-native";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 import { StatueWithDistance } from "@/types/statues";
 import { getThumbnailUrl } from "@/utils/images";
+
+// Custom marker component that handles image loading state
+const CollectedStatueMarker: FC<{
+  statue: StatueWithDistance & { latitude: number; longitude: number };
+  onPress: () => void;
+}> = ({ statue, onPress }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  return (
+    <Marker
+      key={`point-${statue.id}`}
+      coordinate={{
+        latitude: statue.latitude,
+        longitude: statue.longitude,
+      }}
+      onPress={onPress}
+      anchor={{ x: 0.5, y: 0.5 }}
+      calloutOffset={{ x: 0.5, y: 0.5 }}
+      tracksViewChanges={!imageLoaded}
+    >
+      <ExpoImage
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: 999,
+          borderWidth: 2,
+          borderColor: "red",
+        }}
+        source={{ uri: getThumbnailUrl(statue.id, 96) }}
+        contentFit="cover"
+        cachePolicy="memory-disk"
+        onLoad={() => setImageLoaded(true)}
+      />
+    </Marker>
+  );
+};
 
 export const Map: FC = () => {
   const { animateToRegion, initialRegion, mapRef } =
@@ -142,24 +179,25 @@ export const Map: FC = () => {
             />
           </Marker>
         )}
-        {statuesPoints.map((statue) => (
-          <Marker
-            key={`point-${statue.id}`}
-            coordinate={{
-              latitude: statue.latitude,
-              longitude: statue.longitude,
-            }}
-            onPress={() => onMapPointPress(statue)}
-            anchor={{ x: 0.5, y: 0.5 }}
-            calloutOffset={{ x: 0.5, y: 0.5 }}
-            tracksViewChanges={false}
-          >
-            {statue.isCollected ? (
-              <Image
-                className="rounded-full h-16 w-16 border-2 border-red"
-                source={{ uri: getThumbnailUrl(statue.id, 96) }}
-              />
-            ) : (
+        {statuesPoints.map((statue) =>
+          statue.isCollected ? (
+            <CollectedStatueMarker
+              key={`point-${statue.id}`}
+              statue={statue}
+              onPress={() => onMapPointPress(statue)}
+            />
+          ) : (
+            <Marker
+              key={`point-${statue.id}`}
+              coordinate={{
+                latitude: statue.latitude,
+                longitude: statue.longitude,
+              }}
+              onPress={() => onMapPointPress(statue)}
+              anchor={{ x: 0.5, y: 0.5 }}
+              calloutOffset={{ x: 0.5, y: 0.5 }}
+              tracksViewChanges={false}
+            >
               <View className="w-20 h-48 items-center justify-center">
                 <UndiscoveredStatueIcon />
                 {statue.distance ? (
@@ -172,9 +210,9 @@ export const Map: FC = () => {
                   </View>
                 ) : null}
               </View>
-            )}
-          </Marker>
-        ))}
+            </Marker>
+          )
+        )}
       </ClusteredMapView>
       <GpsButton
         onPress={() => {
