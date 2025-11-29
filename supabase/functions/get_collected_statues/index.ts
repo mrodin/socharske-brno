@@ -62,7 +62,8 @@ Deno.serve(async (req) => {
   const { data: collectedStatues, error: collectedError } = await supabase
     .from("profile_statue_collected")
     .select("statue_id, created_at, value")
-    .eq("profile_id", profileId);
+    .eq("profile_id", profileId)
+    .order("created_at", { ascending: false });
 
   if (collectedError) {
     return new Response(JSON.stringify({ error: collectedError.message }), {
