@@ -8,6 +8,7 @@ interface LeaderboardEntry {
   username: string;
   score: number;
   avatar: string | null;
+  collectedStatuesCount: number;
 }
 
 Deno.serve(async (_req) => {
@@ -28,12 +29,14 @@ Deno.serve(async (_req) => {
     });
   }
 
-  // Calculate total score for each profile
+  // Calculate total score and count for each profile
   const profileScore: Record<string, number> = {};
+  const profileCount: Record<string, number> = {};
   for (const entry of collectedData) {
     const profileId = entry.profile_id;
     const value = entry.value;
     profileScore[profileId] = (profileScore[profileId] || 0) + value;
+    profileCount[profileId] = (profileCount[profileId] || 0) + 1;
   }
 
   // Get all profiles
@@ -55,6 +58,7 @@ Deno.serve(async (_req) => {
       username: entry.username,
       avatar: entry.avatar_url,
       score: profileScore[entry.id] || 0,
+      collectedStatuesCount: profileCount[entry.id] || 0,
     })
   );
 
