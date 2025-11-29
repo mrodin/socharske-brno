@@ -1,10 +1,8 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { Storage } from "npm:@google-cloud/storage@7";
 
-const STORAGE_URL = "https://storage.googleapis.com";
-const BUCKET_NAME = "lovci-soch-avatars";
+const BUCKET_NAME = "avatars";
 
 Deno.serve(async (req) => {
   // Only allow POST method
@@ -22,13 +20,24 @@ Deno.serve(async (req) => {
   const authHeader = req.headers.get("Authorization");
 
   try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
+      supabaseUrl,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
     // Get user from JWT
-    const jwt = authHeader.replace("Bearer ", "");
+    const jwt = authHeader?.replace("Bearer ", "");
+    if (!jwt) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const { data: userData, error: userError } = await supabase.auth.getUser(
       jwt
     );
@@ -73,14 +82,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Initialize Google Cloud Storage with credentials from env
-    const gcpCredentials = JSON.parse(Deno.env.get("GCP_SERVICE_ACCOUNT_KEY")!);
-    const storage = new Storage({
-      credentials: gcpCredentials,
-      projectId: gcpCredentials.project_id,
-    });
-    const bucket = storage.bucket(BUCKET_NAME);
-
     // Generate unique filename
     const randomBytes = new Uint8Array(20);
     crypto.getRandomValues(randomBytes);
@@ -89,29 +90,52 @@ Deno.serve(async (req) => {
       .join("");
     const fileName = `${hexString}.jpg`;
 
-    // Delete previous uploaded avatar if it exists and is from our storage
+    // Delete previous uploaded avatar if it exists and is from our Supabase storage
     const currentAvatarUrl = profileData?.[0]?.avatar_url;
-    if (currentAvatarUrl && currentAvatarUrl.startsWith(STORAGE_URL)) {
-      const oldFileName = currentAvatarUrl.split("/").pop();
+    const supabaseStoragePrefix = `${supabaseUrl}/storage/v1/object/public/${BUCKET_NAME}/`;
+    if (
+      currentAvatarUrl &&
+      currentAvatarUrl.startsWith(supabaseStoragePrefix)
+    ) {
+      const oldFileName = currentAvatarUrl.replace(supabaseStoragePrefix, "");
       if (oldFileName) {
-        try {
-          await bucket.file(oldFileName).delete();
-        } catch (deleteError) {
-          // Ignore delete errors (file might not exist)
+        const { error: deleteError } = await supabase.storage
+          .from(BUCKET_NAME)
+          .remove([oldFileName]);
+        if (deleteError) {
           console.warn("Failed to delete old avatar:", deleteError);
         }
       }
     }
 
-    // Upload file to GCS
+    // Upload file to Supabase Storage
     const fileBuffer = await file.arrayBuffer();
-    const blob = bucket.file(fileName);
-    await blob.save(new Uint8Array(fileBuffer), {
-      contentType: file.type || "image/jpeg",
-    });
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(fileName, new Uint8Array(fileBuffer), {
+        contentType: file.type || "image/jpeg",
+        upsert: false,
+      });
 
-    // Construct public URL
-    const url = `${STORAGE_URL}/${BUCKET_NAME}/${fileName}`;
+    if (uploadError) {
+      console.error("Failed to upload file:", uploadError);
+      return new Response(
+        JSON.stringify({
+          error: `Failed to upload file: ${uploadError.message}`,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl(fileName);
+
+    const url = publicUrlData.publicUrl;
 
     // Update user's avatar_url in profiles table
     const { error: updateError } = await supabase
