@@ -30,7 +30,7 @@ const LeaderBoard: FC = () => {
             score={currentUser.score}
             rank={currentUserIndex + 1}
             avatarUrl={currentUser.avatar}
-            collectedStatuesCount={currentUser.score}
+            collectedStatuesCount={currentUser.collectedStatuesCount}
           />
         </View>
       </ScrollView>
