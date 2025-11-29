@@ -4,6 +4,7 @@ import { UserAvatarContext } from "../providers/UserAvatar";
 import { UserInfoContext } from "../providers/UserInfo";
 import { useGetLeaderboard } from "@/api/queries";
 import { useUserStatistics } from "@/hooks/useUserStatistics";
+import { defaultUserIconSource } from "@/utils/images";
 
 export const UserTag = () => {
   const { url } = useContext(UserAvatarContext);
@@ -15,9 +16,13 @@ export const UserTag = () => {
     <View className="flex-row justify-between items-center border-[2px] w-full border-gray-light rounded-full ">
       <View className="flex-row items-center">
         <Image
-          source={{
-            uri: url ?? require("../../assets/images/spravedlnost.png"),
-          }}
+          source={
+            url
+              ? {
+                  uri: url,
+                }
+              : defaultUserIconSource
+          }
           className="w-[54px] h-[54px] rounded-full"
         />
         <View className="pl-2">

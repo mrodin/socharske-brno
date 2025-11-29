@@ -1,3 +1,4 @@
+import { defaultUserIconSource } from "@/utils/images";
 import { FC } from "react";
 import { View, Text, Image } from "react-native";
 
@@ -28,11 +29,7 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
           </Text>
         </View>
         <Image
-          source={
-            avatarUrl
-              ? { uri: avatarUrl }
-              : require("../../assets/images/spravedlnost.png")
-          }
+          source={avatarUrl ? { uri: avatarUrl } : defaultUserIconSource}
           accessibilityLabel="Avatar"
           style={{ width: 180, height: 180 }}
           className="object-cover rounded-full"
