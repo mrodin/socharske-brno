@@ -21,7 +21,7 @@ export const useGetAllStatues = () => {
   return useQuery<Statue[], Error, Record<number, Statue>>({
     initialData: [],
     queryKey: ["statues"],
-    queryFn: () => fetchWithAuth("statues_get_all", session.access_token, {}),
+    queryFn: () => fetchWithAuth("statues-get-all", session.access_token),
     select: (data) =>
       data.reduce(
         (acc, statue) => {
@@ -38,8 +38,7 @@ export const useGetCollectedStatues = () => {
 
   return useQuery<CollectedStatue[], Error>({
     queryKey: ["collectedStatues"],
-    queryFn: () =>
-      fetchWithAuth("get_collected_statues", session.access_token, {}),
+    queryFn: () => fetchWithAuth("get-collected-statues", session.access_token),
     initialData: [],
   });
 };
@@ -49,7 +48,7 @@ export const useGetLeaderboard = () => {
 
   return useQuery<LeaderBoardEntry[], Error>({
     queryKey: ["leaderboard"],
-    queryFn: () => fetchWithAuth("get_leaderboard", session.access_token, {}),
+    queryFn: () => fetchWithAuth("get-leaderboard", session.access_token),
     initialData: [],
   });
 };
@@ -61,8 +60,8 @@ export const useCollectStatue = () => {
 
   return useMutation({
     mutationFn: (statueId: number) =>
-      fetchWithAuth("statue_collected", session.access_token, {
-        body: { statue_id: statueId },
+      fetchWithAuth("statue-collected", session.access_token, {
+        statue_id: statueId,
       }),
 
     onSuccess: async () => {

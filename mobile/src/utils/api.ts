@@ -3,13 +3,11 @@ import { supabase } from "./supabase";
 export const fetchWithAuth = async <T>(
   url: string,
   token: string,
-  options: {
-    body?: object;
-  }
+  body?: object
 ): Promise<T> => {
   const { error, data } = await supabase.functions.invoke(url, {
     headers: { Authorization: `Bearer ${token}` },
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    body: body ? JSON.stringify(body) : undefined,
   });
 
   if (error) {

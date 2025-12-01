@@ -17,7 +17,7 @@ export const uploadAvatar = async (imageUri: string, token: string) => {
     name: "avatar.jpg",
   } as unknown as Blob);
 
-  const { error, data } = await supabase.functions.invoke("upload_avatar", {
+  const { error, data } = await supabase.functions.invoke("upload-avatar", {
     method: "POST",
     body: formData,
     headers: {
