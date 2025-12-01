@@ -1,23 +1,18 @@
+import { supabase } from "./supabase";
+
 export const fetchWithAuth = async <T>(
   url: string,
   token: string,
-  options: {
-    method: "GET" | "POST";
-    body?: object;
-  }
+  body?: object
 ): Promise<T> => {
-  const response = await fetch(url, {
-    method: options.method,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
+  const { error, data } = await supabase.functions.invoke(url, {
+    headers: { Authorization: `Bearer ${token}` },
+    body: body ? JSON.stringify(body) : undefined,
   });
 
-  if (!response.ok) {
+  if (error) {
     throw new Error(`Response to ${url.split("/").pop()} was not ok.`);
   }
 
-  return response.json();
+  return data;
 };

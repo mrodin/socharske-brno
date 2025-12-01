@@ -56,7 +56,9 @@ export default function Layout() {
 
   return (
     <Tabs>
-      <View className={`w-full h-full pb-[${NAVIGATION_HEIGHT}px]`}>
+      <View
+        className={`w-full h-full pb-[${NAVIGATION_HEIGHT}px] bg-[#393939]`}
+      >
         <TabSlot />
       </View>
       <Navigation
