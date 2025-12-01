@@ -20,7 +20,7 @@ const WizardArrow: FC<{ className: string }> = ({ className }) => (
 const CloseButton: FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <Pressable
-      className="absolute top-4 right-4"
+      className="absolute top-4 right-4 z-10"
       onPress={() => {
         onClose();
       }}
