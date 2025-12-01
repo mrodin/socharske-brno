@@ -34,7 +34,6 @@ const CollectedStatueMarker: FC<{
 
   return (
     <Marker
-      key={`point-${statue.id}`}
       coordinate={{
         latitude: statue.latitude,
         longitude: statue.longitude,
@@ -44,19 +43,15 @@ const CollectedStatueMarker: FC<{
       calloutOffset={{ x: 0.5, y: 0.5 }}
       tracksViewChanges={!imageLoaded}
     >
-      <ExpoImage
-        style={{
-          width: 64,
-          height: 64,
-          borderRadius: 999,
-          borderWidth: 2,
-          borderColor: "red",
-        }}
-        source={{ uri: getThumbnailUrl(statue.id, 96) }}
-        contentFit="cover"
-        cachePolicy="memory-disk"
-        onLoad={() => setImageLoaded(true)}
-      />
+      <View className="w-16 h-16 rounded-full border-2 border-red overflow-hidden">
+        <ExpoImage
+          style={{ width: "100%", height: "100%" }}
+          source={{ uri: getThumbnailUrl(statue.id, 96) }}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+          onLoad={() => setImageLoaded(true)}
+        />
+      </View>
     </Marker>
   );
 };
