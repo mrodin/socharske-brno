@@ -67,6 +67,10 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
             avatar_url: session?.user.user_metadata.avatar_url,
           });
         }
+      } else {
+        // No profile data found, sign out the user (probably deleted)
+        supabase.auth.signOut();
+        supabase.auth.refreshSession();
       }
     } catch (error) {
       if (error instanceof Error) {

@@ -21,12 +21,7 @@ export const useGetAllStatues = () => {
   return useQuery<Statue[], Error, Record<number, Statue>>({
     initialData: [],
     queryKey: ["statues"],
-    queryFn: () =>
-      fetchWithAuth(
-        "https://europe-west3-socharske-brno.cloudfunctions.net/statues_get_all",
-        session.access_token,
-        { method: "GET" }
-      ),
+    queryFn: () => fetchWithAuth("statues-get-all", session.access_token),
     select: (data) =>
       data.reduce(
         (acc, statue) => {
@@ -43,12 +38,7 @@ export const useGetCollectedStatues = () => {
 
   return useQuery<CollectedStatue[], Error>({
     queryKey: ["collectedStatues"],
-    queryFn: () =>
-      fetchWithAuth(
-        "https://europe-west3-socharske-brno.cloudfunctions.net/get_collected_statues",
-        session.access_token,
-        { method: "GET" }
-      ),
+    queryFn: () => fetchWithAuth("get-collected-statues", session.access_token),
     initialData: [],
   });
 };
@@ -58,12 +48,7 @@ export const useGetLeaderboard = () => {
 
   return useQuery<LeaderBoardEntry[], Error>({
     queryKey: ["leaderboard"],
-    queryFn: () =>
-      fetchWithAuth(
-        "https://europe-west3-socharske-brno.cloudfunctions.net/get_leaderboard",
-        session.access_token,
-        { method: "GET" }
-      ),
+    queryFn: () => fetchWithAuth("get-leaderboard", session.access_token),
     initialData: [],
   });
 };
@@ -75,11 +60,10 @@ export const useCollectStatue = () => {
 
   return useMutation({
     mutationFn: (statueId: number) =>
-      fetchWithAuth(
-        "https://europe-west3-socharske-brno.cloudfunctions.net/statue_collected",
-        session.access_token,
-        { method: "POST", body: { statue_id: statueId } }
-      ),
+      fetchWithAuth("statue-collected", session.access_token, {
+        statue_id: statueId,
+      }),
+
     onSuccess: async () => {
       await leaderboard.refetch();
       await collectedStatues.refetch();
