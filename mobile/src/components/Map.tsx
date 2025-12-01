@@ -25,37 +25,6 @@ import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
 import { StatueWithDistance } from "@/types/statues";
 import { getThumbnailUrl } from "@/utils/images";
 
-// Custom marker component that handles image loading state
-const CollectedStatueMarker: FC<{
-  statue: StatueWithDistance & { latitude: number; longitude: number };
-  onPress: () => void;
-}> = ({ statue, onPress }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  return (
-    <Marker
-      coordinate={{
-        latitude: statue.latitude,
-        longitude: statue.longitude,
-      }}
-      onPress={onPress}
-      anchor={{ x: 0.5, y: 0.5 }}
-      calloutOffset={{ x: 0.5, y: 0.5 }}
-      tracksViewChanges={!imageLoaded}
-    >
-      <View className="w-16 h-16 rounded-full border-2 border-red overflow-hidden">
-        <ExpoImage
-          style={{ width: "100%", height: "100%" }}
-          source={{ uri: getThumbnailUrl(statue.id, 96) }}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-          onLoad={() => setImageLoaded(true)}
-        />
-      </View>
-    </Marker>
-  );
-};
-
 export const Map: FC = () => {
   const { animateToRegion, initialRegion, mapRef } =
     useContext(LocationContext);
@@ -67,6 +36,8 @@ export const Map: FC = () => {
   >(undefined);
   // heading (compass direction) of the user
   const [userHeading, setUserHeading] = useState<number | undefined>(undefined);
+  // track which collected statue images have loaded - to optimize Marker re-renders
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
   const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
@@ -176,11 +147,29 @@ export const Map: FC = () => {
         )}
         {statuesPoints.map((statue) =>
           statue.isCollected ? (
-            <CollectedStatueMarker
+            <Marker
               key={`point-${statue.id}`}
-              statue={statue}
+              coordinate={{
+                latitude: statue.latitude,
+                longitude: statue.longitude,
+              }}
               onPress={() => onMapPointPress(statue)}
-            />
+              anchor={{ x: 0.5, y: 0.5 }}
+              calloutOffset={{ x: 0.5, y: 0.5 }}
+              tracksViewChanges={!loadedImages.has(statue.id)} // optimization to stop re-rendering after image loads
+            >
+              <View className="w-16 h-16 rounded-full border-2 border-red overflow-hidden">
+                <ExpoImage
+                  style={{ width: "100%", height: "100%" }}
+                  source={{ uri: getThumbnailUrl(statue.id, 96) }}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                  onLoad={() => {
+                    setLoadedImages((prev) => new Set(prev).add(statue.id));
+                  }}
+                />
+              </View>
+            </Marker>
           ) : (
             <Marker
               key={`point-${statue.id}`}
