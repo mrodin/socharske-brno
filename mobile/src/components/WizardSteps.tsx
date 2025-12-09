@@ -148,7 +148,7 @@ const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
     <WizardWrapper className="right-[10px] absolute bottom-[30px]">
       <WizardContent>
         <StepNumber>4/4</StepNumber>
-        <Header>Vyhledávání</Header>
+        <Header>Profil a nastavení</Header>
         <Description>
           Tady si můžeš nastavit svůj profil anebo funkce aplikace.
         </Description>
