@@ -6,6 +6,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { Image, Text, View } from "react-native";
@@ -89,26 +90,32 @@ export const Map: FC = () => {
       });
     };
 
-    const subscription = Location.watchPositionAsync(
+    const positionSubscription = Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.High,
         timeInterval: 1000,
-        // Enable heading updates
-        distanceInterval: 0,
+        distanceInterval: 10,
       },
       (newLocation) => {
         setUserLocation(newLocation.coords);
-        // Update heading if available
-        if (newLocation.coords.heading !== null) {
-          setUserHeading(newLocation.coords.heading);
-        }
       }
     );
+
+    // Use watchHeadingAsync for reliable compass heading updates
+    const headingSubscription = Location.watchHeadingAsync((headingData) => {
+      // Use trueHeading if available (more accurate), otherwise use magHeading
+      const heading =
+        headingData.trueHeading !== -1
+          ? headingData.trueHeading
+          : headingData.magHeading;
+      setUserHeading(heading);
+    });
 
     getCurrentLocation();
 
     return () => {
-      subscription.then((sub) => sub.remove());
+      positionSubscription.then((sub) => sub.remove());
+      headingSubscription.then((sub) => sub.remove());
     };
   }, []);
 
@@ -128,23 +135,6 @@ export const Map: FC = () => {
         clusterColor="#8B8B8B"
         clusterTextColor="#FFFFFF"
       >
-        {userLocation && (
-          <Marker
-            tracksViewChanges={false}
-            coordinate={{
-              latitude: userLocation.latitude,
-              longitude: userLocation.longitude,
-            }}
-            anchor={{ x: 0.5, y: 0.5 }}
-            rotation={userHeading || 0}
-            flat={true}
-          >
-            <Image
-              className="w-[60px] h-[60px]"
-              source={require("../../assets/current-location.png")}
-            />
-          </Marker>
-        )}
         {statuesPoints.map((statue) =>
           statue.isCollected ? (
             <Marker
@@ -156,7 +146,7 @@ export const Map: FC = () => {
               onPress={() => onMapPointPress(statue)}
               anchor={{ x: 0.5, y: 0.5 }}
               calloutOffset={{ x: 0.5, y: 0.5 }}
-              tracksViewChanges={!loadedImages.has(statue.id)} // optimization to stop re-rendering after image loads
+              tracksViewChanges
             >
               <View className="w-16 h-16 rounded-full border-2 border-red overflow-hidden">
                 <ExpoImage
@@ -196,6 +186,25 @@ export const Map: FC = () => {
               </View>
             </Marker>
           )
+        )}
+        {userLocation && (
+          <Marker
+            {...{ cluster: false }}
+            tracksViewChanges={false}
+            coordinate={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+            rotation={userHeading || 0}
+            style={{ zIndex: 1000 }} // nativewind not working here
+            flat={true}
+          >
+            <Image
+              className="w-[60px] h-[60px]"
+              source={require("../../assets/current-location.png")}
+            />
+          </Marker>
         )}
       </ClusteredMapView>
       <GpsButton
