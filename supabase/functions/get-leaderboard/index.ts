@@ -1,8 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const MAX_LEADERBOARD_SIZE = 10;
-
 interface LeaderboardEntry {
   id: string;
   username: string;
@@ -62,10 +60,8 @@ Deno.serve(async (_req) => {
     })
   );
 
-  // Sort by score descending and limit to MAX_LEADERBOARD_SIZE
-  const sortedLeaderboard = leaderboard
-    .sort((a, b) => b.score - a.score)
-    .slice(0, MAX_LEADERBOARD_SIZE);
+  // Sort by score descending
+  const sortedLeaderboard = leaderboard.sort((a, b) => b.score - a.score);
 
   return new Response(JSON.stringify(sortedLeaderboard), {
     headers: { "Content-Type": "application/json" },
