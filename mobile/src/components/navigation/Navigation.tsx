@@ -60,7 +60,7 @@ export const Navigation: FC<NavigationProps> = ({
         />
         <NavigationButton
           disabled={disabled}
-          label="Leaderboard"
+          label="Hráči"
           icon={CrownIcon}
           onPress={() => onPress("/leaderboard")}
           isActive={selectedRoute === "/leaderboard"}
