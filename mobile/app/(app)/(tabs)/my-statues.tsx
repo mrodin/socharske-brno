@@ -5,6 +5,7 @@ import {
   Text,
   Pressable,
   VirtualizedList,
+  Dimensions,
 } from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
@@ -32,6 +33,19 @@ type StatueListItem = {
   distance: number;
 };
 
+const calculateLatOffset = (drawerHeightPercent: number) => {
+  const screenHeight = Dimensions.get("window").height;
+  const usableHeightPercent = 1 - drawerHeightPercent / 100;
+
+  // We want the statue in the middle of the usable space
+  const offsetPercent = 0.5 - usableHeightPercent / 2;
+  const offsetPixels = screenHeight * offsetPercent;
+
+  // Convert pixels to latitude degrees (approximate: 0.000015 degrees per pixel)
+  const offsetLat = offsetPixels * 0.000015;
+  return offsetLat;
+};
+
 const MyStatues: FC = () => {
   const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
@@ -46,7 +60,16 @@ const MyStatues: FC = () => {
     setSelectedStatue(statue);
     if (statue) {
       router.navigate("/");
-      animateToRegion({ latitude: statue.lat, longitude: statue.lng });
+
+      const isCollected = collectedStatues.some(
+        (cs) => cs.statue_id === statue.id
+      );
+      const drawerHeightPercent = isCollected ? 73 : 55;
+
+      animateToRegion({
+        latitude: statue.lat - calculateLatOffset(drawerHeightPercent),
+        longitude: statue.lng,
+      });
     }
   };
 
@@ -178,7 +201,7 @@ const UndiscoveredStatueItem: FC<{
     score={statue.statueInfo.score}
     onPress={() => onNavigate(statue.statueInfo)}
     variant="secondary"
-    name="???"
+    name={statue.statueInfo.name}
     subtitle={
       <>
         vzdálenost{" "}

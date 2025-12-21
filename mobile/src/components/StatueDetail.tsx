@@ -97,7 +97,7 @@ export const StatueDetail: FC = () => {
       enablePanDownToClose
       onClose={() => setSelectedStatue(null)}
       handleComponent={HandleWithImage}
-      snapPoints={["73%", "100%"]}
+      snapPoints={[isCollected ? "73%" : "55%", "100%"]}
     >
       <BottomSheetScrollView
         className="bg-gray h-full p-6 gap-6"
