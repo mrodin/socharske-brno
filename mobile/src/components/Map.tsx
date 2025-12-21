@@ -1,4 +1,3 @@
-import { Image as ExpoImage } from "expo-image";
 import * as Location from "expo-location";
 import React, {
   FC,
@@ -6,10 +5,9 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, View } from "react-native";
 import ClusteredMapView from "react-native-map-clustering";
 import { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
@@ -18,18 +16,19 @@ import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
-import { calculateDistance, formatDistance } from "../utils/math";
+import { calculateDistance } from "../utils/math";
 
 import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
-import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
-import { StatueWithDistance } from "@/types/statues";
-import { getThumbnailUrl } from "@/utils/images";
+import { StatuePoint } from "@/types/statues";
+import { StatueMarker } from "./StatueMarker";
 
 export const Map: FC = () => {
   const { animateToRegion, initialRegion, mapRef } =
     useContext(LocationContext);
-  const { setSelectedStatue } = useContext(SelectedStatueContext);
+  const { selectedStatue, setSelectedStatue } = useContext(
+    SelectedStatueContext
+  );
 
   // location of the user marker
   const [userLocation, setUserLocation] = useState<
@@ -51,24 +50,27 @@ export const Map: FC = () => {
 
     return Object.values(statueMap)
       .filter((statue) => statue.visible)
-      .map((statue) => ({
-        ...statue,
-        latitude: statue.lat,
-        longitude: statue.lng,
-        distance: userLocation
-          ? calculateDistance(
-              userLocation.latitude,
-              userLocation.longitude,
-              statue.lat,
-              statue.lng
-            )
-          : undefined,
-        isCollected: collectedStatueIds.has(statue.id),
-      }));
+      .map(
+        (statue) =>
+          ({
+            ...statue,
+            latitude: statue.lat,
+            longitude: statue.lng,
+            distance: userLocation
+              ? calculateDistance(
+                  userLocation.latitude,
+                  userLocation.longitude,
+                  statue.lat,
+                  statue.lng
+                )
+              : undefined,
+            isCollected: collectedStatueIds.has(statue.id),
+          }) satisfies StatuePoint
+      );
   }, [collectedStatues, statueMap, userLocation]);
 
   const onMapPointPress = useCallback(
-    (statue: StatueWithDistance) => {
+    (statue: StatuePoint) => {
       setSelectedStatue(statue);
     },
     [setSelectedStatue]
@@ -135,58 +137,25 @@ export const Map: FC = () => {
         clusterColor="#8B8B8B"
         clusterTextColor="#FFFFFF"
       >
-        {statuesPoints.map((statue) =>
-          statue.isCollected ? (
-            <Marker
-              key={`point-${statue.id}`}
-              coordinate={{
-                latitude: statue.latitude,
-                longitude: statue.longitude,
-              }}
-              onPress={() => onMapPointPress(statue)}
-              anchor={{ x: 0.5, y: 0.5 }}
-              calloutOffset={{ x: 0.5, y: 0.5 }}
-              tracksViewChanges
-            >
-              <View className="w-16 h-16 rounded-full border-2 border-red overflow-hidden">
-                <ExpoImage
-                  style={{ width: "100%", height: "100%" }}
-                  source={{ uri: getThumbnailUrl(statue.id, 96) }}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                  onLoad={() => {
-                    setLoadedImages((prev) => new Set(prev).add(statue.id));
-                  }}
-                />
-              </View>
-            </Marker>
-          ) : (
-            <Marker
-              key={`point-${statue.id}`}
-              coordinate={{
-                latitude: statue.latitude,
-                longitude: statue.longitude,
-              }}
-              onPress={() => onMapPointPress(statue)}
-              anchor={{ x: 0.5, y: 0.5 }}
-              calloutOffset={{ x: 0.5, y: 0.5 }}
-              tracksViewChanges={false}
-            >
-              <View className="w-20 h-48 items-center justify-center">
-                <UndiscoveredStatueIcon />
-                {statue.distance ? (
-                  <View className="absolute left-0 bottom-[120px]">
-                    <View className="bg-gray-lighter rounded-3xl w-20 h-[32px] justify-center items-center">
-                      <Text className="text-md text-center text-white">
-                        {formatDistance(statue.distance)}
-                      </Text>
-                    </View>
-                  </View>
-                ) : null}
-              </View>
-            </Marker>
-          )
-        )}
+        {statuesPoints.map((statue) => (
+          <Marker
+            key={`point-${statue.id}`}
+            coordinate={{
+              latitude: statue.latitude,
+              longitude: statue.longitude,
+            }}
+            onPress={() => onMapPointPress(statue)}
+            anchor={{ x: 0.5, y: 0.5 }}
+            calloutOffset={{ x: 0.5, y: 0.5 }}
+            tracksViewChanges={statue.isCollected}
+          >
+            <StatueMarker
+              statue={statue}
+              highlighted={statue.id === selectedStatue?.id}
+              setLoadedImages={setLoadedImages}
+            />
+          </Marker>
+        ))}
         {userLocation && (
           <Marker
             {...{ cluster: false }}
