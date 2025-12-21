@@ -50,6 +50,7 @@ export const useGetLeaderboard = () => {
     queryKey: ["leaderboard"],
     queryFn: () => fetchWithAuth("get-leaderboard", session.access_token),
     initialData: [],
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
   });
 };
 
