@@ -13,32 +13,30 @@ export const UserTag = () => {
   const userStatistics = useUserStatistics();
 
   return (
-    <View className="flex-row justify-between items-center border-[2px] w-full border-gray-light rounded-full ">
-      <View className="flex-row items-center">
-        <Image
-          source={
-            url
-              ? {
-                  uri: url,
-                }
-              : defaultUserIconSource
-          }
-          className="w-[54px] h-[54px] rounded-full"
-        />
-        <View className="py-2 flex-1">
-          <Text
-            className="color-white text-2xl font-bold"
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
-            {userInfo?.username}
-          </Text>
-          <Text className="color-red-pale">{userStatistics?.rank}. místo</Text>
-        </View>
-        <Text className="color-white text-2xl pr-6">
-          {userStatistics?.score}b
+    <View className="flex-row justify-between items-center border-[2px] w-full border-gray-light rounded-full gap-2.5">
+      <Image
+        source={
+          url
+            ? {
+                uri: url,
+              }
+            : defaultUserIconSource
+        }
+        className="w-[54px] h-[54px] rounded-full"
+      />
+      <View className="py-2 flex-1">
+        <Text
+          className="color-white text-2xl font-bold"
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
+          {userInfo?.username}
         </Text>
+        <Text className="color-red-pale">{userStatistics?.rank}. místo</Text>
       </View>
+      <Text className="color-white text-2xl pr-6">
+        {userStatistics?.score}b
+      </Text>
     </View>
   );
 };
