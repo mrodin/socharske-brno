@@ -7,7 +7,7 @@ import Sortable, {
 } from "react-native-sortables";
 import { useSharedValue, useAnimatedReaction } from "react-native-reanimated";
 import { PuzzlePiece } from "../../hooks/usePuzzleData";
-import { CheckIconOutline } from "./CheckIconOutline";
+import { CheckIconOutline } from "@/icons/CheckIconOutline";
 
 interface PuzzleProps {
   imageBase64: string;
@@ -175,7 +175,11 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
               }}
             />
           </View>
-          {hasCorrectPosition && progress < 1 && <CheckIconOutline />}
+          {hasCorrectPosition && progress < 1 && (
+            <View className="absolute top-1 right-1 bg-green-500 rounded-full w-6 h-6 flex items-center justify-center">
+              <CheckIconOutline />
+            </View>
+          )}
         </View>
       </Sortable.Handle>
     );

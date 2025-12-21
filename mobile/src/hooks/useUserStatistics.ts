@@ -11,7 +11,11 @@ export const useUserStatistics = () => {
 
   const userIndex = leaderboard.findIndex((user) => user.id === userInfo.id);
 
-  if (userIndex === -1) return null;
+  if (userIndex === -1)
+    return {
+      rank: null,
+      score: 0,
+    };
 
   const userScore = leaderboard[userIndex];
 
