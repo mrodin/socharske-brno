@@ -66,7 +66,7 @@ export const StatueDetail: FC = () => {
     return <Handle imageUrl={imageUrl} />;
   }, [imageUrl]);
 
-  const isCollected = collectedStatues.some(
+  const collectedStatue = collectedStatues.find(
     (statue) => statue.statue_id === selectedStatue?.id
   );
 
@@ -108,8 +108,12 @@ export const StatueDetail: FC = () => {
             {selectedStatue.name}
           </Text>
 
-          {isCollected ? (
-            <UnlockedStatueInfo statue={selectedStatue} />
+          {collectedStatue ? (
+            <UnlockedStatueInfo
+              collectedAt={collectedStatue.created_at}
+              score={collectedStatue.value}
+              statue={selectedStatue}
+            />
           ) : (
             <View className="gap-6">
               <Text className="text-white">
@@ -172,11 +176,28 @@ const Handle: FC<{ imageUrl: string }> = ({ imageUrl }) => (
   </View>
 );
 
-const UnlockedStatueInfo: FC<{ statue: Statue }> = ({ statue }) => {
+type UnlockedStatueInfoProps = {
+  collectedAt: string;
+  score: number;
+  statue: Statue;
+};
+
+const UnlockedStatueInfo: FC<UnlockedStatueInfoProps> = ({
+  collectedAt,
+  score,
+  statue,
+}) => {
   const { author, description, material, type, year, wiki_url } = statue;
+
+  const formattedDate = new Date(collectedAt).toLocaleDateString("cs-CZ");
 
   return (
     <View className="gap-6">
+      <View className="flex-row gap-2">
+        <Badge>{`Uloveno ${formattedDate}`}</Badge>
+        <Badge>{`+${score}b`}</Badge>
+      </View>
+
       {description && <Description>{description}</Description>}
 
       <View className="flex flex-row">
@@ -268,6 +289,12 @@ const Description: FC<{ children: ReactNode }> = ({ children }) => {
     </View>
   );
 };
+
+const Badge: FC<{ children: ReactNode }> = ({ children }) => (
+  <View className="border-2 border-red-lightest px-3 py-1 rounded-full">
+    <Text className="text-red-lightest text-sm font-bold">{children}</Text>
+  </View>
+);
 
 type LabelValueRowProps = {
   label: string;
