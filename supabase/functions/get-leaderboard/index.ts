@@ -61,7 +61,9 @@ Deno.serve(async (_req) => {
   );
 
   // Sort by score descending
-  const sortedLeaderboard = leaderboard.sort((a, b) => b.score - a.score);
+  const sortedLeaderboard = leaderboard
+    .sort((a, b) => b.score - a.score)
+    .filter((user) => user.username !== null && user.score > 0); // Filter out users with null username or zero score
 
   return new Response(JSON.stringify(sortedLeaderboard), {
     headers: { "Content-Type": "application/json" },

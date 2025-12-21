@@ -7,7 +7,7 @@ type ProfileDetailProps = {
   avatarUrl: string | null;
   collectedStatuesCount: number;
   score: number;
-  rank: number;
+  rank: number | null;
 };
 
 export const ProfileDetail: FC<ProfileDetailProps> = ({
@@ -25,11 +25,13 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
             {username}
           </Text>
         )}
-        <View className="border-solid border-2 rounded-full border-red-light">
-          <Text className="color-red-light px-[5px] py-[3px] font-bold">
-            {rank}. místo
-          </Text>
-        </View>
+        {rank !== null && (
+          <View className="border-solid border-2 rounded-full border-red-light">
+            <Text className="color-red-light px-[5px] py-[3px] font-bold">
+              {rank}. místo
+            </Text>
+          </View>
+        )}
         <Image
           source={avatarUrl ? { uri: avatarUrl } : defaultUserIconSource}
           accessibilityLabel="Avatar"
