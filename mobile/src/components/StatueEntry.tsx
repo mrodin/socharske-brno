@@ -10,7 +10,7 @@ import Svg, { Path } from "react-native-svg";
 import { tv } from "tailwind-variants";
 
 const statueEntryContainer = tv({
-  base: "h-[65px] flex-row justify-between items-center rounded-[50px] pl-1.5 pr-3 mb-[15px] gap-2",
+  base: "h-[65px] flex-row justify-between items-center rounded-[50px] pl-1.5 pr-3 mb-[15px] gap-2.5",
   variants: {
     variant: {
       primary: "bg-red-light",
