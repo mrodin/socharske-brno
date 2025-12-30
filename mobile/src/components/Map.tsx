@@ -122,7 +122,7 @@ export const Map: FC = () => {
         ref={mapRef}
         customMapStyle={customGoogleMapStyle}
         initialRegion={initialRegion}
-        provider={PROVIDER_GOOGLE}
+        // provider={PROVIDER_GOOGLE} Temporarily disabled for testing
         style={{ width: "100%", height: "100%" }}
         radius={40}
         extent={512}

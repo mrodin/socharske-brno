@@ -12,7 +12,7 @@ const button = tv({
   variants: {
     variant: {
       primary: "bg-red-light border-red-light",
-      secondary: "border-red-light",
+      secondary: "border-red-lightest",
       regular: "bg-white border-transparent",
     },
   },
@@ -22,11 +22,11 @@ const button = tv({
 });
 
 const buttonText = tv({
-  base: "text-center text-base leading-[48px] px-12",
+  base: "text-center text-base leading-[44px] px-12",
   variants: {
     variant: {
       primary: "text-white",
-      secondary: "text-red-light",
+      secondary: "text-red-lightest",
       regular: "",
     },
   },
