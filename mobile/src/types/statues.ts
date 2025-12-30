@@ -17,7 +17,9 @@ export type Statue = {
   score: number;
 };
 
-export type StatueWithDistance = Statue & {
+export type StatuePoint = Statue & {
+  longitude: number;
+  latitude: number;
   distance?: number;
   isCollected: boolean;
 };

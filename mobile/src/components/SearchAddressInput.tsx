@@ -1,11 +1,11 @@
-import React, { forwardRef, useMemo } from "react";
+import React, { forwardRef, useMemo, useState } from "react";
 import {
   GooglePlaceData,
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
-import { Text, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import { Text, TouchableOpacity, View } from "react-native";
+import Svg, { Path, Circle } from "react-native-svg";
 import { GoBack } from "./GoBack";
 
 interface SearchAddressInputProps {
@@ -17,11 +17,40 @@ export const SearchAddressInput = forwardRef<
   GooglePlacesAutocompleteRef,
   SearchAddressInputProps
 >(({ onClose, onSelect }, ref) => {
+  const [searchText, setSearchText] = useState("");
+
   const goBackButton = useMemo(
     () => () => {
       return <GoBack onPress={onClose} />;
     },
     [onClose]
+  );
+
+  const clearButton = useMemo(
+    () => () => {
+      // need to return empty fragment since GooglePlacesAutocomplete expects not null.
+      if (!searchText) return <></>;
+      return (
+        <TouchableOpacity
+          className="mr-6 my-auto"
+          onPress={() => {
+            if (ref && "current" in ref && ref.current) {
+              ref.current.setAddressText("");
+              setSearchText("");
+            }
+          }}
+        >
+          <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <Circle cx="14" cy="14" r="14" fill="#DF4237" />
+            <Path
+              d="M7.98275 19.1174L12.3702 14.4512L7.5 9.87186L9.20225 8.06146L14.0725 12.6408L18.436 8L20.3484 9.79815L15.9849 14.4389L20.8551 19.0182L19.1529 20.8286L14.2826 16.2493L9.89514 20.9156L7.98275 19.1174Z"
+              fill="white"
+            />
+          </Svg>
+        </TouchableOpacity>
+      );
+    },
+    [searchText, ref]
   );
 
   return (
@@ -39,6 +68,8 @@ export const SearchAddressInput = forwardRef<
       textInputProps={{
         placeholderTextColor: "#999999",
         returnKeyType: "search",
+        clearButtonMode: "never",
+        onChangeText: setSearchText,
       }}
       fetchDetails={true}
       nearbyPlacesAPI="GoogleReverseGeocoding"
@@ -47,10 +78,12 @@ export const SearchAddressInput = forwardRef<
         language: "cs-CZ",
         types: "geocode",
         components: "country:cz",
+        location: "49.1950,16.6068",
+        radius: 10000,
       }}
       renderRow={renderResultRow}
       renderLeftButton={goBackButton}
-      //suppressDefaultStyles
+      renderRightButton={clearButton}
       styles={{
         textInput: {
           flex: 1,
@@ -60,15 +93,18 @@ export const SearchAddressInput = forwardRef<
           height: 46,
           paddingHorizontal: 17,
         },
+        listView: {
+          backgroundColor: "none",
+          borderRadius: 0,
+        },
+        twigsContainer: {
+          color: "red",
+        },
         row: {
           backgroundColor: "#393939B3",
         },
         separator: {
           backgroundColor: "#6F6F6F",
-        },
-        listView: {
-          backgroundColor: "none",
-          borderRadius: 0,
         },
         description: {
           color: "#6F6F6F",

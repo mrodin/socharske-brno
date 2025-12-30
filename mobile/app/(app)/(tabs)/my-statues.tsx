@@ -5,6 +5,7 @@ import {
   Text,
   Pressable,
   VirtualizedList,
+  Dimensions,
 } from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
@@ -22,6 +23,10 @@ import { track } from "@amplitude/analytics-react-native";
 import { cn } from "@/utils/cn";
 import { getThumbnailUrl } from "@/utils/images";
 import { Button } from "@/components/Button";
+import {
+  COLLECTED_DRAWER_HEIGHT_PERCENT,
+  UNCOLLECTED_DRAWER_HEIGHT_PERCENT,
+} from "@/utils/constants";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -30,6 +35,19 @@ type StatueListItem = {
   created_at: string;
   value: number;
   distance: number;
+};
+
+const calculateLatOffset = (drawerHeightPercent: number) => {
+  const screenHeight = Dimensions.get("window").height;
+  const usableHeightPercent = 1 - drawerHeightPercent / 100;
+
+  // We want the statue in the middle of the usable space
+  const offsetPercent = 0.5 - usableHeightPercent / 2;
+  const offsetPixels = screenHeight * offsetPercent;
+
+  // Convert pixels to latitude degrees (approximate: 0.000015 degrees per pixel)
+  const offsetLat = offsetPixels * 0.000015;
+  return offsetLat;
 };
 
 const MyStatues: FC = () => {
@@ -46,7 +64,18 @@ const MyStatues: FC = () => {
     setSelectedStatue(statue);
     if (statue) {
       router.navigate("/");
-      animateToRegion({ latitude: statue.lat, longitude: statue.lng });
+
+      const isCollected = collectedStatues.some(
+        (cs) => cs.statue_id === statue.id
+      );
+      const drawerHeightPercent = isCollected
+        ? COLLECTED_DRAWER_HEIGHT_PERCENT
+        : UNCOLLECTED_DRAWER_HEIGHT_PERCENT;
+
+      animateToRegion({
+        latitude: statue.lat - calculateLatOffset(drawerHeightPercent),
+        longitude: statue.lng,
+      });
     }
   };
 
@@ -178,7 +207,7 @@ const UndiscoveredStatueItem: FC<{
     score={statue.statueInfo.score}
     onPress={() => onNavigate(statue.statueInfo)}
     variant="secondary"
-    name="???"
+    name={statue.statueInfo.name}
     subtitle={
       <>
         vzdálenost{" "}
