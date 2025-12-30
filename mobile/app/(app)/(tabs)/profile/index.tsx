@@ -24,6 +24,8 @@ const Profile = () => {
           rank={userStatistics.rank}
           avatarUrl={userInfo.avatarUrl}
           collectedStatuesCount={collectedStatues.length}
+          onPressScore={() => router.replace("/leaderboard")}
+          onPressCollectedStatues={() => router.replace("/my-statues")}
         />
 
         <Menu.List className="pt-[30px]">
