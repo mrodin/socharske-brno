@@ -43,7 +43,7 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
     >
       {accent ? (
         <View className={accentButtonVariants({ isActive })}>
-          {Icon && <Icon />}
+          {Icon && <Icon color="white" />}
         </View>
       ) : (
         <View
