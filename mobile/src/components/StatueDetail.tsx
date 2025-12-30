@@ -31,6 +31,10 @@ import { useLocation } from "../hooks/useLocation";
 import { calculateDistance } from "../utils/math";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { getThumbnailUrl } from "@/utils/images";
+import {
+  COLLECTED_DRAWER_HEIGHT_PERCENT,
+  UNCOLLECTED_DRAWER_HEIGHT_PERCENT,
+} from "@/utils/constants";
 
 const STATUE_DISTANCE_THRESHOLD_METERS = 20;
 
@@ -99,7 +103,12 @@ export const StatueDetail: FC = () => {
       enablePanDownToClose
       onClose={() => setSelectedStatue(null)}
       handleComponent={HandleWithImage}
-      snapPoints={[isCollected ? "73%" : "55%", "100%"]}
+      snapPoints={[
+        isCollected
+          ? `${COLLECTED_DRAWER_HEIGHT_PERCENT}%`
+          : `${UNCOLLECTED_DRAWER_HEIGHT_PERCENT}%`,
+        "100%",
+      ]}
     >
       <BottomSheetScrollView
         className="bg-gray h-full p-6 gap-6"

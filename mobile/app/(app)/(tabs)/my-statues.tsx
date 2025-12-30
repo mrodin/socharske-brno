@@ -23,6 +23,10 @@ import { track } from "@amplitude/analytics-react-native";
 import { cn } from "@/utils/cn";
 import { getThumbnailUrl } from "@/utils/images";
 import { Button } from "@/components/Button";
+import {
+  COLLECTED_DRAWER_HEIGHT_PERCENT,
+  UNCOLLECTED_DRAWER_HEIGHT_PERCENT,
+} from "@/utils/constants";
 
 type StatueListItem = {
   isCollected: boolean;
@@ -64,7 +68,9 @@ const MyStatues: FC = () => {
       const isCollected = collectedStatues.some(
         (cs) => cs.statue_id === statue.id
       );
-      const drawerHeightPercent = isCollected ? 73 : 55;
+      const drawerHeightPercent = isCollected
+        ? COLLECTED_DRAWER_HEIGHT_PERCENT
+        : UNCOLLECTED_DRAWER_HEIGHT_PERCENT;
 
       animateToRegion({
         latitude: statue.lat - calculateLatOffset(drawerHeightPercent),
