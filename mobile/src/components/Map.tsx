@@ -48,25 +48,28 @@ export const Map: FC = () => {
       collectedStatues.map((cs) => cs.statue_id)
     );
 
-    return Object.values(statueMap)
-      .filter((statue) => statue.visible)
-      .map(
-        (statue) =>
-          ({
-            ...statue,
-            latitude: statue.lat,
-            longitude: statue.lng,
-            distance: userLocation
-              ? calculateDistance(
-                  userLocation.latitude,
-                  userLocation.longitude,
-                  statue.lat,
-                  statue.lng
-                )
-              : undefined,
-            isCollected: collectedStatueIds.has(statue.id),
-          }) satisfies StatuePoint
-      );
+    return (
+      Object.values(statueMap)
+        // collected statues are always visible, others depend on their 'visible' property
+        .filter((statue) => collectedStatueIds.has(statue.id) || statue.visible)
+        .map(
+          (statue) =>
+            ({
+              ...statue,
+              latitude: statue.lat,
+              longitude: statue.lng,
+              distance: userLocation
+                ? calculateDistance(
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    statue.lat,
+                    statue.lng
+                  )
+                : undefined,
+              isCollected: collectedStatueIds.has(statue.id),
+            }) satisfies StatuePoint
+        )
+    );
   }, [collectedStatues, statueMap, userLocation]);
 
   const onMapPointPress = useCallback(
@@ -77,21 +80,6 @@ export const Map: FC = () => {
   );
 
   useEffect(() => {
-    const getCurrentLocation = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync();
-      setUserLocation(location.coords);
-      animateToRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-    };
-
     const positionSubscription = Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.High,
@@ -99,6 +87,13 @@ export const Map: FC = () => {
         distanceInterval: 10,
       },
       (newLocation) => {
+        if (!userLocation) {
+          // first location update, center the map
+          animateToRegion({
+            latitude: newLocation.coords.latitude,
+            longitude: newLocation.coords.longitude,
+          });
+        }
         setUserLocation(newLocation.coords);
       }
     );
@@ -112,8 +107,6 @@ export const Map: FC = () => {
           : headingData.magHeading;
       setUserHeading(heading);
     });
-
-    getCurrentLocation();
 
     return () => {
       positionSubscription.then((sub) => sub.remove());
@@ -147,7 +140,9 @@ export const Map: FC = () => {
             onPress={() => onMapPointPress(statue)}
             anchor={{ x: 0.5, y: 0.5 }}
             calloutOffset={{ x: 0.5, y: 0.5 }}
-            tracksViewChanges={statue.isCollected}
+            tracksViewChanges={
+              statue.isCollected || statue.id === selectedStatue?.id
+            }
           >
             <StatueMarker
               statue={statue}
