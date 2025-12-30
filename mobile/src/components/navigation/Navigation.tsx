@@ -7,6 +7,7 @@ import { UserIcon } from "./UserIcon";
 import { NavigationButton } from "./NavigationButton";
 import { MyStatuesIcon } from "./MyStatuesIcon";
 import { cn } from "@/utils/cn";
+import { useLocationContext } from "@/providers/LocationProvider";
 
 export type NavigationRoute =
   | "/"
@@ -28,6 +29,7 @@ export const Navigation: FC<NavigationProps> = ({
   disabled,
   className,
 }) => {
+  const { clearSearchedLocation } = useLocationContext();
   return (
     <View
       className={cn("absolute bottom-0 left-0 w-full h-[110px]", className)}
@@ -47,7 +49,10 @@ export const Navigation: FC<NavigationProps> = ({
           disabled={disabled}
           label="Moje sochy"
           icon={MyStatuesIcon}
-          onPress={() => onPress("/my-statues")}
+          onPress={() => {
+            clearSearchedLocation();
+            onPress("/my-statues");
+          }}
           isActive={selectedRoute === "/my-statues"}
         />
         <NavigationButton
@@ -62,14 +67,20 @@ export const Navigation: FC<NavigationProps> = ({
           disabled={disabled}
           label="Hráči"
           icon={CrownIcon}
-          onPress={() => onPress("/leaderboard")}
+          onPress={() => {
+            clearSearchedLocation();
+            onPress("/leaderboard");
+          }}
           isActive={selectedRoute === "/leaderboard"}
         />
         <NavigationButton
           disabled={disabled}
           label="Profil"
           icon={UserIcon}
-          onPress={() => onPress("/profile")}
+          onPress={() => {
+            clearSearchedLocation();
+            onPress("/profile");
+          }}
           isActive={selectedRoute === "/profile"}
         />
       </View>
