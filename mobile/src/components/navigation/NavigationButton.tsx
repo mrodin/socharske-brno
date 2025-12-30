@@ -18,7 +18,7 @@ const accentButtonVariants = tv({
 
 type NavigationButtonProps = {
   label: string;
-  icon?: FC<{ color?: string }>;
+  icon?: FC<{ color: string }>;
   accent?: boolean;
   disabled?: boolean;
   isActive: boolean;

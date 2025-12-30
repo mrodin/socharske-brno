@@ -17,7 +17,7 @@ import { calculateDistance } from "@/utils/math";
 import { StatueEntry } from "@/components/StatueEntry";
 import { useLocation } from "@/hooks/useLocation";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
-import { LocationContext } from "@/providers/LocationProvider";
+import { useLocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
 import { track } from "@amplitude/analytics-react-native";
 import { cn } from "@/utils/cn";
@@ -55,7 +55,7 @@ const MyStatues: FC = () => {
   const { data: collectedStatues = [] } = useGetCollectedStatues();
   const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
-  const { animateToRegion } = useContext(LocationContext);
+  const { animateToRegion } = useLocationContext();
   const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
 
   // Handler for navigating to a statue on the map
