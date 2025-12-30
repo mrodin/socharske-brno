@@ -47,12 +47,14 @@ const EditProfile = ({}) => {
             <Text className="color-white underline">Změnit heslo</Text>
           </Pressable>
         )}
-        <Button
-          variant="primary"
-          title="Uložit"
-          disabled={userName === userInfo.username}
-          onPress={handleChangeUsername}
-        />
+        {userName !== userInfo.username && (
+          <Button
+            variant="primary"
+            title="Uložit"
+            disabled={userName === userInfo.username}
+            onPress={handleChangeUsername}
+          />
+        )}
       </View>
     </ScrollView>
   );

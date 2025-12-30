@@ -1,54 +1,53 @@
-import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
-import * as Linking from "expo-linking";
-import { track } from "@amplitude/analytics-react-native";
-
-import { supabase } from "@/utils/supabase";
+import React, { useEffect, useState } from "react";
+import { Alert, Pressable, Text, View } from "react-native";
 import { Button } from "@/components/Button";
-import { AppleIcon } from "@/icons/AppleIcon";
-import { GoogleIcon } from "@/icons/GoogleIcon";
-import { googleAuth } from "@/utils/googleAuth";
+import { setUserId, track } from "@amplitude/analytics-react-native";
+
 import { StyledInput } from "@/components/StyledInput";
 import AuthWrap from "@/components/auth/Wrap";
-import { Link, router } from "expo-router";
-import { appleAuth } from "@/utils/appleAuth";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { supabase } from "@/utils/supabase";
 import { IS_IOS } from "@/utils/platform";
+import { appleAuth } from "@/utils/appleAuth";
+import { AppleIcon } from "@/icons/AppleIcon";
+import { googleAuth } from "@/utils/googleAuth";
+import { GoogleIcon } from "@/icons/GoogleIcon";
 
-const AuthRegister = () => {
-  const [email, setEmail] = useState("");
+const AuthEmailSignIn = () => {
+  const router = useRouter();
+  const { email: emailFromUrl } = useLocalSearchParams<{ email?: string }>();
+
+  const [email, setEmail] = useState(emailFromUrl ?? "");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const signUpWithEmail = async () => {
+  useEffect(() => {
+    // User is coming from email registration (we already have the email)
+    if (emailFromUrl) {
+      setEmail(emailFromUrl);
+    }
+  }, [emailFromUrl]);
+
+  const signInWithEmail = async () => {
     setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
-      options: {
-        emailRedirectTo: Linking.createURL("auth/email-signin"),
-      },
     });
-    setLoading(false);
-
     if (error) {
-      track("Sign Up Failed", { method: "Email", error: error.message });
-      Alert.alert(error.message);
+      track("Login Failed", { method: "Email", error });
+      Alert.alert("Špatné heslo nebo email");
     } else {
-      if (!session) {
-        Alert.alert("Zkontrolujte si email a potvrďte registraci");
-      }
-      track("Sign Up Success", { method: "Email", userId: session?.user?.id });
-      router.navigate({ pathname: "/auth/signin", params: { email } });
+      setUserId(data?.user.id);
+      track("Login Success", { method: "Email", userId: data?.user.id });
     }
+    setLoading(false);
   };
 
   return (
     <AuthWrap showGoBack>
       <Text className="text-white text-xl text-center mb-4 font-krona">
-        VYTVOŘIT NOVÝ ÚČET
+        Vítej zpět!
       </Text>
       <View className="gap-8">
         <View className="gap-5">
@@ -56,17 +55,17 @@ const AuthRegister = () => {
             <Button
               onPress={appleAuth}
               icon={<AppleIcon />}
-              title="Registrovat přes Apple"
+              title="Přihlásit přes Apple"
             />
           )}
           <Button
             onPress={googleAuth}
             icon={<GoogleIcon className="top-[2px]" />}
-            title="Registrovat přes Google"
+            title="Přihlásit přes Google"
           />
         </View>
         <Text className="text-white text-center">nebo</Text>
-        <View className="gap-5 ">
+        <View className="gap-5">
           <StyledInput
             onChangeText={(text) => setEmail(text)}
             value={email}
@@ -77,19 +76,23 @@ const AuthRegister = () => {
           <StyledInput
             placeholder="Heslo"
             onChangeText={(text) => setPassword(text)}
-            disabled={loading}
             value={password}
+            disabled={loading}
             autoCapitalize={"none"}
             secureTextEntry={true}
           />
-          <Text className="text-white -mt-1">
-            Heslo musí mít alespoň 6 znaků
-          </Text>
+          <Pressable
+            onPress={() => router.navigate("/auth/password-reset-request")}
+          >
+            <Text className="underline text-white text-right -mt-1">
+              Zapomenuté heslo?
+            </Text>
+          </Pressable>
           <Button
             variant="primary"
-            title="Registrovat"
+            title="Přihlásit se"
             disabled={loading}
-            onPress={signUpWithEmail}
+            onPress={signInWithEmail}
           />
         </View>
         <View>
@@ -101,9 +104,9 @@ const AuthRegister = () => {
           </Text>
         </View>
 
-        <Link href="/auth/signin">
+        <Link href="/auth/register">
           <Text className="underline text-red-lightest text-center">
-            Už máš účet? Přihlaš se.
+            Jsi tu poprvé? Zaregistruj se!
           </Text>
         </Link>
       </View>
@@ -111,4 +114,4 @@ const AuthRegister = () => {
   );
 };
 
-export default AuthRegister;
+export default AuthEmailSignIn;
