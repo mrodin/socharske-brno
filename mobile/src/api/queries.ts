@@ -82,10 +82,9 @@ export const useSendStatueFeedback = () => {
 
   return useMutation<void, Error, SendStatueFeedbackParams>({
     mutationFn: ({ message, statueId }) =>
-      fetchWithAuth(
-        "https://europe-west3-socharske-brno.cloudfunctions.net/send_statue_feedback",
-        session.access_token,
-        { method: "POST", body: { statue_id: statueId, message } }
-      ),
+      fetchWithAuth("send-statue-feedback", session.access_token, {
+        statue_id: statueId,
+        message,
+      }),
   });
 };
