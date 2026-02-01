@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState } from "react";
+import React, { forwardRef, useMemo } from "react";
 import {
   GooglePlaceData,
   GooglePlacesAutocomplete,
@@ -66,7 +66,6 @@ export const SearchAddressInput = forwardRef<
       placeholder="Hledat adresu"
       onPress={(_, details) => {
         if (details?.geometry.location) {
-          console.log("Selected location:", details.geometry);
           onSelect({
             location: details.geometry.location,
             viewport: details.geometry.viewport,

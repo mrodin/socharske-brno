@@ -1,5 +1,5 @@
 import { useLocationContext } from "@/providers/LocationProvider";
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { Geojson, GeojsonProps } from "react-native-maps";
 
 export const SearchLocationMarker: FC = () => {

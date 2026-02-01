@@ -86,7 +86,7 @@ export const Map: FC = () => {
       setSelectedStatue(statue);
       clearSearchedLocation();
     },
-    [setSelectedStatue]
+    [setSelectedStatue, clearSearchedLocation]
   );
 
   useEffect(() => {

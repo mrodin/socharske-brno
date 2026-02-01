@@ -7,7 +7,6 @@ import { UserIcon } from "./UserIcon";
 import { NavigationButton } from "./NavigationButton";
 import { MyStatuesIcon } from "./MyStatuesIcon";
 import { cn } from "@/utils/cn";
-import { useLocationContext } from "@/providers/LocationProvider";
 
 export type NavigationRoute =
   | "/"
@@ -17,7 +16,10 @@ export type NavigationRoute =
   | "/profile";
 
 type NavigationProps = {
-  onPress: (routeName: NavigationRoute) => void;
+  onPress: (
+    routeName: NavigationRoute,
+    options?: { shouldClearSearchedLocation: boolean }
+  ) => void;
   selectedRoute: NavigationRoute | null;
   disabled?: boolean;
   className?: string;
@@ -29,7 +31,6 @@ export const Navigation: FC<NavigationProps> = ({
   disabled,
   className,
 }) => {
-  const { clearSearchedLocation } = useLocationContext();
   return (
     <View
       className={cn("absolute bottom-0 left-0 w-full h-[110px]", className)}
@@ -50,8 +51,7 @@ export const Navigation: FC<NavigationProps> = ({
           label="Moje sochy"
           icon={MyStatuesIcon}
           onPress={() => {
-            clearSearchedLocation();
-            onPress("/my-statues");
+            onPress("/my-statues", { shouldClearSearchedLocation: true });
           }}
           isActive={selectedRoute === "/my-statues"}
         />
@@ -68,8 +68,7 @@ export const Navigation: FC<NavigationProps> = ({
           label="Hráči"
           icon={CrownIcon}
           onPress={() => {
-            clearSearchedLocation();
-            onPress("/leaderboard");
+            onPress("/leaderboard", { shouldClearSearchedLocation: true });
           }}
           isActive={selectedRoute === "/leaderboard"}
         />
@@ -78,8 +77,7 @@ export const Navigation: FC<NavigationProps> = ({
           label="Profil"
           icon={UserIcon}
           onPress={() => {
-            clearSearchedLocation();
-            onPress("/profile");
+            onPress("/profile", { shouldClearSearchedLocation: true });
           }}
           isActive={selectedRoute === "/profile"}
         />
