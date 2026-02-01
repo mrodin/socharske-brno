@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { Image, View } from "react-native";
@@ -47,6 +48,8 @@ export const Map: FC = () => {
   const [userHeading, setUserHeading] = useState<number | undefined>(undefined);
   // track which collected statue images have loaded - to optimize Marker re-renders
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  // track if we've done the initial map animation to user's location
+  const hasAnimatedToInitialLocation = useRef(false);
 
   const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
@@ -97,12 +100,13 @@ export const Map: FC = () => {
         distanceInterval: 10,
       },
       (newLocation) => {
-        if (!userLocation) {
+        if (!hasAnimatedToInitialLocation.current) {
           // first location update, center the map
           animateToRegion({
             latitude: newLocation.coords.latitude,
             longitude: newLocation.coords.longitude,
           });
+          hasAnimatedToInitialLocation.current = true;
         }
         setUserLocation(newLocation.coords);
       }
@@ -170,13 +174,15 @@ export const Map: FC = () => {
               longitude: userLocation.longitude,
             }}
             anchor={{ x: 0.5, y: 0.5 }}
-            rotation={userHeading || 0}
             style={{ zIndex: 1000 }} // nativewind not working here
             flat={true}
           >
             <Image
               className="w-[60px] h-[60px]"
               source={require("../../assets/current-location.png")}
+              style={{
+                transform: [{ rotate: `${userHeading ?? 0}deg` }],
+              }}
             />
           </Marker>
         )}

@@ -1,11 +1,13 @@
 import { defaultUserIconSource } from "@/utils/images";
 import { FC } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
 
 type ProfileDetailProps = {
   username?: string;
   avatarUrl: string | null;
   collectedStatuesCount: number;
+  onPressScore?: () => void;
+  onPressCollectedStatues?: () => void;
   score: number;
   rank: number | null;
 };
@@ -16,6 +18,8 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
   avatarUrl,
   collectedStatuesCount,
   score,
+  onPressCollectedStatues,
+  onPressScore,
 }) => {
   return (
     <>
@@ -41,16 +45,24 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
       </View>
 
       <View className="gap-3 flex-row w-full pt-[30px]">
-        <View className="bg-gray-light flex-1 rounded-2xl px-3 py-4 gap-1">
+        <TouchableOpacity
+          disabled={!onPressCollectedStatues}
+          onPress={onPressCollectedStatues}
+          className="bg-gray-light flex-1 rounded-2xl px-3 py-4 gap-1"
+        >
           <Text className="text-white">Ulovené sochy</Text>
           <Text className="text-4xl font-bold text-white">
             {collectedStatuesCount}
           </Text>
-        </View>
-        <View className="bg-gray-light flex-1 rounded-2xl px-3 py-4 gap-1">
+        </TouchableOpacity>
+        <TouchableOpacity
+          disabled={!onPressScore}
+          onPress={onPressScore}
+          className="bg-gray-light flex-1 rounded-2xl px-3 py-4 gap-1"
+        >
           <Text className="text-white">Skóre</Text>
           <Text className="text-4xl font-bold text-white">{score}b</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </>
   );
