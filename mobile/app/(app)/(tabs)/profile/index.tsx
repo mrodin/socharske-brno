@@ -32,7 +32,9 @@ const Profile = () => {
           <Menu.Item onPress={() => router.navigate("/profile/edit-profile")}>
             Upravit profil
           </Menu.Item>
-          <Menu.Item onPress={() => {}}>Nastavení hry</Menu.Item>
+          <Menu.Item onPress={() => router.navigate("/profile/settings")}>
+            Nastavení hry
+          </Menu.Item>
           <Menu.Item onPress={() => {}}>Pravidla hry</Menu.Item>
           <Menu.Item onPress={() => {}}>Podmínky používání</Menu.Item>
           <Menu.Item onPress={() => router.replace("/sign-out")}>

@@ -32,6 +32,7 @@ import { track } from "@amplitude/analytics-react-native";
 import { StatuePoint } from "@/types/statues";
 import { StatueMarker } from "./StatueMarker";
 import { SearchLocationMarker } from "./SearchLocationMarker";
+import { locationPermissionAlert } from "@/utils/permissions";
 
 export const Map: FC = () => {
   const { initialRegion, mapRef, animateToRegion, clearSearchedLocation } =
@@ -196,6 +197,8 @@ export const Map: FC = () => {
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
             });
+          } else {
+            locationPermissionAlert();
           }
         }}
       />
