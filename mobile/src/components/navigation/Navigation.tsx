@@ -16,7 +16,10 @@ export type NavigationRoute =
   | "/profile";
 
 type NavigationProps = {
-  onPress: (routeName: NavigationRoute) => void;
+  onPress: (
+    routeName: NavigationRoute,
+    options?: { shouldClearSearchedLocation: boolean }
+  ) => void;
   selectedRoute: NavigationRoute | null;
   disabled?: boolean;
   className?: string;
@@ -47,7 +50,9 @@ export const Navigation: FC<NavigationProps> = ({
           disabled={disabled}
           label="Moje sochy"
           icon={MyStatuesIcon}
-          onPress={() => onPress("/my-statues")}
+          onPress={() => {
+            onPress("/my-statues", { shouldClearSearchedLocation: true });
+          }}
           isActive={selectedRoute === "/my-statues"}
         />
         <NavigationButton
@@ -62,14 +67,18 @@ export const Navigation: FC<NavigationProps> = ({
           disabled={disabled}
           label="Hráči"
           icon={CrownIcon}
-          onPress={() => onPress("/leaderboard")}
+          onPress={() => {
+            onPress("/leaderboard", { shouldClearSearchedLocation: true });
+          }}
           isActive={selectedRoute === "/leaderboard"}
         />
         <NavigationButton
           disabled={disabled}
           label="Profil"
           icon={UserIcon}
-          onPress={() => onPress("/profile")}
+          onPress={() => {
+            onPress("/profile", { shouldClearSearchedLocation: true });
+          }}
           isActive={selectedRoute === "/profile"}
         />
       </View>
