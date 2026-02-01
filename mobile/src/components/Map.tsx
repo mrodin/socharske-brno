@@ -10,9 +10,17 @@ import React, {
 } from "react";
 import { Image, View } from "react-native";
 import ClusteredMapView from "react-native-map-clustering";
-import { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import {
+  Geojson,
+  GeojsonProps,
+  Marker,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 
-import { LocationContext } from "@/providers/LocationProvider";
+import {
+  LocationContext,
+  useLocationContext,
+} from "@/providers/LocationProvider";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
@@ -23,10 +31,11 @@ import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
 import { StatuePoint } from "@/types/statues";
 import { StatueMarker } from "./StatueMarker";
+import { SearchLocationMarker } from "./SearchLocationMarker";
 
 export const Map: FC = () => {
-  const { animateToRegion, initialRegion, mapRef } =
-    useContext(LocationContext);
+  const { initialRegion, mapRef, animateToRegion, clearSearchedLocation } =
+    useLocationContext();
   const { selectedStatue, setSelectedStatue } = useContext(
     SelectedStatueContext
   );
@@ -78,8 +87,9 @@ export const Map: FC = () => {
   const onMapPointPress = useCallback(
     (statue: StatuePoint) => {
       setSelectedStatue(statue);
+      clearSearchedLocation();
     },
-    [setSelectedStatue]
+    [setSelectedStatue, clearSearchedLocation]
   );
 
   useEffect(() => {
@@ -176,6 +186,7 @@ export const Map: FC = () => {
             />
           </Marker>
         )}
+        <SearchLocationMarker />
       </ClusteredMapView>
       <GpsButton
         onPress={() => {

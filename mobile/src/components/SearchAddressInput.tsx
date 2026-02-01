@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState } from "react";
+import React, { forwardRef, useMemo } from "react";
 import {
   GooglePlaceData,
   GooglePlacesAutocomplete,
@@ -9,16 +9,23 @@ import Svg, { Path, Circle } from "react-native-svg";
 import { GoBack } from "./GoBack";
 
 interface SearchAddressInputProps {
+  searchText: string;
+  setSearchText: (text: string) => void;
   onClose: () => void;
-  onSelect: (details: { lat: number; lng: number }) => void;
+  onClear?: () => void;
+  onSelect: (details: {
+    location: { lat: number; lng: number };
+    viewport: {
+      northeast: { lat: number; lng: number };
+      southwest: { lat: number; lng: number };
+    };
+  }) => void;
 }
 
 export const SearchAddressInput = forwardRef<
   GooglePlacesAutocompleteRef,
   SearchAddressInputProps
->(({ onClose, onSelect }, ref) => {
-  const [searchText, setSearchText] = useState("");
-
+>(({ searchText, setSearchText, onClose, onClear, onSelect }, ref) => {
   const goBackButton = useMemo(
     () => () => {
       return <GoBack onPress={onClose} />;
@@ -36,7 +43,7 @@ export const SearchAddressInput = forwardRef<
           onPress={() => {
             if (ref && "current" in ref && ref.current) {
               ref.current.setAddressText("");
-              setSearchText("");
+              onClear?.();
             }
           }}
         >
@@ -60,8 +67,8 @@ export const SearchAddressInput = forwardRef<
       onPress={(_, details) => {
         if (details?.geometry.location) {
           onSelect({
-            lat: details.geometry.location.lat,
-            lng: details.geometry.location.lng,
+            location: details.geometry.location,
+            viewport: details.geometry.viewport,
           });
         }
       }}

@@ -18,7 +18,7 @@ const accentButtonVariants = tv({
 
 type NavigationButtonProps = {
   label: string;
-  icon?: FC<{ color?: string }>;
+  icon?: FC<{ color: string }>;
   accent?: boolean;
   disabled?: boolean;
   isActive: boolean;
@@ -43,7 +43,7 @@ export const NavigationButton: FC<NavigationButtonProps> = ({
     >
       {accent ? (
         <View className={accentButtonVariants({ isActive })}>
-          {Icon && <Icon />}
+          {Icon && <Icon color="white" />}
         </View>
       ) : (
         <View

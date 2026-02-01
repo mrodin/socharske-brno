@@ -7,10 +7,11 @@ import { UserInfoContext } from "@/providers/UserInfo";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { Wizard } from "@/screens/Wizard";
 import { Tabs, TabList, TabTrigger, TabSlot } from "expo-router/ui";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { View } from "react-native";
 import { router, usePathname } from "expo-router";
 import { WizardProviderContext } from "@/providers/WizardProvider";
+import { useLocationContext } from "@/providers/LocationProvider";
 
 const NAVIGATION_HEIGHT = 96;
 
@@ -23,22 +24,33 @@ export default function Layout() {
   const { userInfo } = useContext(UserInfoContext);
   const wizard = useContext(WizardProviderContext);
 
+  const { clearSearchedLocation } = useLocationContext();
+
   const pathName = usePathname();
 
-  const handlePressMenu = (route: NavigationRoute) => {
-    const isRoot = route === "/";
-    const isActive = isRoot ? pathName === route : pathName.startsWith(route);
-    const isSubroute =
-      !isRoot && pathName !== route && pathName.startsWith(route);
+  const handlePressMenu = useCallback(
+    (
+      route: NavigationRoute,
+      options?: { shouldClearSearchedLocation: boolean }
+    ) => {
+      if (options && options.shouldClearSearchedLocation) {
+        clearSearchedLocation();
+      }
+      const isRoot = route === "/";
+      const isActive = isRoot ? pathName === route : pathName.startsWith(route);
+      const isSubroute =
+        !isRoot && pathName !== route && pathName.startsWith(route);
 
-    if (isActive && isSubroute) {
-      // Reset to root of the tab
-      router.dismissAll();
-    } else if (!isActive) {
-      // Navigate to selected tab
-      router.navigate(route as any);
-    }
-  };
+      if (isActive && isSubroute) {
+        // Reset to root of the tab
+        router.dismissAll();
+      } else if (!isActive) {
+        // Navigate to selected tab
+        router.navigate(route as any);
+      }
+    },
+    [clearSearchedLocation, router, pathName]
+  );
 
   if (!userInfo) {
     return <LoadingScreen />;
