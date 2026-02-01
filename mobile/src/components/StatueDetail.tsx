@@ -35,10 +35,17 @@ import {
   COLLECTED_DRAWER_HEIGHT_PERCENT,
   UNCOLLECTED_DRAWER_HEIGHT_PERCENT,
 } from "@/utils/constants";
+import {
+  openAppSettings,
+  useLocationPermission,
+  PermissionStatus,
+} from "@/utils/permissions";
+import { Button } from "./Button";
 
 const STATUE_DISTANCE_THRESHOLD_METERS = 20;
 
 export const StatueDetail: FC = () => {
+  const locationPermission = useLocationPermission();
   const router = useRouter();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -127,32 +134,49 @@ export const StatueDetail: FC = () => {
             />
           ) : (
             <View className="gap-6">
-              <Text className="text-white">
-                Ulov sochu a odemkni si víc informací.
-              </Text>
+              {locationPermission === PermissionStatus.Denied && (
+                <View className="flex gap-3">
+                  <Text className="text-white">
+                    Pro ulovení sochy a získání odměny je nutné si zapnout
+                    polohové funkce.
+                  </Text>
+                  <Button
+                    title="Přejít do nastavení"
+                    onPress={() => openAppSettings()}
+                    variant="primary"
+                  />
+                </View>
+              )}
 
-              <TouchableOpacity
-                disabled={isLoading || !isCloseEnough}
-                onPress={handleCollect}
-                className={collectButton({
-                  disabled: isLoading || !isCloseEnough,
-                })}
-              >
-                <Text
-                  style={{
-                    color: theme.white,
-                    fontWeight: "600",
-                    fontSize: 17,
-                    textAlign: "center",
-                  }}
-                >
-                  {isLoading
-                    ? "Nahrávám data"
-                    : !isCloseEnough
-                      ? `Přibližte se k soše na ${STATUE_DISTANCE_THRESHOLD_METERS} metrů`
-                      : "Ulov sochu"}
-                </Text>
-              </TouchableOpacity>
+              {locationPermission === PermissionStatus.Granted && (
+                <>
+                  <Text className="text-white">
+                    Ulov sochu a odemkni si víc informací.
+                  </Text>
+                  <TouchableOpacity
+                    disabled={isLoading || !isCloseEnough}
+                    onPress={handleCollect}
+                    className={collectButton({
+                      disabled: isLoading || !isCloseEnough,
+                    })}
+                  >
+                    <Text
+                      style={{
+                        color: theme.white,
+                        fontWeight: "600",
+                        fontSize: 17,
+                        textAlign: "center",
+                      }}
+                    >
+                      {isLoading
+                        ? "Nahrávám data"
+                        : !isCloseEnough
+                          ? `Přibližte se k soše na ${STATUE_DISTANCE_THRESHOLD_METERS} metrů`
+                          : "Ulov sochu"}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           )}
         </View>
