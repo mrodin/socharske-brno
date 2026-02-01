@@ -141,7 +141,7 @@ export const StatueDetail: FC = () => {
                 <Text
                   style={{
                     color: theme.white,
-                    fontWeight: "bold",
+                    fontWeight: "600",
                     fontSize: 17,
                     textAlign: "center",
                   }}
@@ -198,6 +198,8 @@ const UnlockedStatueInfo: FC<UnlockedStatueInfoProps> = ({
   score,
   statue,
 }) => {
+  const router = useRouter();
+
   const { author, description, material, type, year, wiki_url } = statue;
 
   const formattedDate = new Date(collectedAt).toLocaleDateString("cs-CZ");
@@ -241,8 +243,15 @@ const UnlockedStatueInfo: FC<UnlockedStatueInfoProps> = ({
         <Text className="text-white text-lg">
           Chybí ti tu nějaká informace?
         </Text>
-        {/* TODO: martin.rodin: Add link to contact form */}
-        <Pressable className="flex flex-row gap-2 items-center">
+        <Pressable
+          className="flex flex-row gap-2 items-center"
+          onPress={() => {
+            router.push({
+              pathname: "/statue-feedback",
+              params: { statueId: String(statue.id) },
+            });
+          }}
+        >
           <Text className="text-white underline text-lg">Napiš nám.</Text>
         </Pressable>
       </View>
@@ -292,7 +301,7 @@ const Description: FC<{ children: ReactNode }> = ({ children }) => {
 
       {showToggle && (
         <Pressable onPress={() => setExpanded(!expanded)}>
-          <Text className="text-white underline">
+          <Text className="text-white underline pt-1">
             {expanded ? "ZOBRAZIT MÉNĚ" : "ZOBRAZIT VÍCE"}
           </Text>
         </Pressable>
@@ -329,7 +338,7 @@ const collectButton = tv({
 });
 
 const description = tv({
-  base: "text-white",
+  base: "text-white leading-6",
   variants: {
     expanded: {
       true: "line-clamp-none",
