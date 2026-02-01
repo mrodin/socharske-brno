@@ -35,6 +35,7 @@ import { SearchLocationMarker } from "./SearchLocationMarker";
 import {
   locationPermissionAlert,
   useLocationPermission,
+  PermissionStatus,
 } from "@/utils/permissions";
 
 export const Map: FC = () => {
@@ -202,7 +203,7 @@ export const Map: FC = () => {
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
             });
-          } else if (locationPermission === false) {
+          } else if (locationPermission === PermissionStatus.Denied) {
             locationPermissionAlert();
           }
         }}

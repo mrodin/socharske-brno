@@ -11,8 +11,16 @@ export const openAppSettings = () => {
   }
 };
 
+export enum PermissionStatus {
+  Granted = "granted",
+  Denied = "denied",
+  Pending = "pending",
+}
+
 export const useLocationPermission = () => {
-  const [granted, setGranted] = useState<boolean | null>(null);
+  const [granted, setGranted] = useState<PermissionStatus>(
+    PermissionStatus.Pending
+  );
 
   useEffect(() => {
     let isActive = true;
@@ -20,7 +28,11 @@ export const useLocationPermission = () => {
     const refreshPermission = async () => {
       const { status } = await Location.getForegroundPermissionsAsync();
       if (isActive) {
-        setGranted(status === "granted");
+        setGranted(
+          status === "granted"
+            ? PermissionStatus.Granted
+            : PermissionStatus.Denied
+        );
       }
     };
 
