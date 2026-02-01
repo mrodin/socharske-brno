@@ -23,12 +23,5 @@ export const SearchLocationMarker: FC = () => {
     ],
   };
 
-  return (
-    <Geojson
-      geojson={locationPoint}
-      strokeColor="red"
-      fillColor="green"
-      strokeWidth={2}
-    />
-  );
+  return <Geojson geojson={locationPoint} />;
 };
