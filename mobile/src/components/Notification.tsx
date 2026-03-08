@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { Close } from "@/icons/Close";
 import { View, Text, TouchableOpacity } from "react-native";
 import { toast } from "sonner-native";
@@ -16,7 +17,7 @@ type NotificationMessageProps = {
   onClose: () => void;
 };
 
-const NotificationMessage: React.FC<NotificationMessageProps> = ({
+const NotificationMessage: FC<NotificationMessageProps> = ({
   message,
   onClose,
 }) => (
