@@ -71,3 +71,20 @@ export const useCollectStatue = () => {
     },
   });
 };
+
+type SendStatueFeedbackParams = {
+  message: string;
+  statueId: number;
+};
+
+export const useSendStatueFeedback = () => {
+  const session = useSession();
+
+  return useMutation<void, Error, SendStatueFeedbackParams>({
+    mutationFn: ({ message, statueId }) =>
+      fetchWithAuth("send-statue-feedback", session.access_token, {
+        statue_id: statueId,
+        message,
+      }),
+  });
+};
