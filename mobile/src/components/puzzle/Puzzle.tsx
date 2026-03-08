@@ -15,6 +15,7 @@ import ReanimatedAnimated, {
 import { usePuzzleData } from "../../hooks/usePuzzleData";
 import { usePuzzlePieces } from "../../hooks/usePuzzlePieces";
 import { PuzzleGrid } from "./PuzzleGrid";
+import { notify } from "@/components/Notification";
 
 type PuzzleProps = {
   imageUrl: string;
@@ -45,6 +46,7 @@ export const Puzzle: React.FC<PuzzleProps> = ({
       { duration: 4000, easing: Easing.linear },
       (finished) => {
         if (finished) {
+          runOnJS(notify)("Dobrá práce!\nSocha je ve tvé sbírce. 🤟");
           runOnJS(onClose)();
         }
       }
