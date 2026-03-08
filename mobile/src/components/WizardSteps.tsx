@@ -3,6 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import { Button } from "@/components/Button";
 import { ArrowRight } from "@/icons/ArrowRight";
 import { WizardProviderContext } from "@/providers/WizardProvider";
+import { UserInfoContext } from "@/providers/UserInfo";
 import { Close } from "@/icons/Close";
 import { cn } from "@/utils/cn";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
@@ -152,12 +153,40 @@ const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
         <Description>
           Tady si můžeš nastavit svůj profil anebo funkce aplikace.
         </Description>
-        <Next onPress={onNext} text="Pustit se do lovu" />
+        <Next onPress={onNext} text="Dále" />
       </WizardContent>
     </WizardWrapper>
     <WizardArrow className="bottom-[30px] right-[13%]" />
   </>
 );
+
+const TooltipStep6: FC<TooltipProps> = ({ onNext }) => {
+  const { requestPushPermission } = useContext(UserInfoContext);
+
+  const handleAllow = async () => {
+    await requestPushPermission();
+    onNext();
+  };
+
+  return (
+    <WizardWrapper className="my-auto mx-auto relative z-40">
+      <WizardContent>
+        <Header>Zůstaň v obraze! 🗿</Header>
+        <Description>
+          Pošleme ti upozornění, když budeš déle než týden bez nové sochy.
+          Maximálně jednou týdně, žádný spam.
+        </Description>
+        <Button
+          variant="primary"
+          className="mt-2"
+          title="Povolit upozornění"
+          onPress={handleAllow}
+        />
+        <Next onPress={onNext} text="Přeskočit" />
+      </WizardContent>
+    </WizardWrapper>
+  );
+};
 
 const Wizard = () => {
   const { step, setStep, close } = useContext(WizardProviderContext);
@@ -168,7 +197,8 @@ const Wizard = () => {
       {step === 2 && <TooltipStep2 onNext={() => setStep(3)} />}
       {step === 3 && <TooltipStep3 onNext={() => setStep(4)} />}
       {step === 4 && <TooltipStep4 onNext={() => setStep(5)} />}
-      {step === 5 && <TooltipStep5 onNext={() => close()} />}
+      {step === 5 && <TooltipStep5 onNext={() => setStep(6)} />}
+      {step === 6 && <TooltipStep6 onNext={close} />}
     </View>
   );
 };

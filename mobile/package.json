@@ -35,6 +35,8 @@
     "expo-router": "55.0.4",
     "expo-splash-screen": "55.0.10",
     "expo-status-bar": "55.0.4",
+    "expo-device": "7.0.3",
+    "expo-notifications": "0.29.14",
     "nativewind": "4.1.23",
     "react": "19.2.0",
     "react-dom": "19.2.0",

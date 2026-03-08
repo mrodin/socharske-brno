@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
 import { UserSessionContext } from "./UserSession";
+import { usePushNotifications } from "../hooks/usePushNotifications";
 import { Alert } from "react-native";
 
 type UserInfo = {
@@ -19,10 +20,12 @@ export const UserInfoContext = createContext<{
     username?: string;
     avatar_url?: string;
   }) => Promise<void>;
+  requestPushPermission: () => Promise<boolean>;
 }>({
   userInfo: null,
   loading: true,
   updateProfile: async () => {},
+  requestPushPermission: async () => false,
 });
 
 /**
@@ -32,6 +35,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { session } = useContext(UserSessionContext);
+  const { requestPermission } = usePushNotifications(session?.user.id ?? null);
 
   useEffect(() => {
     if (session) getProfile();
@@ -123,7 +127,9 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <UserInfoContext.Provider value={{ userInfo, loading, updateProfile }}>
+    <UserInfoContext.Provider
+      value={{ userInfo, loading, updateProfile, requestPushPermission: requestPermission }}
+    >
       {children}
     </UserInfoContext.Provider>
   );

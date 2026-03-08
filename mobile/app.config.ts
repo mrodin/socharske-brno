@@ -27,6 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         "This app requires access to your location even when closed.",
       NSLocationAlwaysUsageDescription:
         "This app requires access to your location when open.",
+      UIBackgroundModes: ["remote-notification"],
     },
   },
   android: {
@@ -43,6 +44,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     "expo-router",
     "expo-font",
+    [
+      "expo-notifications",
+      {
+        color: "#DF3F34",
+      },
+    ],
     "expo-apple-authentication",
     "./plugins/withDisplayCutout",
     [
