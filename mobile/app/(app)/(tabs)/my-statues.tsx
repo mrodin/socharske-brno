@@ -15,7 +15,6 @@ import { UserTag } from "@/components/UserTag";
 import { RouteHeader } from "@/components/RouteHeader";
 import { calculateDistance } from "@/utils/math";
 import { StatueEntry } from "@/components/StatueEntry";
-import { useLocation } from "@/hooks/useLocation";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { useLocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
@@ -53,9 +52,8 @@ const calculateLatOffset = (drawerHeightPercent: number) => {
 const MyStatues: FC = () => {
   const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
-  const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
-  const { animateToRegion } = useLocationContext();
+  const { animateToRegion, userLocation } = useLocationContext();
   const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
 
   // Handler for navigating to a statue on the map
@@ -114,17 +112,17 @@ const MyStatues: FC = () => {
         statueInfo: statue,
         created_at: "",
         value: 0,
-        distance: location?.coords.latitude
+        distance: userLocation
           ? calculateDistance(
               statue.lat,
               statue.lng,
-              location.coords.latitude,
-              location.coords.longitude
+              userLocation.latitude,
+              userLocation.longitude
             )
           : 0,
       }))
       .sort((a, b) => a.distance - b.distance);
-  }, [statueMap, collectedStatues, location?.coords]);
+  }, [statueMap, collectedStatues, userLocation]);
 
   const showNoStatuesMessage =
     collectedStatuesList.length === 0 && tab === "collected";

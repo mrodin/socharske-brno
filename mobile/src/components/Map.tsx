@@ -17,15 +17,11 @@ import {
   PROVIDER_GOOGLE,
 } from "react-native-maps";
 
-import {
-  LocationContext,
-  useLocationContext,
-} from "@/providers/LocationProvider";
+import { useLocationContext } from "@/providers/LocationProvider";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
-import { calculateDistance } from "../utils/math";
 
 import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
@@ -39,20 +35,22 @@ import {
 } from "@/utils/permissions";
 
 export const Map: FC = () => {
-  const { initialRegion, mapRef, animateToRegion, clearSearchedLocation } =
-    useLocationContext();
+  const {
+    initialRegion,
+    mapRef,
+    animateToRegion,
+    clearSearchedLocation,
+    userLocation,
+  } = useLocationContext();
   const { selectedStatue, setSelectedStatue } = useContext(
     SelectedStatueContext
   );
 
   const locationPermission = useLocationPermission();
 
-  // location of the user marker
-  const [userLocation, setUserLocation] = useState<
-    Location.LocationObjectCoords | undefined
-  >(undefined);
   // heading (compass direction) of the user
   const [userHeading, setUserHeading] = useState<number | undefined>(undefined);
+  const lastReportedHeading = useRef(0);
   // track which collected statue images have loaded - to optimize Marker re-renders
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   // track if we've done the initial map animation to user's location
@@ -77,19 +75,12 @@ export const Map: FC = () => {
               ...statue,
               latitude: statue.lat,
               longitude: statue.lng,
-              distance: userLocation
-                ? calculateDistance(
-                    userLocation.latitude,
-                    userLocation.longitude,
-                    statue.lat,
-                    statue.lng
-                  )
-                : undefined,
+              distance: undefined,
               isCollected: collectedStatueIds.has(statue.id),
             }) satisfies StatuePoint
         )
     );
-  }, [collectedStatues, statueMap, userLocation]);
+  }, [collectedStatues, statueMap]);
 
   const onMapPointPress = useCallback(
     (statue: StatuePoint) => {
@@ -99,38 +90,32 @@ export const Map: FC = () => {
     [setSelectedStatue, clearSearchedLocation]
   );
 
+  // Animate to user's location on first location update
   useEffect(() => {
-    const positionSubscription = Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.High,
-        timeInterval: 1000,
-        distanceInterval: 10,
-      },
-      (newLocation) => {
-        if (!hasAnimatedToInitialLocation.current) {
-          // first location update, center the map
-          animateToRegion({
-            latitude: newLocation.coords.latitude,
-            longitude: newLocation.coords.longitude,
-          });
-          hasAnimatedToInitialLocation.current = true;
-        }
-        setUserLocation(newLocation.coords);
-      }
-    );
+    if (userLocation && !hasAnimatedToInitialLocation.current) {
+      animateToRegion({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+      });
+      hasAnimatedToInitialLocation.current = true;
+    }
+  }, [userLocation, animateToRegion]);
 
-    // Use watchHeadingAsync for reliable compass heading updates
+  // Throttled heading watcher — only update state when heading changes by > 5 degrees
+  useEffect(() => {
     const headingSubscription = Location.watchHeadingAsync((headingData) => {
-      // Use trueHeading if available (more accurate), otherwise use magHeading
       const heading =
         headingData.trueHeading !== -1
           ? headingData.trueHeading
           : headingData.magHeading;
-      setUserHeading(heading);
+
+      if (Math.abs(heading - lastReportedHeading.current) > 5) {
+        lastReportedHeading.current = heading;
+        setUserHeading(heading);
+      }
     });
 
     return () => {
-      positionSubscription.then((sub) => sub.remove());
       headingSubscription.then((sub) => sub.remove());
     };
   }, []);
@@ -162,7 +147,8 @@ export const Map: FC = () => {
             anchor={{ x: 0.5, y: 0.5 }}
             calloutOffset={{ x: 0.5, y: 0.5 }}
             tracksViewChanges={
-              statue.isCollected || statue.id === selectedStatue?.id
+              (statue.isCollected && !loadedImages.has(statue.id)) ||
+              statue.id === selectedStatue?.id
             }
           >
             <StatueMarker
