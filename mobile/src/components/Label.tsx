@@ -1,25 +1,14 @@
 import { FC, ReactNode } from "react";
-import { theme } from "../utils/theme";
 import { View, Text } from "react-native";
 
 type LabelProps = {
   children: ReactNode;
-  backgroundColor?: string;
-  stroke?: number;
-  strokeColor?: string;
-  fontColor?: string;
 };
 
-export const Label: FC<LabelProps> = ({
-  children,
-  backgroundColor = "transparent",
-  stroke = 1,
-  strokeColor = theme.grey,
-  fontColor = theme.grey,
-}) => (
+export const Label: FC<LabelProps> = ({ children }) => (
   <View
-    className={`border-[${strokeColor}] border-[${stroke}px] bg-[${backgroundColor}] rounded-full px-4 py-2`}
+    className={`border-white border-[2px] color-white bg- rounded-full px-2 py-0`}
   >
-    <Text className={`text-[12px] text-[${fontColor}]`}>{children}</Text>
+    <Text className={`text-lg text-white`}>{children}</Text>
   </View>
 );

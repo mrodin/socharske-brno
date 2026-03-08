@@ -1,16 +1,23 @@
 import { View } from "react-native";
 import { SearchAddressInput } from "./SearchAddressInput";
-import React, { FC, useContext, useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import { GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
-import { LocationContext } from "@/providers/LocationProvider";
+import { useLocationContext } from "@/providers/LocationProvider";
 import { router } from "expo-router";
-import { Region } from "react-native-maps";
+import { track } from "@amplitude/analytics-react-native";
 
 type SearchDrawerProps = {};
 
 export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
   const inputRef = React.useRef<GooglePlacesAutocompleteRef | null>(null);
-  const { setSearchRegion } = useContext(LocationContext);
+  const {
+    searchText,
+    setSearchText,
+    animateToRegion,
+    animateToViewport,
+    setSearchedLocation,
+    clearSearchedLocation,
+  } = useLocationContext();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -21,16 +28,32 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
       <View className="flex flex-row justify-between items-center">
         <SearchAddressInput
           ref={inputRef}
+          searchText={searchText}
+          setSearchText={setSearchText}
           onClose={() => {
             router.back();
           }}
-          onSelect={({ lng, lat }) => {
-            setSearchRegion((originRegion) => ({
-              ...originRegion,
-              latitude: lat,
-              longitude: lng,
-            }));
-            router.push("/");
+          onClear={() => {
+            clearSearchedLocation();
+          }}
+          onSelect={({ location, viewport }) => {
+            track("Search Location Selected", {
+              latitude: location.lat,
+              longitude: location.lng,
+            });
+            setSearchedLocation({
+              latitude: location.lat,
+              longitude: location.lng,
+            });
+            router.navigate("/");
+            if (viewport) {
+              animateToViewport(viewport);
+            } else {
+              animateToRegion({
+                latitude: location.lat,
+                longitude: location.lng,
+              });
+            }
           }}
         />
       </View>

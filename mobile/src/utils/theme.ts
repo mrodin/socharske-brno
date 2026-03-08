@@ -13,3 +13,16 @@ export const theme = {
   white: "#FFFFFF",
   font: {},
 };
+
+export const stackScreenOptions = {
+  headerStyle: {
+    backgroundColor: "#393939",
+  },
+  headerTintColor: "rgba(235, 235, 235, 1)",
+  headerTitleStyle: {
+    fontWeight: "400",
+  },
+  contentStyle: {
+    backgroundColor: "#393939",
+  },
+} as const;

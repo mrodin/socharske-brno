@@ -1,25 +1,26 @@
 import { Session } from "@supabase/supabase-js";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
+import { LoadingScreen } from "@/screens/LoadingScreen";
 
 export const UserSessionContext = createContext<{
   session: Session | null;
-  isAuthentizating: boolean;
+  loading: boolean;
   setSession: (session: Session | null) => void;
 }>({
   session: null,
-  isAuthentizating: true,
+  loading: true,
   setSession: () => {},
 });
 
 export function UserSessionProvider({ children }: { children: ReactNode }) {
-  const [isAuthentizating, setIsAuthentizating] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.refreshSession().then(({ data: { session } }) => {
       setSession(session);
-      setIsAuthentizating(false);
+      setIsAuthenticating(false);
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -29,7 +30,7 @@ export function UserSessionProvider({ children }: { children: ReactNode }) {
 
   return (
     <UserSessionContext.Provider
-      value={{ isAuthentizating, session, setSession }}
+      value={{ loading: isAuthenticating, session, setSession }}
     >
       {children}
     </UserSessionContext.Provider>

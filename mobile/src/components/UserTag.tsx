@@ -1,39 +1,41 @@
-import { Image, StyleSheet, View, Text } from "react-native";
-import { theme } from "../utils/theme";
+import { Image, View, Text } from "react-native";
 import { useContext } from "react";
 import { UserAvatarContext } from "../providers/UserAvatar";
 import { UserInfoContext } from "../providers/UserInfo";
+import { useUserStatistics } from "@/hooks/useUserStatistics";
+import { defaultUserIconSource } from "@/utils/images";
 
 export const UserTag = () => {
-  const { url } = useContext(UserAvatarContext);
+  const { url: avatarUrl } = useContext(UserAvatarContext);
   const { userInfo } = useContext(UserInfoContext);
 
+  const userStatistics = useUserStatistics();
+
+  if (!userInfo || !userStatistics) return null;
+
   return (
-    <View style={styles.layout}>
-      {url && <Image source={{ uri: url }} style={styles.avatar} />}
-      <Text style={styles.name}>{userInfo?.username}</Text>
+    <View className="flex-row justify-between items-center border-[2px] w-full border-gray-light rounded-full gap-2.5">
+      <Image
+        source={
+          avatarUrl
+            ? {
+                uri: avatarUrl,
+              }
+            : defaultUserIconSource
+        }
+        className="w-[54px] h-[54px] rounded-full"
+      />
+      <View className="py-2 flex-1">
+        <Text
+          className="color-white text-2xl font-bold"
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
+          {userInfo.username}
+        </Text>
+        <Text className="color-red-pale">{userStatistics.rank}. místo</Text>
+      </View>
+      <Text className="color-white text-2xl pr-6">{userStatistics.score}b</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  avatar: {
-    width: 33,
-    height: 33,
-    borderRadius: 50,
-  },
-  layout: {
-    backgroundColor: theme.grey,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 50,
-    paddingVertical: 4,
-    paddingLeft: 4,
-    paddingRight: 14,
-    gap: 16,
-  },
-  name: {
-    color: theme.white,
-    fontSize: 12,
-  },
-});

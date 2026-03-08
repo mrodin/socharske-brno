@@ -12,39 +12,43 @@ export function calculateDistance(
   lng2: number
 ): number {
   const earthRadiusKm = 6371;
-  const dLat = degreesToRadians(lat2 - lat1);
-  const dLng = degreesToRadians(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(degreesToRadians(lat1)) *
-      Math.cos(degreesToRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = earthRadiusKm * c;
+  const x =
+    degreesToRadians(lng2 - lng1) *
+    Math.cos(degreesToRadians((lat1 + lat2) / 2));
+  const y = degreesToRadians(lat2 - lat1);
+  const distance = earthRadiusKm * Math.sqrt(x * x + y * y);
   return distance;
 }
 
 export function sortByDistanceFromPoint(
-  coordinates: Statue[],
-  referencePoint: Coordinate
+  statues: Statue[],
+  userLocation: Coordinate
 ): Statue[] {
-  const nextSort = [...coordinates];
-  nextSort.sort((a, b) => {
+  return [...statues].sort((a, b) => {
     const distanceToA = calculateDistance(
-      referencePoint.lat,
-      referencePoint.lng,
+      userLocation.lat,
+      userLocation.lng,
       a.lat,
       a.lng
     );
     const distanceToB = calculateDistance(
-      referencePoint.lat,
-      referencePoint.lng,
+      userLocation.lat,
+      userLocation.lng,
       b.lat,
       b.lng
     );
 
     return distanceToA - distanceToB;
   });
-  return nextSort;
+}
+
+export function formatDistance(distanceKm: number): string {
+  if (distanceKm < 1) {
+    const distanceMeters = distanceKm * 1000;
+    const roundedMeters = Math.round(distanceMeters / 10) * 10;
+    return `${roundedMeters} m`;
+  } else {
+    const roundedKm = parseFloat(distanceKm.toFixed(2));
+    return `${roundedKm} km`;
+  }
 }

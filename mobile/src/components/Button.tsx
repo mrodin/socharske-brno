@@ -1,21 +1,36 @@
 import React from "react";
-import { TouchableOpacityProps, Text, TouchableOpacity } from "react-native";
+import {
+  TouchableOpacityProps,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { tv } from "tailwind-variants";
 
-const touchableStyle =
-  "border-solid border-2 text-center rounded-full gap-x-2 justify-center flex-row items-center ";
-const textStyle = "text-center text-base leading-[48px] ";
+const button = tv({
+  base: "border-solid border-2 text-center rounded-full gap-x-3 justify-center flex-row items-center",
+  variants: {
+    variant: {
+      primary: "bg-red-light border-red-light",
+      secondary: "border-red-lightest",
+      regular: "bg-white border-transparent",
+    },
+  },
+  defaultVariants: {
+    variant: "regular",
+  },
+});
 
-const touchableStyleExtenstion = {
-  primary: "bg-red-500 border-red-500",
-  secondary: "border-red-500",
-  regular: "bg-white border-transparent",
-};
-
-const textStyleExtension = {
-  primary: "text-white",
-  secondary: "text-red-500",
-  regular: "",
-};
+const buttonText = tv({
+  base: "text-center text-xl font-semibold leading-[48px]",
+  variants: {
+    variant: {
+      primary: "text-white",
+      secondary: "text-red-lightest",
+      regular: "",
+    },
+  },
+});
 
 export const Button = ({
   title,
@@ -31,11 +46,13 @@ export const Button = ({
   return (
     <TouchableOpacity
       disabled={props.disabled}
-      className={touchableStyle + touchableStyleExtenstion[variant]}
+      style={[props.disabled && { opacity: 0.5 }]}
       {...props}
     >
-      {icon}
-      <Text className={textStyle + textStyleExtension[variant]}>{title}</Text>
+      <View className={button({ variant })}>
+        {icon}
+        <Text className={buttonText({ variant })}>{title}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
