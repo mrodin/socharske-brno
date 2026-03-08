@@ -1,3 +1,5 @@
 export const DEFAULT_ZOOM = 0.01;
 export const COLLECTED_DRAWER_HEIGHT_PERCENT = 73;
 export const UNCOLLECTED_DRAWER_HEIGHT_PERCENT = 55;
+
+export const noop = () => {};
