@@ -78,3 +78,45 @@ export const useCollectStatue = () => {
     },
   });
 };
+
+type SendStatueFeedbackParams = {
+  message: string;
+  statueId: number;
+};
+
+export const useSendStatueFeedback = () => {
+  const session = useSession();
+
+  return useMutation<void, Error, SendStatueFeedbackParams>({
+    mutationFn: ({ message, statueId }) =>
+      fetchWithAuth("send-statue-feedback", session.access_token, {
+        statue_id: statueId,
+        message,
+      }),
+  });
+};
+
+export const useToggleProfileFollow = () => {
+  const queryClient = useQueryClient();
+  const session = useSession();
+
+  return useMutation<void, Error, string>({
+    mutationFn: (followingId: string) =>
+      fetchWithAuth("toggle-profile-follow", session.access_token, {
+        following_id: followingId,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["followedProfiles"] });
+    },
+  });
+};
+
+export const useGetFollowedProfiles = () => {
+  const session = useSession();
+
+  return useQuery<string[], Error>({
+    queryKey: ["followedProfiles"],
+    queryFn: () => fetchWithAuth("get-followed-profiles", session.access_token),
+    initialData: [],
+  });
+};
