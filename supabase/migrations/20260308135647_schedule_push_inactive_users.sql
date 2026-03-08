@@ -5,7 +5,7 @@ select
   cron.schedule(
     'push-inactive-users-daily',
     '0 15 * * *',
-    $
+    $$
     select
       net.http_post(
         url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/push-inactive-users',
@@ -15,5 +15,5 @@ select
         ),
         body := '{}'::jsonb
       ) as request_id;
-    $
+    $$
   );
