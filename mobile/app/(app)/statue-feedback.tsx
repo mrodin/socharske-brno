@@ -5,7 +5,8 @@ import { Modal } from "@/components/Modal";
 import { TextArea } from "@/components/TextArea";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { FC, useState } from "react";
-import { View, SafeAreaView, Text } from "react-native";
+import { View, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const StatueFeedback: FC = () => {
   const router = useRouter();
