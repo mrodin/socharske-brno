@@ -1,6 +1,6 @@
 import React from "react";
-import { View, ActivityIndicator, useWindowDimensions } from "react-native";
-import { FilterImage } from "react-native-svg/filter-image";
+import { View, useWindowDimensions } from "react-native";
+import { Image as ExpoImage } from "expo-image";
 import Sortable, {
   useCommonValuesContext,
   DragActivationState,
@@ -10,7 +10,7 @@ import { PuzzlePiece } from "../../hooks/usePuzzleData";
 import { CheckIconOutline } from "@/icons/CheckIconOutline";
 
 interface PuzzleProps {
-  imageBase64: string;
+  pieceUris: Record<number, string>;
   data: PuzzlePiece[];
   progress: number;
   updatePuzzleData: (newData: PuzzlePiece[]) => void;
@@ -31,7 +31,6 @@ const usePuzzleStrategy = () => {
   useAnimatedReaction(
     () => activationState.value,
     (state, prev) => {
-      // Snapshot base order when drag starts
       if (
         state === DragActivationState.TOUCHED &&
         prev !== DragActivationState.TOUCHED
@@ -56,7 +55,6 @@ const usePuzzleStrategy = () => {
 
     const pieceSize = width / NUM_COLUMNS;
 
-    // Use touch position if available, otherwise fallback to item center
     let x, y;
     if (touchPosition.value) {
       x = touchPosition.value.x;
@@ -74,32 +72,24 @@ const usePuzzleStrategy = () => {
     const targetIndex = row * NUM_COLUMNS + col;
     const baseKeys = baseOrderSnapshot.value;
 
-    // Safety check
     if (baseKeys.length === 0) return;
 
     const activeKey = activeItemKey.value;
     if (!activeKey) return;
 
-    // Find where the active item was originally
     const originIndex = baseKeys.indexOf(activeKey);
     if (originIndex === -1) return;
 
     if (targetIndex === originIndex) {
-      // If we are back at origin, restore base order
       return baseKeys;
     }
 
     const targetKey = baseKeys[targetIndex];
 
-    // Check if the target item was fixed at the start of the drag
-    // In this puzzle, item key corresponds to its correct index (0-8)
     if (targetKey === targetIndex.toString()) return;
-
-    // Also check if the active item was fixed at start (safety check)
     if (activeKey === originIndex.toString()) return;
 
     const newKeys = [...baseKeys];
-    // Swap origin and target in the base array
     newKeys[originIndex] = targetKey;
     newKeys[targetIndex] = activeKey;
 
@@ -108,80 +98,63 @@ const usePuzzleStrategy = () => {
 };
 
 export const PuzzleGrid: React.FC<PuzzleProps> = ({
-  imageBase64,
+  pieceUris,
   data,
   progress,
   updatePuzzleData,
 }) => {
-  // Get screen dimensions
   const { width: screenWidth } = useWindowDimensions();
-
-  // Calculate puzzle size based on screen width (with some padding)
-  const puzzleSize = screenWidth; // 40px total padding or 90% of screen width
-  const pieceSize = puzzleSize / 3; // Each piece is 1/3 of the total puzzle size
+  const pieceSize = screenWidth / 3;
 
   const renderItem = ({ item }: { item: PuzzlePiece }) => {
-    // Don't render items if image is still loading or failed to load
-    if (!imageBase64) {
-      return (
-        <View
-          className="justify-center items-center"
-          style={{
-            width: pieceSize,
-            height: pieceSize,
-          }}
-          key={item.key}
-        >
-          <ActivityIndicator size="small" color="#999" />
-        </View>
-      );
-    }
-
     const hasCorrectPosition = item.disabledDrag;
+    const pieceIndex = parseInt(item.key);
+    const uri = pieceUris[pieceIndex];
 
-    // Parse the item name as number (1-9) to determine position
-    const index = parseInt(item.key);
-    // Calculate the row and column for a 3x3 grid
-    const row = Math.floor(index / 3);
-    const col = index % 3;
-
-    // The full image is treated as a 3x3 grid, showing only the correct portion
     return (
-      <Sortable.Handle mode={item.disabledDrag ? "non-draggable" : "draggable"}>
-        <View
-          className="relative marker:justify-center items-center overflow-hidden"
+      <View
+        style={{
+          width: pieceSize,
+          height: pieceSize,
+        }}
+        // Prevent Fabric from collapsing this view in the native hierarchy
+        collapsable={false}
+        // Force off-screen compositing – different rendering path that may
+        // avoid the Animated.View compositing bug
+        needsOffscreenAlphaCompositing
+        renderToHardwareTextureAndroid
+        key={item.key}
+      >
+        <ExpoImage
+          source={{ uri }}
           style={{
             width: pieceSize,
             height: pieceSize,
+            opacity: hasCorrectPosition ? 1 : 0.6,
           }}
-          key={item.key}
-        >
+          cachePolicy="memory-disk"
+          contentFit="cover"
+          // Disable any transition animation from expo-image itself
+          transition={0}
+        />
+        {hasCorrectPosition && progress < 1 && (
           <View
-            className="overflow-hidden relative"
             style={{
-              width: pieceSize,
-              height: pieceSize,
+              position: "absolute",
+              top: 4,
+              right: 4,
+              backgroundColor: "#22c55e",
+              borderRadius: 12,
+              width: 24,
+              height: 24,
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <FilterImage
-              source={{ uri: imageBase64 }}
-              className="absolute"
-              style={{
-                filter: hasCorrectPosition ? "grayscale(0%)" : "grayscale(90%)", // for some reason setting filter to none crash the app
-                width: puzzleSize,
-                height: puzzleSize,
-                top: -row * pieceSize, // Offset based on row position, cutting  the image
-                left: -col * pieceSize, // Offset based on column position, cutting the image
-              }}
-            />
+            <CheckIconOutline />
           </View>
-          {hasCorrectPosition && progress < 1 && (
-            <View className="absolute top-1 right-1 bg-green-500 rounded-full w-6 h-6 flex items-center justify-center">
-              <CheckIconOutline />
-            </View>
-          )}
-        </View>
-      </Sortable.Handle>
+        )}
+      </View>
     );
   };
 
@@ -199,8 +172,9 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
       rowGap={0}
       columnGap={0}
       dragActivationDelay={0}
-      customHandle
       strategy={usePuzzleStrategy}
+      itemEntering={null}
+      itemExiting={null}
     />
   );
 };

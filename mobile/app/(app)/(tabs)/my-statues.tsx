@@ -1,6 +1,5 @@
 import { FC, useContext, useMemo, useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
   Pressable,
@@ -9,7 +8,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
 import { UserTag } from "@/components/UserTag";
 import { RouteHeader } from "@/components/RouteHeader";

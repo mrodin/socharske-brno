@@ -1,5 +1,6 @@
 import { FC } from "react";
-import { View, SafeAreaView, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGetLeaderboard } from "@/api/queries";
 import { Player } from "@/components/Player";

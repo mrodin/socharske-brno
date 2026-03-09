@@ -17,10 +17,7 @@ import {
   PROVIDER_GOOGLE,
 } from "react-native-maps";
 
-import {
-  LocationContext,
-  useLocationContext,
-} from "@/providers/LocationProvider";
+import { useLocationContext } from "@/providers/LocationProvider";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
@@ -39,24 +36,27 @@ import {
 } from "@/utils/permissions";
 
 export const Map: FC = () => {
-  const { initialRegion, mapRef, animateToRegion, clearSearchedLocation } =
-    useLocationContext();
+  const {
+    initialRegion,
+    mapRef,
+    animateToRegion,
+    clearSearchedLocation,
+    userLocation,
+  } = useLocationContext();
   const { selectedStatue, setSelectedStatue } = useContext(
     SelectedStatueContext
   );
 
   const locationPermission = useLocationPermission();
 
-  // location of the user marker
-  const [userLocation, setUserLocation] = useState<
-    Location.LocationObjectCoords | undefined
-  >(undefined);
   // heading (compass direction) of the user
   const [userHeading, setUserHeading] = useState<number | undefined>(undefined);
   // track which collected statue images have loaded - to optimize Marker re-renders
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   // track if we've done the initial map animation to user's location
   const hasAnimatedToInitialLocation = useRef(false);
+  // last reported heading value for throttling (5° threshold)
+  const lastReportedHeading = useRef<number>(0);
 
   const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
@@ -89,7 +89,12 @@ export const Map: FC = () => {
             }) satisfies StatuePoint
         )
     );
-  }, [collectedStatues, statueMap, userLocation]);
+    // Note: userLocation is intentionally excluded from deps to avoid
+    // recalculating all distances on every location update (which saturates
+    // the JS thread on low-end devices). Distances update when
+    // statues/collection data changes or component remounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collectedStatues, statueMap]);
 
   const onMapPointPress = useCallback(
     (statue: StatuePoint) => {
@@ -99,38 +104,36 @@ export const Map: FC = () => {
     [setSelectedStatue, clearSearchedLocation]
   );
 
+  // Animate to user location on first available position
   useEffect(() => {
-    const positionSubscription = Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.High,
-        timeInterval: 1000,
-        distanceInterval: 10,
-      },
-      (newLocation) => {
-        if (!hasAnimatedToInitialLocation.current) {
-          // first location update, center the map
-          animateToRegion({
-            latitude: newLocation.coords.latitude,
-            longitude: newLocation.coords.longitude,
-          });
-          hasAnimatedToInitialLocation.current = true;
-        }
-        setUserLocation(newLocation.coords);
-      }
-    );
+    if (userLocation && !hasAnimatedToInitialLocation.current) {
+      animateToRegion({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+      });
+      hasAnimatedToInitialLocation.current = true;
+    }
+  }, [userLocation, animateToRegion]);
 
-    // Use watchHeadingAsync for reliable compass heading updates
+  // Throttled heading watcher - only updates state when heading
+  // changes by 5+ degrees. Without this, heading fires at 10-60 Hz
+  // and saturates the JS thread on low-end Android devices.
+  useEffect(() => {
     const headingSubscription = Location.watchHeadingAsync((headingData) => {
-      // Use trueHeading if available (more accurate), otherwise use magHeading
       const heading =
         headingData.trueHeading !== -1
           ? headingData.trueHeading
           : headingData.magHeading;
-      setUserHeading(heading);
+
+      const delta = Math.abs(heading - lastReportedHeading.current);
+      // Account for wrap-around at 360°
+      if (delta > 5 && delta < 355) {
+        lastReportedHeading.current = heading;
+        setUserHeading(heading);
+      }
     });
 
     return () => {
-      positionSubscription.then((sub) => sub.remove());
       headingSubscription.then((sub) => sub.remove());
     };
   }, []);
@@ -162,7 +165,8 @@ export const Map: FC = () => {
             anchor={{ x: 0.5, y: 0.5 }}
             calloutOffset={{ x: 0.5, y: 0.5 }}
             tracksViewChanges={
-              statue.isCollected || statue.id === selectedStatue?.id
+              (statue.isCollected && !loadedImages.has(statue.id)) ||
+              statue.id === selectedStatue?.id
             }
           >
             <StatueMarker
