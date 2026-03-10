@@ -22,7 +22,6 @@ import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 
 import { useGetAllStatues, useGetCollectedStatues } from "../api/queries";
 import customGoogleMapStyle from "../utils/customGoogleMapStyle.json";
-import { calculateDistance } from "../utils/math";
 
 import { GpsButton } from "./GpsButton";
 import { track } from "@amplitude/analytics-react-native";
@@ -77,23 +76,11 @@ export const Map: FC = () => {
               ...statue,
               latitude: statue.lat,
               longitude: statue.lng,
-              distance: userLocation
-                ? calculateDistance(
-                    userLocation.latitude,
-                    userLocation.longitude,
-                    statue.lat,
-                    statue.lng
-                  )
-                : undefined,
+              distance: undefined,
               isCollected: collectedStatueIds.has(statue.id),
             }) satisfies StatuePoint
         )
     );
-    // Note: userLocation is intentionally excluded from deps to avoid
-    // recalculating all distances on every location update (which saturates
-    // the JS thread on low-end devices). Distances update when
-    // statues/collection data changes or component remounts.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collectedStatues, statueMap]);
 
   const onMapPointPress = useCallback(
