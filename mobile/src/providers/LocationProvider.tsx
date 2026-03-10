@@ -52,19 +52,23 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       null;
 
     const startWatching = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        return;
-      }
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          return;
+        }
 
-      subscriptionPromise = Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.Balanced,
-          timeInterval: 3000,
-          distanceInterval: 5,
-        },
-        (location) => setUserLocation(location.coords)
-      );
+        subscriptionPromise = Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 3000,
+            distanceInterval: 5,
+          },
+          (location) => setUserLocation(location.coords)
+        );
+      } catch (error) {
+        console.warn("Failed to start location watching:", error);
+      }
     };
 
     startWatching();
