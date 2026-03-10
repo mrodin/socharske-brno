@@ -27,7 +27,7 @@ import Svg, { Path } from "react-native-svg";
 import { theme } from "../utils/theme";
 import { useCollectStatue, useGetCollectedStatues } from "../api/queries";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
-import { useLocation } from "../hooks/useLocation";
+import { useLocationContext } from "@/providers/LocationProvider";
 import { calculateDistance } from "../utils/math";
 import { UserInfoContext } from "@/providers/UserInfo";
 import { getThumbnailUrl } from "@/utils/images";
@@ -57,7 +57,7 @@ export const StatueDetail: FC = () => {
   const { data: collectedStatues } = useGetCollectedStatues();
   const collectStatue = useCollectStatue();
   const isLoading = collectStatue.isPending;
-  const userLocation = useLocation();
+  const { userLocation } = useLocationContext();
 
   const handleCollect = useCallback(async () => {
     if (!selectedStatue) {
@@ -85,8 +85,8 @@ export const StatueDetail: FC = () => {
     if (!userLocation || !selectedStatue) return false;
 
     const distanceKm = calculateDistance(
-      userLocation.coords.latitude,
-      userLocation.coords.longitude,
+      userLocation.latitude,
+      userLocation.longitude,
       selectedStatue.lat,
       selectedStatue.lng
     );
