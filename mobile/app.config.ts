@@ -45,10 +45,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-font",
     "expo-apple-authentication",
     [
-      "react-native-maps",
+      "./plugins/withGoogleMaps",
       {
-        iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
-        androidGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+        apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
       },
     ],
     [
