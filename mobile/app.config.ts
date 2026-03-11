@@ -44,6 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-router",
     "expo-font",
     "expo-apple-authentication",
+    "./plugins/withDisplayCutout",
     [
       "./plugins/withGoogleMaps",
       {
