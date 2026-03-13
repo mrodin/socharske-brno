@@ -24,7 +24,7 @@ export const SearchDrawer: FC<SearchDrawerProps> = ({}) => {
   }, []);
 
   return (
-    <View className="absolute bg-gray py-6 w-full h-[100%] pt-[60px]">
+    <View className="py-3 w-full h-[100%]">
       <View className="flex flex-row justify-between items-center">
         <SearchAddressInput
           ref={inputRef}

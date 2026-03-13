@@ -1,6 +1,6 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
-import { Image as ExpoImage } from "expo-image";
+import { FilterImage } from "react-native-svg/filter-image";
 import Sortable, {
   useCommonValuesContext,
   DragActivationState,
@@ -125,17 +125,13 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
         renderToHardwareTextureAndroid
         key={item.key}
       >
-        <ExpoImage
+        <FilterImage
           source={{ uri }}
           style={{
             width: pieceSize,
             height: pieceSize,
-            opacity: hasCorrectPosition ? 1 : 0.6,
+            filter: hasCorrectPosition ? "grayscale(0%)" : "grayscale(90%)",
           }}
-          cachePolicy="memory-disk"
-          contentFit="cover"
-          // Disable any transition animation from expo-image itself
-          transition={0}
         />
         {hasCorrectPosition && progress < 1 && (
           <View
