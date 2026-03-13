@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGetLeaderboard } from "@/api/queries";
@@ -11,30 +11,28 @@ const LeaderBoard: FC = () => {
   const { data: leaderboard } = useGetLeaderboard();
 
   return (
-    <SafeAreaView className="flex-1 bg-gray">
-      <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="bg-gray flex-1 gap-8 px-6 mt-3">
-          <Title className="text-gray-pale text-[20px] tracking-wide">
-            Nejlepší lovci soch
-          </Title>
+    <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+      <View className="bg-gray flex-1 gap-8 px-6">
+        <Title className="text-gray-pale text-[20px] tracking-wide">
+          Nejlepší lovci soch
+        </Title>
 
-          <View className="gap-4">
-            {leaderboard.map((user, index) => (
-              <Player
-                onPress={() => {
-                  router.navigate(`/leaderboard/profile?id=${user.id}`);
-                }}
-                key={user.id}
-                isWinner={index === 0}
-                name={user.username}
-                score={user.score.toFixed()}
-                thumbnail={user.avatar}
-              />
-            ))}
-          </View>
+        <View className="gap-4">
+          {leaderboard.map((user, index) => (
+            <Player
+              onPress={() => {
+                router.navigate(`/leaderboard/profile?id=${user.id}`);
+              }}
+              key={user.id}
+              isWinner={index === 0}
+              name={user.username}
+              score={user.score.toFixed()}
+              thumbnail={user.avatar}
+            />
+          ))}
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 };
 
