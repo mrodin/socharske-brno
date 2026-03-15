@@ -1,15 +1,16 @@
 import { defaultUserIconSource } from "@/utils/images";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
 
 type ProfileDetailProps = {
   username?: string;
   avatarUrl: string | null;
   collectedStatuesCount: number;
-  onPressScore?: () => void;
-  onPressCollectedStatues?: () => void;
   score: number;
   rank: number | null;
+  action?: ReactNode;
+  onPressCollectedStatues?: () => void;
+  onPressScore?: () => void;
 };
 
 export const ProfileDetail: FC<ProfileDetailProps> = ({
@@ -18,6 +19,7 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
   avatarUrl,
   collectedStatuesCount,
   score,
+  action,
   onPressCollectedStatues,
   onPressScore,
 }) => {
@@ -25,9 +27,12 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
     <>
       <View className="flex-col justify-center items-center gap-4">
         {username && (
-          <Text className="text-white w-full text-center font-bold text-3xl">
-            {username}
-          </Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-white text-center font-bold text-3xl">
+              {username}
+            </Text>
+            {action}
+          </View>
         )}
         {rank !== null && (
           <View className="border-solid border-2 rounded-full border-red-light">

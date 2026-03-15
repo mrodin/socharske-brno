@@ -6,6 +6,7 @@ export default function RootLayout() {
     <Stack screenOptions={stackScreenOptions}>
       <Stack.Screen options={{ title: "Hráči" }} name="index" />
       <Stack.Screen options={{ title: "Hráč" }} name="profile" />
+      <Stack.Screen options={{ title: "Hledat hráče" }} name="search" />
     </Stack>
   );
 }
