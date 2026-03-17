@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { AppState } from "react-native";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
@@ -20,6 +21,13 @@ async function savePushToken(userId: string): Promise<void> {
   }
 }
 
+async function saveIfGranted(userId: string): Promise<void> {
+  const { status } = await Notifications.getPermissionsAsync();
+  if (status === "granted") {
+    await savePushToken(userId);
+  }
+}
+
 export function usePushNotifications(userId: string | null) {
   const listenerRef = useRef<Notifications.Subscription | null>(null);
 
@@ -27,9 +35,12 @@ export function usePushNotifications(userId: string | null) {
     if (!userId || !Device.isDevice) return;
 
     // Silently refresh token on every app start if permission already granted
-    Notifications.getPermissionsAsync().then(({ status }) => {
-      if (status === "granted") {
-        savePushToken(userId);
+    saveIfGranted(userId);
+
+    // Re-check when app comes to foreground (e.g. user enabled notifications in phone settings)
+    const appStateSubscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        saveIfGranted(userId);
       }
     });
 
@@ -39,6 +50,7 @@ export function usePushNotifications(userId: string | null) {
     });
 
     return () => {
+      appStateSubscription.remove();
       listenerRef.current?.remove();
     };
   }, [userId]);
