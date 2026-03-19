@@ -104,7 +104,7 @@ export const PuzzleGrid: React.FC<PuzzleProps> = ({
   updatePuzzleData,
 }) => {
   const { width: screenWidth } = useWindowDimensions();
-  const pieceSize = screenWidth / 3;
+  const pieceSize = screenWidth / NUM_COLUMNS;
 
   const renderItem = ({ item }: { item: PuzzlePiece }) => {
     const hasCorrectPosition = item.disabledDrag;
