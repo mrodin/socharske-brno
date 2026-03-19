@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect } from "react";
-import { View, Text, ActivityIndicator, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  useWindowDimensions,
+} from "react-native";
 import ReanimatedAnimated, {
   useSharedValue,
   useAnimatedStyle,
