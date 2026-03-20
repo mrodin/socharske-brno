@@ -30,7 +30,11 @@ export const usePuzzlePieces = (imageUrl?: string) => {
 
         const imgWidth = fullImage.width;
         const imgHeight = fullImage.height;
-        const cropSize = Math.min(imgWidth, imgHeight) / 3;
+        const squareSize = Math.min(imgWidth, imgHeight);
+        const cropSize = squareSize / 3;
+        // Center the crop within the image
+        const offsetX = (imgWidth - squareSize) / 2;
+        const offsetY = (imgHeight - squareSize) / 2;
 
         const uris: Record<number, string> = {};
 
@@ -40,12 +44,12 @@ export const usePuzzlePieces = (imageUrl?: string) => {
           const col = i % 3;
 
           const result = await manipulateAsync(
-            imageUrl,
+            fullImage.uri,
             [
               {
                 crop: {
-                  originX: col * cropSize,
-                  originY: row * cropSize,
+                  originX: offsetX + col * cropSize,
+                  originY: offsetY + row * cropSize,
                   width: cropSize,
                   height: cropSize,
                 },
