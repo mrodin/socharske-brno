@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useWindowDimensions } from "react-native";
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 /**
@@ -7,8 +6,6 @@ import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
  * Each piece is a local file URI that can be rendered instantly.
  */
 export const usePuzzlePieces = (imageUrl?: string) => {
-  const { width: screenWidth } = useWindowDimensions();
-  // Map from piece index (0-8) to local cropped image URI
   const [pieceUris, setPieceUris] = useState<Record<number, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
