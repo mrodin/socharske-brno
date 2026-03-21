@@ -16,6 +16,9 @@ Deno.serve(async (req) => {
     });
   }
 
+  const body = await req.json().catch(() => ({}));
+  const force = body?.force === true;
+
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -40,28 +43,35 @@ Deno.serve(async (req) => {
   ).toISOString();
 
   // --- 2. Find profiles that were already notified within the cooldown window ---
-  const { data: recentlyNotified, error: logError } = await supabase
-    .from("push_notification_log")
-    .select("profile_id")
-    .eq("notification_type", NOTIFICATION_TYPE)
-    .gte("sent_at", cutoffDate);
+  let recentlyNotifiedIds: string[] = [];
 
-  if (logError) {
-    return new Response(JSON.stringify({ error: logError.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+  if (!force) {
+    const { data: recentlyNotified, error: logError } = await supabase
+      .from("push_notification_log")
+      .select("profile_id")
+      .eq("notification_type", NOTIFICATION_TYPE)
+      .gte("sent_at", cutoffDate);
+
+    if (logError) {
+      return new Response(JSON.stringify({ error: logError.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    recentlyNotifiedIds = recentlyNotified.map((r) => r.profile_id);
   }
-
-  const recentlyNotifiedIds = recentlyNotified.map((r) => r.profile_id);
 
   // --- 3. Get candidate profiles ---
   // Must have: a push token, an account older than 7 days, and not been notified recently.
   let profileQuery = supabase
     .from("profiles")
     .select("id, expo_push_token")
-    .not("expo_push_token", "is", null)
-    .lt("created_at", cutoffDate);
+    .not("expo_push_token", "is", null);
+
+  if (!force) {
+    profileQuery = profileQuery.lt("created_at", cutoffDate);
+  }
 
   if (recentlyNotifiedIds.length > 0) {
     profileQuery = profileQuery.not(
@@ -131,8 +141,12 @@ Deno.serve(async (req) => {
     }
 
     // Notify users who have never collected anything
-    // (account age already guaranteed > 7 days by the profiles query)
     if (!stats) {
+      return true;
+    }
+
+    // In force mode, skip the inactivity time check
+    if (force) {
       return true;
     }
 
