@@ -113,3 +113,16 @@ export const useGetFollowedProfiles = () => {
     initialData: [],
   });
 };
+
+export const useGetProfileFollowData = (profileId?: string) => {
+  const session = useSession();
+
+  return useQuery<{ followersCount: number; followingCount: number }, Error>({
+    queryKey: ["profileFollowData", profileId],
+    queryFn: () =>
+      fetchWithAuth("get-profile-follow-data", session.access_token, {
+        profileId,
+      }),
+    initialData: { followersCount: 0, followingCount: 0 },
+  });
+};

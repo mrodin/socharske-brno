@@ -1,14 +1,5 @@
 import { FC } from "react";
-import { SearchBar } from "react-native-elements";
-import { cssInterop } from "nativewind";
-
-const StyledSearchBar = cssInterop(SearchBar, {
-  containerClassName: "containerStyle",
-  inputContainerClassName: "inputContainerStyle",
-  inputClassName: "inputStyle",
-  leftIconContainerClassName: "leftIconContainerStyle",
-  rightIconContainerClassName: "rightIconContainerStyle",
-});
+import { SearchBar } from "@/components/styled";
 
 type SearchProfileBarProps = {
   searchText: string;
@@ -22,7 +13,7 @@ export const SearchProfileBar: FC<SearchProfileBarProps> = ({
   isLoading,
 }) => {
   return (
-    <StyledSearchBar
+    <SearchBar
       platform="default"
       placeholder="Jméno uživatele..."
       //@ts-ignore

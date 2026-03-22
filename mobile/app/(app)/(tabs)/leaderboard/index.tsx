@@ -65,6 +65,9 @@ const LeaderBoard: FC = () => {
               username={currentUserInLeaderboard.username}
               score={currentUserInLeaderboard.score}
               avatarUrl={currentUserInLeaderboard?.avatar}
+              onPress={() =>
+                router.navigate(`/leaderboard/profile?id=${userInfo?.id}`)
+              }
             />
           )}
 
@@ -97,12 +100,6 @@ const LeaderBoard: FC = () => {
             <Title className="text-gray-pale text-base text-center tracking-wide">
               Další hráči
             </Title>
-            <SearchProfileButton
-              className="absolute right-0 top-0"
-              onPress={function (): void {
-                router.navigate("/leaderboard/search");
-              }}
-            />
           </View>
 
           <View className="flex flex-col gap-3">

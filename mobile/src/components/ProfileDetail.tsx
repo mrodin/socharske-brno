@@ -1,6 +1,7 @@
 import { defaultUserIconSource } from "@/utils/images";
-import { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
+import { LinearGradient } from "@/components/styled";
 
 type ProfileDetailProps = {
   username?: string;
@@ -9,6 +10,8 @@ type ProfileDetailProps = {
   score: number;
   rank: number | null;
   action?: ReactNode;
+  followingCount: number;
+  followersCount: number;
   onPressCollectedStatues?: () => void;
   onPressScore?: () => void;
 };
@@ -20,6 +23,8 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
   collectedStatuesCount,
   score,
   action,
+  followersCount,
+  followingCount,
   onPressCollectedStatues,
   onPressScore,
 }) => {
@@ -34,6 +39,11 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
             {action}
           </View>
         )}
+        <Text className="text-gray-pale text-center">
+          <Text className="font-semibold">{followersCount}</Text> sledujících ·{" "}
+          <Text className="font-semibold">{followingCount}</Text> sleduje
+        </Text>
+
         {rank !== null && (
           <View className="border-solid border-2 rounded-full border-red-light">
             <Text className="color-red-light px-[5px] py-[3px] font-bold">
@@ -53,7 +63,7 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
         <TouchableOpacity
           disabled={!onPressCollectedStatues}
           onPress={onPressCollectedStatues}
-          className="bg-gray-light flex-1 rounded-2xl px-3 py-4 gap-1"
+          className="bg-gray-darker flex-1 rounded-2xl px-3 py-4 gap-1"
         >
           <Text className="text-white">Ulovené sochy</Text>
           <Text className="text-4xl font-bold text-white">
@@ -63,10 +73,17 @@ export const ProfileDetail: FC<ProfileDetailProps> = ({
         <TouchableOpacity
           disabled={!onPressScore}
           onPress={onPressScore}
-          className="bg-gray-light flex-1 rounded-2xl px-3 py-4 gap-1"
+          className="flex-1"
         >
-          <Text className="text-white">Skóre</Text>
-          <Text className="text-4xl font-bold text-white">{score}b</Text>
+          <LinearGradient
+            colors={["#DF4237", "#D5232A"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            className="flex-1 rounded-2xl px-3 py-4 gap-1"
+          >
+            <Text className="text-white">Skóre</Text>
+            <Text className="text-4xl font-bold text-white">{score}b</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </>

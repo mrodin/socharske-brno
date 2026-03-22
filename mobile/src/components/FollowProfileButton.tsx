@@ -6,10 +6,12 @@ import { TouchableOpacity, Text } from "react-native";
 export const FollowProfileButton: React.FC<{
   className?: string;
   isFollowing: boolean;
+  disabled?: boolean;
   onPress: () => void;
-}> = ({ className, isFollowing, onPress }) => {
+}> = ({ className, isFollowing, disabled, onPress }) => {
   return (
     <TouchableOpacity
+      disabled={disabled}
       onPress={onPress}
       className={cn("px-2 py-2 rounded-full bg-gray-darker", className)}
     >
