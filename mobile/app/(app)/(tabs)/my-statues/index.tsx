@@ -188,7 +188,7 @@ const CollectedStatueItem: FC<{
     name={statue.statueInfo.name}
     onPress={() => onNavigate(statue.statueInfo)}
     score={statue.value}
-    subtitle={format(new Date(statue.created_at), "dd.MM.yyyy")}
+    subtitle={`uloveno ${format(new Date(statue.created_at), "dd.MM.yyyy")}`}
     thumbnailUrl={getThumbnailUrl(statue.statueInfo.id, 96)}
     variant="primary"
   />
