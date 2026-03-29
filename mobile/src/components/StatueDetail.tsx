@@ -151,7 +151,7 @@ export const StatueDetail: FC = () => {
               {locationPermission === PermissionStatus.Granted && (
                 <>
                   <Text className="text-white">
-                    Ulov sochu a odemkni si víc informací.
+                    Přibliž se k soše na 20 metrů a odemkni si víc informací.
                   </Text>
                   <TouchableOpacity
                     disabled={isLoading || !isCloseEnough}
@@ -168,11 +168,7 @@ export const StatueDetail: FC = () => {
                         textAlign: "center",
                       }}
                     >
-                      {isLoading
-                        ? "Nahrávám data"
-                        : !isCloseEnough
-                          ? `Přibližte se k soše na ${STATUE_DISTANCE_THRESHOLD_METERS} metrů`
-                          : "Ulov sochu"}
+                      {isLoading ? "Nahrávám data" : "Ulov sochu"}
                     </Text>
                   </TouchableOpacity>
                 </>

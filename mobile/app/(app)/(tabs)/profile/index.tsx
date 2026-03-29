@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { ScrollView, View } from "react-native";
+import * as Linking from "expo-linking";
 
 import { UserInfoContext } from "@/providers/UserInfo";
 import { useGetCollectedStatues } from "@/api/queries";
@@ -7,6 +8,7 @@ import { useUserStatistics } from "@/hooks/useUserStatistics";
 import { ProfileDetail } from "@/components/ProfileDetail";
 import Menu from "@/components/Menu";
 import { router } from "expo-router";
+import { noop } from "@/utils/constants";
 
 const Profile = () => {
   const { userInfo } = useContext(UserInfoContext);
@@ -35,8 +37,16 @@ const Profile = () => {
           <Menu.Item onPress={() => router.navigate("/profile/settings")}>
             Nastavení hry
           </Menu.Item>
-          <Menu.Item onPress={() => {}}>Pravidla hry</Menu.Item>
-          <Menu.Item onPress={() => {}}>Podmínky používání</Menu.Item>
+          <Menu.Item onPress={noop}>Pravidla hry</Menu.Item>
+          <Menu.Item
+            onPress={() =>
+              Linking.openURL(
+                "https://www.lovcisoch.cz/podminky-pouzivani-aplikace"
+              )
+            }
+          >
+            Podmínky používání
+          </Menu.Item>
           <Menu.Item onPress={() => router.replace("/sign-out")}>
             Odhlásit se
           </Menu.Item>
