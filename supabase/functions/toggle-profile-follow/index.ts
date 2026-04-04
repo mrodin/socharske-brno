@@ -34,10 +34,17 @@ Deno.serve(async (req) => {
     const followerId = userData.user.id;
 
     // Check if user profile exists
-    const { count: profileCount } = await supabase
+    const { count: profileCount, error: profileError } = await supabase
       .from("profiles")
       .select("*", { count: "exact", head: true })
       .eq("id", followerId);
+
+    if (profileError) {
+      return new Response(JSON.stringify({ error: profileError.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     if (!profileCount) {
       return new Response(JSON.stringify({ error: "User does not exist!" }), {
@@ -67,10 +74,17 @@ Deno.serve(async (req) => {
     }
 
     // Check if target profile exists
-    const { count: targetCount } = await supabase
+    const { count: targetCount, error: targetError } = await supabase
       .from("profiles")
       .select("*", { count: "exact", head: true })
       .eq("id", followingId);
+
+    if (targetError) {
+      return new Response(JSON.stringify({ error: targetError.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     if (!targetCount) {
       return new Response(
@@ -83,11 +97,18 @@ Deno.serve(async (req) => {
     }
 
     // Check if already following
-    const { count: followCount } = await supabase
+    const { count: followCount, error: followError } = await supabase
       .from("profile_follows")
       .select("*", { count: "exact", head: true })
       .eq("follower_id", followerId)
       .eq("following_id", followingId);
+
+    if (followError) {
+      return new Response(JSON.stringify({ error: followError.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     if (followCount) {
       // Already following — unfollow
