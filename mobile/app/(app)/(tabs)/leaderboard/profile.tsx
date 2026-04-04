@@ -2,10 +2,7 @@ import { FC } from "react";
 import { View, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import {
-  useGetLeaderboard,
-  useGetProfileFollowData,
-} from "@/api/queries";
+import { useGetLeaderboard, useGetProfileFollowData } from "@/api/queries";
 import { ProfileDetail } from "@/components/ProfileDetail";
 import { useLocalSearchParams } from "expo-router";
 
@@ -15,7 +12,9 @@ const LeaderBoard: FC = () => {
   const { data: profileFollowData } = useGetProfileFollowData(id);
   const currentUserIndex = leaderboard.findIndex((user) => user.id === id);
 
-  if (currentUserIndex === -1) {
+  const currentUser = leaderboard.at(currentUserIndex);
+
+  if (currentUserIndex === -1 || !currentUser) {
     // It can happen that the user was removed from the leaderboard
     return (
       <View className="flex-1 justify-center items-center">
@@ -23,8 +22,6 @@ const LeaderBoard: FC = () => {
       </View>
     );
   }
-
-  const currentUser = leaderboard[currentUserIndex];
 
   return (
     <SafeAreaView className="flex-1 bg-gray">

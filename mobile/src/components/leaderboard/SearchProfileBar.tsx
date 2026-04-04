@@ -16,8 +16,8 @@ export const SearchProfileBar: FC<SearchProfileBarProps> = ({
     <SearchBar
       platform="default"
       placeholder="Jméno uživatele..."
-      //@ts-ignore
-      onChangeText={updateSearchText}
+      // @ts-expect-error react-native-elements SearchBar onChangeText type is broken
+      onChangeText={(text: string) => updateSearchText(text)}
       value={searchText}
       showLoading={isLoading}
       placeholderTextColor="#999999"
