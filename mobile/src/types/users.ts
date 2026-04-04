@@ -1,4 +1,4 @@
-type LeaderBoardEntry = {
+export type LeaderBoardEntry = {
   id: string;
   rank: number;
   score: number;
