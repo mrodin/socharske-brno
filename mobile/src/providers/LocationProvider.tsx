@@ -3,9 +3,11 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
+import * as Location from "expo-location";
 import ClusteredMapView from "react-native-map-clustering";
 import { LatLng, Region } from "react-native-maps";
 
@@ -28,6 +30,7 @@ export const LocationContext = createContext<{
   initialRegion: Region;
   mapRef: React.RefObject<EnhancedMapView>;
   searchedLocation: LatLng | null;
+  userLocation: Location.LocationObjectCoords | null;
   animateToRegion: (latLng: LatLng) => void;
   animateToViewport: (viewport: {
     northeast: { lat: number; lng: number };
@@ -40,7 +43,40 @@ export const LocationContext = createContext<{
 export function LocationProvider({ children }: { children: ReactNode }) {
   const [searchText, setSearchText] = useState("");
   const [searchedLocation, setSearchedLocation] = useState<LatLng | null>(null);
+  const [userLocation, setUserLocation] =
+    useState<Location.LocationObjectCoords | null>(null);
   const mapRef = useRef<EnhancedMapView | null>(null);
+
+  useEffect(() => {
+    let subscriptionPromise: Promise<Location.LocationSubscription> | null =
+      null;
+
+    const startWatching = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          return;
+        }
+
+        subscriptionPromise = Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 3000,
+            distanceInterval: 5,
+          },
+          (location) => setUserLocation(location.coords)
+        );
+      } catch (error) {
+        console.warn("Failed to start location watching:", error);
+      }
+    };
+
+    startWatching();
+
+    return () => {
+      subscriptionPromise?.then((sub) => sub.remove());
+    };
+  }, []);
 
   const animateToRegion = useCallback(
     (latLng: LatLng) => {
@@ -102,6 +138,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         mapRef,
         searchText,
         searchedLocation,
+        userLocation,
         animateToRegion,
         animateToViewport,
         setSearchText,

@@ -1,6 +1,5 @@
 import { FC, useContext, useMemo, useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
   Pressable,
@@ -9,13 +8,12 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { format } from "date-fns";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useGetAllStatues, useGetCollectedStatues } from "@/api/queries";
 import { UserTag } from "@/components/UserTag";
 import { RouteHeader } from "@/components/RouteHeader";
 import { calculateDistance } from "@/utils/math";
 import { StatueEntry } from "@/components/StatueEntry";
-import { useLocation } from "@/hooks/useLocation";
 import { SelectedStatueContext } from "@/providers/SelectedStatueProvider";
 import { useLocationContext } from "@/providers/LocationProvider";
 import { Statue } from "@/types/statues";
@@ -53,9 +51,8 @@ const calculateLatOffset = (drawerHeightPercent: number) => {
 const MyStatues: FC = () => {
   const { data: statueMap } = useGetAllStatues();
   const { data: collectedStatues = [] } = useGetCollectedStatues();
-  const location = useLocation();
   const { setSelectedStatue } = useContext(SelectedStatueContext);
-  const { animateToRegion } = useLocationContext();
+  const { animateToRegion, userLocation } = useLocationContext();
   const [tab, setTab] = useState<"collected" | "undiscovered">("collected");
 
   // Handler for navigating to a statue on the map
@@ -114,24 +111,23 @@ const MyStatues: FC = () => {
         statueInfo: statue,
         created_at: "",
         value: 0,
-        distance: location?.coords.latitude
+        distance: userLocation
           ? calculateDistance(
               statue.lat,
               statue.lng,
-              location.coords.latitude,
-              location.coords.longitude
+              userLocation.latitude,
+              userLocation.longitude
             )
           : 0,
       }))
       .sort((a, b) => a.distance - b.distance);
-  }, [statueMap, collectedStatues, location?.coords]);
+  }, [statueMap, collectedStatues, userLocation]);
 
   const showNoStatuesMessage =
     collectedStatuesList.length === 0 && tab === "collected";
 
   return (
-    <SafeAreaView className="bg-gray h-full">
-      <RouteHeader route="Moje sochy" />
+    <>
       <View className="flex flex-row justify-between items-center px-4 mb-4">
         <UserTag />
       </View>
@@ -179,7 +175,7 @@ const MyStatues: FC = () => {
           />
         )}
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 
@@ -192,7 +188,7 @@ const CollectedStatueItem: FC<{
     name={statue.statueInfo.name}
     onPress={() => onNavigate(statue.statueInfo)}
     score={statue.value}
-    subtitle={format(new Date(statue.created_at), "dd.MM.yyyy")}
+    subtitle={`uloveno ${format(new Date(statue.created_at), "dd.MM.yyyy")}`}
     thumbnailUrl={getThumbnailUrl(statue.statueInfo.id, 96)}
     variant="primary"
   />

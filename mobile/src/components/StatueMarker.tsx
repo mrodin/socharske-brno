@@ -1,12 +1,13 @@
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
+import { useLocationContext } from "@/providers/LocationProvider";
 import { View, Text, Animated } from "react-native";
 import { Marker, MapMarker as MapMarkerType } from "react-native-maps";
 import { tv } from "tailwind-variants";
 import { Image as ExpoImage } from "expo-image";
-import { FC, forwardRef, useEffect, useRef } from "react";
+import { FC, forwardRef, useEffect, useMemo, useRef } from "react";
 import { StatuePoint } from "@/types/statues";
 import { getThumbnailUrl } from "@/utils/images";
-import { formatDistance } from "@/utils/math";
+import { calculateDistance, formatDistance } from "@/utils/math";
 
 const statueMarker = tv({
   base: "",
@@ -29,7 +30,18 @@ export const StatueMarker: FC<StatueMarkerProps> = ({
   highlighted,
   setLoadedImages,
 }) => {
+  const { userLocation } = useLocationContext();
   const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const distance = useMemo(() => {
+    if (statue.isCollected || !userLocation) return undefined;
+    return calculateDistance(
+      userLocation.latitude,
+      userLocation.longitude,
+      statue.latitude,
+      statue.longitude
+    );
+  }, [statue.isCollected, statue.latitude, statue.longitude, userLocation]);
 
   useEffect(() => {
     if (!highlighted) {
@@ -82,11 +94,11 @@ export const StatueMarker: FC<StatueMarkerProps> = ({
       ) : (
         <>
           <UndiscoveredStatueIcon />
-          {statue.distance ? (
+          {distance ? (
             <View className="absolute left-0 right-0 bottom-[120px]">
               <View className="bg-gray-lighter rounded-3xl w-20 h-[32px] justify-center items-center">
                 <Text className="text-md text-center text-white">
-                  {formatDistance(statue.distance)}
+                  {formatDistance(distance)}
                 </Text>
               </View>
             </View>

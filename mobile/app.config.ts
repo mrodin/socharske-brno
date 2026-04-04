@@ -18,9 +18,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     buildNumber: "10",
     bundleIdentifier: "com.kulturnilenochodi.socharske-brno",
     icon: "./assets/icon.png",
-    config: {
-      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
-    },
     supportsTablet: true,
     usesAppleSignIn: true,
     infoPlist: {
@@ -30,6 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         "This app requires access to your location even when closed.",
       NSLocationAlwaysUsageDescription:
         "This app requires access to your location when open.",
+      UIBackgroundModes: ["remote-notification"],
     },
   },
   android: {
@@ -37,11 +35,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#DF3F34",
-    },
-    config: {
-      googleMaps: {
-        apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
-      },
     },
     package: "com.kulturnilenochodi.socharskebrno",
   },
@@ -51,7 +44,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     "expo-router",
     "expo-font",
+    [
+      "expo-notifications",
+      {
+        color: "#DF3F34",
+      },
+    ],
     "expo-apple-authentication",
+    "./plugins/withDisplayCutout",
+    [
+      "./plugins/withGoogleMaps",
+      {
+        apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+      },
+    ],
     [
       "@react-native-google-signin/google-signin",
       {

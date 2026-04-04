@@ -3,6 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import { Button } from "@/components/Button";
 import { ArrowRight } from "@/icons/ArrowRight";
 import { WizardProviderContext } from "@/providers/WizardProvider";
+import { UserInfoContext } from "@/providers/UserInfo";
 import { Close } from "@/icons/Close";
 import { cn } from "@/utils/cn";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
@@ -17,18 +18,16 @@ const WizardArrow: FC<{ className: string }> = ({ className }) => (
   </View>
 );
 
-const CloseButton: FC<{ onClose: () => void }> = ({ onClose }) => {
-  return (
-    <Pressable
-      className="absolute top-4 right-4 z-10"
-      onPress={() => {
-        onClose();
-      }}
-    >
-      <Close width={10} height={10} color="#DF4237" />
-    </Pressable>
-  );
-};
+const CloseButton: FC<{ onClose: () => void }> = ({ onClose }) => (
+  <Pressable
+    className="absolute top-4 right-4 z-10"
+    onPress={() => {
+      onClose();
+    }}
+  >
+    <Close width={10} height={10} color="#DF4237" />
+  </Pressable>
+);
 
 const Next: FC<{ onPress: () => void; text: string }> = ({ onPress, text }) => (
   <Pressable
@@ -48,7 +47,7 @@ const WizardWrapper: FC<{
 
   return (
     <View
-      className={cn("absolute bg-white w-[280px] gap-3 rounded-xl", className)}
+      className={cn("absolute bg-white w-[280px] rounded-xl pt-8", className)}
     >
       <CloseButton onClose={close} />
       {children}
@@ -57,16 +56,18 @@ const WizardWrapper: FC<{
 };
 
 const WizardContent = ({ children }: { children: React.ReactNode }) => (
-  <View className="p-5">{children}</View>
+  <View className="p-5 flex flex-col gap-3">{children}</View>
 );
 
-const Header: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <Text className="text-xl font-bold">{children}</Text>
-);
+const Header: FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => <Text className={cn("text-xl font-bold", className)}>{children}</Text>;
 
-const Description: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <Text className="text-base">{children}</Text>
-);
+const Description: FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => <Text className={cn("text-base", className)}>{children}</Text>;
 
 const StepNumber = ({ children }: { children: React.ReactNode }) => (
   <Text className="text-lg -mt-2 font-light">{children}</Text>
@@ -76,8 +77,8 @@ export const TooltipStep1: FC<TooltipProps> = ({ onNext }) => (
   <>
     <WizardWrapper className="my-auto mx-auto relative z-40">
       <WizardContent>
-        <Header>Vydej se na lov soch!</Header>
-        <Description>
+        <Header className="text-center">Vydej se na lov soch!</Header>
+        <Description className="text-center">
           Objevuj Brno z nového úhlu pohledu. Sbírej sochy a soutěž s ostatními
           v počtu ulovených soch.
         </Description>
@@ -152,12 +153,47 @@ const TooltipStep5: FC<TooltipProps> = ({ onNext }) => (
         <Description>
           Tady si můžeš nastavit svůj profil anebo funkce aplikace.
         </Description>
-        <Next onPress={onNext} text="Pustit se do lovu" />
+        <Next onPress={onNext} text="Dále" />
       </WizardContent>
     </WizardWrapper>
     <WizardArrow className="bottom-[30px] right-[13%]" />
   </>
 );
+
+const TooltipStep6: FC<TooltipProps> = ({ onNext }) => {
+  const { requestPushPermission } = useContext(UserInfoContext);
+
+  const handleAllow = async () => {
+    await requestPushPermission();
+    onNext();
+  };
+
+  return (
+    <WizardWrapper className="my-auto mx-auto relative z-40 w-[340px]">
+      <WizardContent>
+        <Header className="text-center">Nezmeškej dění ve hře!</Header>
+        <Description className="text-center">
+          Pošleme ti upozornění, když budeš déle než týden bez nové sochy.
+          Maximálně jednou týdně, žádný spam.
+        </Description>
+        <View className="flex flex-row gap-3 mt-4">
+          <Button
+            variant="secondary"
+            className="flex-1"
+            title="Zakázat"
+            onPress={onNext}
+          />
+          <Button
+            variant="primary"
+            className="flex-1"
+            title="Jasan!"
+            onPress={handleAllow}
+          />
+        </View>
+      </WizardContent>
+    </WizardWrapper>
+  );
+};
 
 const Wizard = () => {
   const { step, setStep, close } = useContext(WizardProviderContext);
@@ -168,7 +204,8 @@ const Wizard = () => {
       {step === 2 && <TooltipStep2 onNext={() => setStep(3)} />}
       {step === 3 && <TooltipStep3 onNext={() => setStep(4)} />}
       {step === 4 && <TooltipStep4 onNext={() => setStep(5)} />}
-      {step === 5 && <TooltipStep5 onNext={() => close()} />}
+      {step === 5 && <TooltipStep5 onNext={() => setStep(6)} />}
+      {step === 6 && <TooltipStep6 onNext={close} />}
     </View>
   );
 };
