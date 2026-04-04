@@ -1,6 +1,6 @@
 import { defaultUserIconSource } from "@/utils/images";
 import React, { FC, ReactNode } from "react";
-import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { LinearGradient } from "@/components/styled";
 
 type ProfileDetailProps = {

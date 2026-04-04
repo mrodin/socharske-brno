@@ -31,33 +31,39 @@ const LeaderBoard: FC = () => {
       <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
         <View className="bg-gray flex-1 gap-4 px-6 mt-3">
           <View className="flex flex-row mt-4 mb-2">
-            <TopPlayer
-              username={secondUser?.username}
-              avatarUrl={secondUser?.avatar}
-              score={secondUser?.score}
-              rank={2}
-              onPress={() => {
-                router.navigate(`/leaderboard/profile?id=${secondUser?.id}`);
-              }}
-            />
-            <TopPlayer
-              username={firstUser?.username}
-              avatarUrl={firstUser?.avatar}
-              score={firstUser?.score}
-              rank={1}
-              onPress={() => {
-                router.navigate(`/leaderboard/profile?id=${firstUser?.id}`);
-              }}
-            />
-            <TopPlayer
-              username={thirdUser?.username}
-              avatarUrl={thirdUser?.avatar}
-              score={thirdUser?.score}
-              rank={3}
-              onPress={() => {
-                router.navigate(`/leaderboard/profile?id=${thirdUser?.id}`);
-              }}
-            />
+            {secondUser && (
+              <TopPlayer
+                username={secondUser.username}
+                avatarUrl={secondUser.avatar}
+                score={secondUser.score}
+                rank={2}
+                onPress={() => {
+                  router.navigate(`/leaderboard/profile?id=${secondUser.id}`);
+                }}
+              />
+            )}
+            {firstUser && (
+              <TopPlayer
+                username={firstUser.username}
+                avatarUrl={firstUser.avatar}
+                score={firstUser.score}
+                rank={1}
+                onPress={() => {
+                  router.navigate(`/leaderboard/profile?id=${firstUser.id}`);
+                }}
+              />
+            )}
+            {thirdUser && (
+              <TopPlayer
+                username={thirdUser.username}
+                avatarUrl={thirdUser.avatar}
+                score={thirdUser.score}
+                rank={3}
+                onPress={() => {
+                  router.navigate(`/leaderboard/profile?id=${thirdUser.id}`);
+                }}
+              />
+            )}
           </View>
           {currentUserInLeaderboard && (
             <CurrentPlayer
