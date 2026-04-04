@@ -1,0 +1,31 @@
+import { FC } from "react";
+import { SearchBar } from "@/components/styled";
+
+type SearchProfileBarProps = {
+  searchText: string;
+  updateSearchText: (text: string) => void;
+  isLoading: boolean;
+};
+
+export const SearchProfileBar: FC<SearchProfileBarProps> = ({
+  searchText,
+  updateSearchText,
+  isLoading,
+}) => {
+  return (
+    <SearchBar
+      platform="default"
+      placeholder="Jméno uživatele..."
+      // @ts-expect-error react-native-elements SearchBar onChangeText type is broken
+      onChangeText={(text: string) => updateSearchText(text)}
+      value={searchText}
+      showLoading={isLoading}
+      placeholderTextColor="#999999"
+      containerClassName="border-t-0 border-b-1 border-b-gray-light bg-transparent"
+      inputContainerClassName="bg-transparent border-0 rounded-full h-10"
+      inputClassName="bg-transparent text-white"
+      leftIconContainerClassName="hidden"
+      rightIconContainerClassName="fill-white"
+    />
+  );
+};

@@ -11,7 +11,7 @@ import React, {
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Text,
-  StyleSheet,
+  StyleSheet,     
   View,
   ImageBackground,
   TouchableOpacity,
