@@ -16,20 +16,24 @@ const SearchPlayers = () => {
 }
 
 const FollowProfile = () => {
-  const { id } = useGlobalSearchParams<{ id: string }>();
+  const { id: rawId } = useGlobalSearchParams();
+  const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const { userInfo } = useUserInfo();
   const { mutate: toggleFollow, isPending } = useToggleProfileFollow();
   const { data: followedProfiles } = useGetFollowedProfiles();
+
+  if (!id || !userInfo?.id || userInfo.id === id) {
+    return null;
+  }
+
   return (
-      userInfo?.id !== id && (
-        <FollowProfileButton
-          disabled={isPending}
-          isFollowing={followedProfiles?.some(
-            (profileId) => profileId === id
-          )}
-          onPress={() => toggleFollow(id)}
-        />
-      )
+      <FollowProfileButton
+        disabled={isPending}
+        isFollowing={followedProfiles?.some(
+          (profileId) => profileId === id
+        )}
+        onPress={() => toggleFollow(id)}
+      />
   )
 }
 
