@@ -3,9 +3,8 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const universalLinksHost = new URL(
-  process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL!
-).hostname;
+const universalLinksHost = new URL(process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL!)
+  .hostname;
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -61,7 +60,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: "./assets/favicon.png",
   },
   plugins: [
-    "expo-image",
     "expo-router",
     "expo-font",
     [
