@@ -13,6 +13,7 @@ import AuthWrap from "@/components/auth/Wrap";
 import { Link, router } from "expo-router";
 import { appleAuth } from "@/utils/appleAuth";
 import { IS_IOS } from "@/utils/platform";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const AuthRegister = () => {
   const [email, setEmail] = useState("");
@@ -74,13 +75,12 @@ const AuthRegister = () => {
             placeholder="Email"
             autoCapitalize={"none"}
           />
-          <StyledInput
+          <PasswordInput
             placeholder="Heslo"
             onChangeText={(text) => setPassword(text)}
             disabled={loading}
             value={password}
             autoCapitalize={"none"}
-            secureTextEntry={true}
           />
           <Text className="text-white -mt-1">
             Heslo musí mít alespoň 6 znaků

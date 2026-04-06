@@ -12,6 +12,7 @@ import { appleAuth } from "@/utils/appleAuth";
 import { AppleIcon } from "@/icons/AppleIcon";
 import { googleAuth } from "@/utils/googleAuth";
 import { GoogleIcon } from "@/icons/GoogleIcon";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const AuthEmailSignIn = () => {
   const router = useRouter();
@@ -73,13 +74,12 @@ const AuthEmailSignIn = () => {
             placeholder="Email"
             autoCapitalize={"none"}
           />
-          <StyledInput
+          <PasswordInput
             placeholder="Heslo"
             onChangeText={(text) => setPassword(text)}
             value={password}
             disabled={loading}
             autoCapitalize={"none"}
-            secureTextEntry={true}
           />
           <Pressable
             onPress={() => router.navigate("/auth/password-reset-request")}
