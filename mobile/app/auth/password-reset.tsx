@@ -23,7 +23,7 @@ const PasswordReset = () => {
 
   useEffect(() => {
     const call = async () => {
-      const url = Linking.getLinkingURL();
+      const url = await Linking.getInitialURL();
       if (!url) {
         return;
       }

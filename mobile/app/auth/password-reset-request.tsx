@@ -5,7 +5,6 @@ import { track } from "@amplitude/analytics-react-native";
 
 import { Button } from "@/components/Button";
 import { StyledInput } from "@/components/StyledInput";
-import * as Linking from "expo-linking";
 import GoBackHeader from "@/components/auth/GoBackHeader";
 import { supabase } from "@/utils/supabase";
 
@@ -14,9 +13,8 @@ const PasswordResetRequest = () => {
   const [loading] = useState(false);
 
   const handleResetPassword = async () => {
-    const resetPasswordURL = Linking.createURL("auth/password-reset");
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: resetPasswordURL,
+      redirectTo: `${process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL}/auth/password-reset`,
     });
 
     if (error) {
