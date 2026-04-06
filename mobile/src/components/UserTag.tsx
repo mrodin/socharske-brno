@@ -23,7 +23,7 @@ export const UserTag = () => {
               }
             : defaultUserIconSource
         }
-        className="w-[54px] h-[54px] rounded-full"
+        className="w-[59px] h-[59px] rounded-full"
       />
       <View className="py-2 flex-1">
         <Text
@@ -33,7 +33,9 @@ export const UserTag = () => {
         >
           {userInfo.username}
         </Text>
-        <Text className="color-red-pale">{userStatistics.rank}. místo</Text>
+        {userStatistics.rank && (
+          <Text className="color-red-pale">{userStatistics.rank}. místo</Text>
+        )}
       </View>
       <Text className="color-white text-2xl pr-6">{userStatistics.score}b</Text>
     </View>

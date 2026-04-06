@@ -22,11 +22,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     usesAppleSignIn: true,
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
-        "This app requires access to your location when open.",
+        "Lovci Soch uses your location to show nearby statues on the map and to verify you are within reach of a statue before you can collect it. For example, you must be within 20 meters of a statue to mark it as collected.",
       NSLocationAlwaysAndWhenInUseUsageDescription:
-        "This app requires access to your location even when closed.",
+        "Lovci Soch uses your location to show nearby statues on the map and to verify you are within reach of a statue before you can collect it. For example, you must be within 20 meters of a statue to mark it as collected.",
       NSLocationAlwaysUsageDescription:
-        "This app requires access to your location when open.",
+        "Lovci Soch uses your location to show nearby statues on the map and to verify you are within reach of a statue before you can collect it. For example, you must be within 20 meters of a statue to mark it as collected.",
       UIBackgroundModes: ["remote-notification"],
     },
   },

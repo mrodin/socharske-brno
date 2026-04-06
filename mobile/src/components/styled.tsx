@@ -1,5 +1,5 @@
 import { cssInterop } from "nativewind";
-import LinearGradientOriginal from "react-native-linear-gradient";
+import { LinearGradient as LinearGradientOriginal } from "expo-linear-gradient";
 import { SearchBar as SearchBarOriginal } from "react-native-elements";
 
 // Enhanced components with NativeWind className support via cssInterop
