@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { UserSessionContext } from "../providers/UserSession";
 import { CollectedStatue, Statue } from "../types/statues";
 import { fetchWithAuth } from "../utils/api";
+import { LeaderBoardEntry } from "@/types/users";
 
 const useSession = () => {
   const { session } = useContext(UserSessionContext);
