@@ -95,10 +95,12 @@ const RootLayout: FC = () => {
     return <LoadingScreen />;
   }
 
+  const statusBarStyle = pathname === "/" ? "dark" : "light";
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={DarkTheme}>
-        <StatusBar style="dark" />
+        <StatusBar style={statusBarStyle} />
         <UserSessionContext.Provider value={{ loading, session, setSession }}>
           <QueryClientProvider client={queryClient}>
             <Slot />
