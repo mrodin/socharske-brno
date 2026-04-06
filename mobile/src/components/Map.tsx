@@ -174,11 +174,13 @@ export const Map: FC = () => {
             anchor={{ x: 0.5, y: 0.5 }}
             style={{ zIndex: 1000 }} // nativewind not working here
             flat={true}
-            rotation={userHeading ?? 0}
           >
             <Image
               className="w-[60px] h-[60px]"
               source={require("../../assets/current-location.png")}
+              style={{
+                transform: [{ rotate: `${userHeading ?? 0}deg` }],
+              }}
             />
           </Marker>
         )}
