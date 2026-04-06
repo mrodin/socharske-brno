@@ -6,11 +6,15 @@ import {
   useRouter,
   useSegments,
 } from "expo-router";
+import { Toaster } from "sonner-native";
 import { FC, useEffect } from "react";
+import { Platform } from "react-native";
 import "react-native-get-random-values";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { init, track } from "@amplitude/analytics-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StatusBar, setStatusBarHidden } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 
 import { UserSessionContext } from "@/providers/UserSession";
 import "../global.css";
@@ -46,6 +50,14 @@ const RootLayout: FC = () => {
   const { user, loading, session, setSession } = useUserSession();
 
   useAnalytics();
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      setStatusBarHidden(true, "fade");
+      NavigationBar.setVisibilityAsync("hidden");
+      NavigationBar.setBehaviorAsync("overlay-swipe");
+    }
+  }, []);
 
   useEffect(() => {
     Font.loadAsync({
@@ -84,11 +96,13 @@ const RootLayout: FC = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <UserSessionContext.Provider value={{ loading, session, setSession }}>
         <QueryClientProvider client={queryClient}>
           <Slot />
         </QueryClientProvider>
       </UserSessionContext.Provider>
+      <Toaster />
     </GestureHandlerRootView>
   );
 };

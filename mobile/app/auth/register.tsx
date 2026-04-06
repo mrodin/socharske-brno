@@ -95,8 +95,13 @@ const AuthRegister = () => {
         <View>
           <Text className="text-white text-center">
             Registrací souhlasíte s{" "}
-            <Text className="underline">Podmínkami používání</Text>
-            {"\n"} a se <Text className="underline">Zásadami ochrany</Text>{" "}
+            <Link href="https://www.lovcisoch.cz/podminky-pouzivani-aplikace">
+              <Text className="underline">Podmínkami používání</Text>
+            </Link>
+            {"\n"} a se{" "}
+            <Link href="https://www.lovcisoch.cz/gdpr">
+              <Text className="underline">Zásadami ochrany</Text>
+            </Link>{" "}
             osobních údajů
           </Text>
         </View>

@@ -1,15 +1,21 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   Text,
   ActivityIndicator,
   useWindowDimensions,
-  Animated,
-  Easing,
 } from "react-native";
-import { useImageBase64 } from "../../hooks/useImageBase64";
+import ReanimatedAnimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+  Easing,
+} from "react-native-reanimated";
 import { usePuzzleData } from "../../hooks/usePuzzleData";
+import { usePuzzlePieces } from "../../hooks/usePuzzlePieces";
 import { PuzzleGrid } from "./PuzzleGrid";
+import { notify } from "@/components/Notification";
 
 type PuzzleProps = {
   imageUrl: string;
@@ -22,111 +28,118 @@ export const Puzzle: React.FC<PuzzleProps> = ({
   onComplete,
   onClose,
 }) => {
-  // Animated width for progress bar
-  const animatedProgressBarComplete = useRef(new Animated.Value(0)).current;
-  const animatedProgressBarClosing = useRef(new Animated.Value(0)).current;
-  // Animated opacity for puzzle grid
-  const animatedPuzzleOpacity = useRef(new Animated.Value(0)).current;
-  // Get screen dimensions
   const { width: puzzleSize } = useWindowDimensions();
+
+  // Reanimated shared values for progress bars (runs on UI thread, works on Fabric)
+  const progressWidth = useSharedValue(0);
+  const closingWidth = useSharedValue(0);
+
+  // Pre-crop the image into 9 local-file pieces BEFORE mounting Sortable.Grid.
+  const { pieceUris, isLoading, error: imageError } = usePuzzlePieces(imageUrl);
+  const piecesReady =
+    !isLoading && !imageError && Object.keys(pieceUris).length === 9;
 
   const handleComplete = useCallback(() => {
     onComplete();
-    // Animate the closing of the progress bar
-    Animated.timing(animatedProgressBarClosing, {
-      toValue: 100,
-      duration: 4000,
-      useNativeDriver: false,
-    }).start(() => {
-      onClose();
-    });
-  }, [onComplete, onClose]);
+    closingWidth.value = withTiming(
+      puzzleSize,
+      { duration: 4000, easing: Easing.linear },
+      (finished) => {
+        if (finished) {
+          runOnJS(notify)("Dobrá práce!\nSocha je ve tvé sbírce. 🤟");
+          runOnJS(onClose)();
+        }
+      }
+    );
+  }, [onComplete, onClose, puzzleSize]);
 
-  // Use custom hooks
-  const { imageBase64, isImageLoading, imageLoadError } =
-    useImageBase64(imageUrl);
   const { data, correctPieces, progress, updatePuzzleData, reset } =
     usePuzzleData(handleComplete);
-  const puzzleIsReady = !isImageLoading && !imageLoadError && imageBase64;
 
   useEffect(() => {
     reset();
+    progressWidth.value = 0;
+    closingWidth.value = 0;
   }, [imageUrl]);
 
-  // Animate progress bar width when progress changes
   useEffect(() => {
-    Animated.timing(animatedProgressBarComplete, {
-      toValue: progress * 100,
-      duration: 500,
-      useNativeDriver: false, // Width animations require setting this to false
-    }).start();
-  }, [progress]);
+    progressWidth.value = withTiming(progress * puzzleSize, { duration: 500 });
+  }, [progress, puzzleSize]);
 
-  // Animate puzzle opacity when puzzle is ready
-  useEffect(() => {
-    if (puzzleIsReady) {
-      Animated.timing(animatedPuzzleOpacity, {
-        toValue: 1,
-        duration: 1000,
-        easing: Easing.in(Easing.ease),
-        useNativeDriver: true,
-      }).start();
-    } else {
-      animatedPuzzleOpacity.setValue(0);
-    }
-  }, [puzzleIsReady]);
+  const progressBarStyle = useAnimatedStyle(() => ({
+    width: progressWidth.value,
+  }));
+
+  const closingBarStyle = useAnimatedStyle(() => ({
+    width: closingWidth.value,
+  }));
 
   return (
-    <View className="flex-1 items-center justify-center bg-gray">
-      {puzzleIsReady ? (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#393939",
+      }}
+    >
+      {piecesReady ? (
         <>
-          {/** Puzzle grid and progress bar */}
-          <Animated.View
-            className="justify-center"
+          <View
             style={{
               width: puzzleSize,
               height: puzzleSize,
-              opacity: animatedPuzzleOpacity,
+              justifyContent: "center",
             }}
           >
             <PuzzleGrid
               data={data}
               updatePuzzleData={updatePuzzleData}
-              imageBase64={imageBase64}
+              pieceUris={pieceUris}
               progress={progress}
             />
-          </Animated.View>
-          <View style={{ width: puzzleSize }} className="-mt-1">
-            <View className="h-1 overflow-hidden ">
-              <Animated.View
-                className="h-full bg-red absolute"
-                style={{
-                  width: animatedProgressBarComplete.interpolate({
-                    inputRange: [0, 100],
-                    outputRange: ["0%", "100%"],
-                  }),
-                }}
+          </View>
+          <View style={{ width: puzzleSize, marginTop: -1 }}>
+            <View style={{ height: 4, overflow: "hidden" }}>
+              <ReanimatedAnimated.View
+                style={[
+                  {
+                    height: "100%",
+                    backgroundColor: "#D5232A",
+                    position: "absolute",
+                  },
+                  progressBarStyle,
+                ]}
               />
-              <Animated.View
-                className="h-full bg-white absolute"
-                style={{
-                  width: animatedProgressBarClosing.interpolate({
-                    inputRange: [0, 100],
-                    outputRange: ["0%", "100%"],
-                  }),
-                }}
+              <ReanimatedAnimated.View
+                style={[
+                  {
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    position: "absolute",
+                  },
+                  closingBarStyle,
+                ]}
               />
             </View>
-            <Text className="text-center mt-1 text-lg text-white font-medium">
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: 4,
+                fontSize: 18,
+                color: "#fff",
+                fontWeight: "500",
+              }}
+            >
               {progress === 1 ? "Máš hotovo!" : `${correctPieces}/9`}
             </Text>
           </View>
         </>
       ) : (
-        <View className="justify-center items-center">
-          {imageLoadError ? (
-            <Text className="text-red-600 text-center">
-              Nepovedlo sena načíst obrázek puzzle.{"\n"}
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          {imageError ? (
+            <Text style={{ color: "#dc2626", textAlign: "center" }}>
+              Nepovedlo se načíst obrázek puzzle.{"\n"}
               Zkontrolujte své internetové připojení.
             </Text>
           ) : (
