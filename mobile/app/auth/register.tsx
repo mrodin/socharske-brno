@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Alert, Text, View } from "react-native";
-import * as Linking from "expo-linking";
 import { track } from "@amplitude/analytics-react-native";
 
 import { supabase } from "@/utils/supabase";
@@ -29,7 +28,7 @@ const AuthRegister = () => {
       email: email,
       password: password,
       options: {
-        emailRedirectTo: Linking.createURL("auth/email-signin"),
+        emailRedirectTo: `${process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL}/auth/email-signin`,
       },
     });
     setLoading(false);

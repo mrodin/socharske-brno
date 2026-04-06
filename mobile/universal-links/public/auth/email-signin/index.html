@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lovci Soch - Ověření emailu</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #393939;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    a {
+      color: #DF3F34;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <p>Otevírám aplikaci Lovci Soch...</p>
+    <p>Pokud se aplikace neotevřela, <a id="fallback" href="#">klikněte zde</a>.</p>
+  </div>
+  <script>
+    var customSchemeUrl = 'lovci-soch://auth/email-signin' + window.location.hash;
+    document.getElementById('fallback').href = customSchemeUrl;
+    window.location.replace(customSchemeUrl);
+  </script>
+</body>
+</html>
