@@ -1,7 +1,6 @@
 import { Alert, ScrollView, Switch, Text, View } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { UserInfoContext } from "@/providers/UserInfo";
-import { supabase } from "@/utils/supabase";
 import {
   openAppSettings,
   PermissionStatus,
@@ -26,12 +25,8 @@ const NOTIFICATION_OPTIONS: {
 ];
 
 const Notifications = () => {
-  const { userInfo } = useContext(UserInfoContext);
+  const { userInfo, updateNotificationPref } = useContext(UserInfoContext);
   const permissionStatus = useNotificationPermission();
-  const [preferences, setPreferences] = useState<Record<NotificationType, boolean>>(
-    () => Object.fromEntries(NOTIFICATION_TYPES.map((t) => [t, true])) as Record<NotificationType, boolean>
-  );
-  const [loadingPrefs, setLoadingPrefs] = useState(true);
   const [savingType, setSavingType] = useState<NotificationType | null>(null);
 
   // Show alert when iOS notifications are off or never asked
@@ -51,46 +46,12 @@ const Notifications = () => {
     }
   }, [permissionStatus]);
 
-  // Load user's saved preferences
-  useEffect(() => {
-    if (!userInfo?.id) return;
-    const load = async () => {
-      const { data } = await supabase
-        .from("push_notification_prefs")
-        .select("notification_type, enabled")
-        .eq("profile_id", userInfo.id);
-      if (data) {
-        const overrides: Partial<Record<NotificationType, boolean>> = {};
-        for (const row of data) {
-          overrides[row.notification_type as NotificationType] = row.enabled;
-        }
-        setPreferences((prev) => ({ ...prev, ...overrides }));
-      }
-      setLoadingPrefs(false);
-    };
-    load();
-  }, [userInfo?.id]);
-
   const handleToggle = async (type: NotificationType, value: boolean) => {
-    setPreferences((prev) => ({ ...prev, [type]: value }));
     setSavingType(type);
-    const { error } = await supabase.from("push_notification_prefs").upsert(
-      {
-        profile_id: userInfo!.id,
-        notification_type: type,
-        enabled: value,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "profile_id,notification_type" }
-    );
-    if (error) {
-      setPreferences((prev) => ({ ...prev, [type]: !value }));
-      Alert.alert("Chyba", "Nepodařilo se uložit nastavení.");
-    }
+    const success = await updateNotificationPref(type, value);
+    if (!success) Alert.alert("Chyba", "Nepodařilo se uložit nastavení.");
     setSavingType(null);
   };
-
-  if (loadingPrefs) return null;
 
   return (
     <ScrollView automaticallyAdjustKeyboardInsets>
@@ -107,7 +68,7 @@ const Notifications = () => {
               </Text>
             </View>
             <Switch
-              value={preferences[type]}
+              value={userInfo!.notificationPrefs[type]}
               onValueChange={(val) => handleToggle(type, val)}
               disabled={savingType === type}
               trackColor={{ true: theme.red }}

@@ -3,6 +3,10 @@ import { supabase } from "../utils/supabase";
 import { UserSessionContext } from "./UserSession";
 import { usePushNotifications } from "../hooks/usePushNotifications";
 import { Alert } from "react-native";
+import {
+  NOTIFICATION_TYPES,
+  type NotificationType,
+} from "@/constants/notificationTypes";
 
 type UserInfo = {
   username: string;
@@ -11,6 +15,7 @@ type UserInfo = {
   provider?: string;
   id: string;
   devMode: boolean;
+  notificationPrefs: Record<NotificationType, boolean>;
 };
 
 export const UserInfoContext = createContext<{
@@ -21,11 +26,13 @@ export const UserInfoContext = createContext<{
     avatar_url?: string;
   }) => Promise<void>;
   requestPushPermission: () => Promise<boolean>;
+  updateNotificationPref: (type: NotificationType, enabled: boolean) => Promise<boolean>;
 }>({
   userInfo: null,
   loading: true,
   updateProfile: async () => {},
   requestPushPermission: async () => false,
+  updateNotificationPref: async () => false,
 });
 
 /**
@@ -48,7 +55,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
 
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`username, avatar_url, dev_mode`)
+        .select(`username, avatar_url, dev_mode, push_notification_prefs(notification_type, enabled)`)
         .eq("id", session?.user.id)
         .single();
       if (error && status !== 406) {
@@ -56,6 +63,13 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data) {
+        const notificationPrefs = Object.fromEntries(
+          NOTIFICATION_TYPES.map((t) => [t, true])
+        ) as Record<NotificationType, boolean>;
+        for (const pref of data.push_notification_prefs ?? []) {
+          notificationPrefs[pref.notification_type as NotificationType] = pref.enabled;
+        }
+
         setUserInfo({
           username: data.username,
           avatarUrl: data.avatar_url,
@@ -63,6 +77,7 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
           devMode: data.dev_mode,
           provider: session.user.app_metadata.provider,
           id: session.user.id,
+          notificationPrefs,
         });
 
         if (session?.user.user_metadata?.avatar_url && !data.avatar_url) {
@@ -126,9 +141,40 @@ export function UserInfoProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function updateNotificationPref(
+    type: NotificationType,
+    enabled: boolean
+  ): Promise<boolean> {
+    if (!session?.user || !userInfo) return false;
+
+    const previousPrefs = userInfo.notificationPrefs;
+
+    setUserInfo({
+      ...userInfo,
+      notificationPrefs: { ...userInfo.notificationPrefs, [type]: enabled },
+    });
+
+    const { error } = await supabase.from("push_notification_prefs").upsert(
+      {
+        profile_id: session.user.id,
+        notification_type: type,
+        enabled,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "profile_id,notification_type" }
+    );
+
+    if (error) {
+      setUserInfo({ ...userInfo, notificationPrefs: previousPrefs });
+      return false;
+    }
+
+    return true;
+  }
+
   return (
     <UserInfoContext.Provider
-      value={{ userInfo, loading, updateProfile, requestPushPermission: requestPermission }}
+      value={{ userInfo, loading, updateProfile, requestPushPermission: requestPermission, updateNotificationPref }}
     >
       {children}
     </UserInfoContext.Provider>
