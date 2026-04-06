@@ -15,6 +15,7 @@ import { init, track } from "@amplitude/analytics-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar, setStatusBarHidden } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
+import { ThemeProvider, DarkTheme } from "@react-navigation/native";
 
 import { UserSessionContext } from "@/providers/UserSession";
 import "../global.css";
@@ -96,13 +97,15 @@ const RootLayout: FC = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="dark" />
-      <UserSessionContext.Provider value={{ loading, session, setSession }}>
-        <QueryClientProvider client={queryClient}>
-          <Slot />
-        </QueryClientProvider>
-      </UserSessionContext.Provider>
-      <Toaster />
+      <ThemeProvider value={DarkTheme}>
+        <StatusBar style="dark" />
+        <UserSessionContext.Provider value={{ loading, session, setSession }}>
+          <QueryClientProvider client={queryClient}>
+            <Slot />
+          </QueryClientProvider>
+        </UserSessionContext.Provider>
+        <Toaster />
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 };
