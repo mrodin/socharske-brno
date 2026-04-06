@@ -8,8 +8,10 @@ import {
   useNotificationPermission,
 } from "@/utils/permissions";
 import { theme } from "@/utils/theme";
-
-type NotificationType = "inactive-users";
+import {
+  NOTIFICATION_TYPES,
+  type NotificationType,
+} from "@/constants/notificationTypes";
 
 const NOTIFICATION_OPTIONS: {
   type: NotificationType;
@@ -26,11 +28,9 @@ const NOTIFICATION_OPTIONS: {
 const Notifications = () => {
   const { userInfo } = useContext(UserInfoContext);
   const permissionStatus = useNotificationPermission();
-  const [preferences, setPreferences] = useState<
-    Record<NotificationType, boolean>
-  >({
-    "inactive-users": true,
-  });
+  const [preferences, setPreferences] = useState<Record<NotificationType, boolean>>(
+    () => Object.fromEntries(NOTIFICATION_TYPES.map((t) => [t, true])) as Record<NotificationType, boolean>
+  );
   const [loadingPrefs, setLoadingPrefs] = useState(true);
   const [savingType, setSavingType] = useState<NotificationType | null>(null);
 
