@@ -57,13 +57,14 @@ Deno.serve(async (_req) => {
       avatar: entry.avatar_url,
       score: profileScore[entry.id] || 0,
       collectedStatuesCount: profileCount[entry.id] || 0,
-    })
+    }),
   );
 
   // Sort by score descending
   const sortedLeaderboard = leaderboard
     .sort((a, b) => b.score - a.score)
-    .filter((user) => user.username !== null && user.score > 0); // Filter out users with null username or zero score
+    .filter((user) => user.username !== null && user.score > 0) // Filter out users with null username or zero score and add rank
+    .map((user, index) => ({ ...user, rank: index + 1 }));
 
   return new Response(JSON.stringify(sortedLeaderboard), {
     headers: { "Content-Type": "application/json" },

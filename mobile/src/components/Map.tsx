@@ -54,6 +54,8 @@ export const Map: FC = () => {
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   // track if we've done the initial map animation to user's location
   const hasAnimatedToInitialLocation = useRef(false);
+  // track if the native map view is ready to accept animations
+  const [isMapReady, setIsMapReady] = useState(false);
   // last reported heading value for throttling (5° threshold)
   const lastReportedHeading = useRef<number>(0);
 
@@ -91,16 +93,19 @@ export const Map: FC = () => {
     [setSelectedStatue, clearSearchedLocation]
   );
 
-  // Animate to user location on first available position
+  // Animate to user location once both the native map and location are ready.
+  // After the location-tracking refactor, LocationProvider may already have a
+  // position before Map mounts, so the old effect fired before the native map
+  // was initialised — causing a silent no-op.
   useEffect(() => {
-    if (userLocation && !hasAnimatedToInitialLocation.current) {
+    if (userLocation && isMapReady && !hasAnimatedToInitialLocation.current) {
       animateToRegion({
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
       });
       hasAnimatedToInitialLocation.current = true;
     }
-  }, [userLocation, animateToRegion]);
+  }, [userLocation, isMapReady, animateToRegion]);
 
   // Throttled heading watcher - only updates state when heading
   // changes by 5+ degrees. Without this, heading fires at 10-60 Hz
@@ -133,6 +138,7 @@ export const Map: FC = () => {
         ref={mapRef}
         customMapStyle={customGoogleMapStyle}
         initialRegion={initialRegion}
+        onMapReady={() => setIsMapReady(true)}
         // provider={PROVIDER_GOOGLE} Temporarily disabled for testing
         style={{ width: "100%", height: "100%" }}
         radius={40}
