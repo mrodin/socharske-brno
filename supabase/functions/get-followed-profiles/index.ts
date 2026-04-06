@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  const ids = follows.map((row) => row.following_id);
+  const ids = (follows ?? []).map((row) => row.following_id);
 
   return new Response(JSON.stringify(ids), {
     headers: { "Content-Type": "application/json" },

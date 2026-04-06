@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 type UseImageBase64Result = {
   imageBase64: string | null;
@@ -11,50 +12,38 @@ export const useImageBase64 = (imageUrl?: string): UseImageBase64Result => {
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
   const [imageLoadError, setImageLoadError] = useState<boolean>(false);
 
-  // Function to download image and convert to base64
-  const downloadAndConvertImage = async (url: string) => {
-    try {
-      setIsImageLoading(true);
-      setImageLoadError(false);
+  useEffect(() => {
+    if (!imageUrl) return;
 
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    let cancelled = false;
+    setIsImageLoading(true);
+    setImageLoadError(false);
+    setImageBase64(null);
 
-      const blob = await response.blob();
-
-      // Convert blob to base64
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const result = reader.result as string;
-          resolve(result);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
+    // Use expo-image-manipulator to download and convert to base64.
+    // The old approach (fetch → blob → FileReader.readAsDataURL) is broken in RN 0.83.
+    manipulateAsync(imageUrl, [], {
+      base64: true,
+      format: SaveFormat.JPEG,
+      compress: 0.8,
+    })
+      .then((result) => {
+        if (!cancelled && result.base64) {
+          setImageBase64(`data:image/jpeg;base64,${result.base64}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Error converting image to base64:", error);
+        if (!cancelled) setImageLoadError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setIsImageLoading(false);
       });
 
-      const base64 = await base64Promise;
-      setImageBase64(base64);
-    } catch (error) {
-      console.error("Error downloading image:", error);
-      setImageLoadError(true);
-    } finally {
-      setIsImageLoading(false);
-    }
-  };
-
-  // Download image on component mount or when imageUrl changes
-  useEffect(() => {
-    if (imageUrl) {
-      downloadAndConvertImage(imageUrl);
-    }
+    return () => {
+      cancelled = true;
+    };
   }, [imageUrl]);
 
-  return {
-    imageBase64,
-    isImageLoading,
-    imageLoadError,
-  };
+  return { imageBase64, isImageLoading, imageLoadError };
 };

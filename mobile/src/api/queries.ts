@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { UserSessionContext } from "../providers/UserSession";
 import { CollectedStatue, Statue } from "../types/statues";
 import { fetchWithAuth } from "../utils/api";
+import { LeaderBoardEntry } from "@/types/users";
 
 const useSession = () => {
   const { session } = useContext(UserSessionContext);
@@ -91,15 +92,20 @@ export const useSendStatueFeedback = () => {
 
 export const useToggleProfileFollow = () => {
   const session = useSession();
-  const followedProfiles = useGetFollowedProfiles();
+  const queryClient = useQueryClient();
 
   return useMutation<void, Error, string>({
     mutationFn: (followingId: string) =>
       fetchWithAuth("toggle-profile-follow", session.access_token, {
         following_id: followingId,
       }),
-    onSuccess: async () => {
-      await followedProfiles.refetch();
+    onSuccess: async (_data, followingId) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["followedProfiles"] }),
+        queryClient.invalidateQueries({
+          queryKey: ["profileFollowData", followingId],
+        }),
+      ]);
     },
   });
 };
@@ -111,5 +117,18 @@ export const useGetFollowedProfiles = () => {
     queryKey: ["followedProfiles"],
     queryFn: () => fetchWithAuth("get-followed-profiles", session.access_token),
     initialData: [],
+  });
+};
+
+export const useGetProfileFollowData = (profileId?: string) => {
+  const session = useSession();
+
+  return useQuery<{ followersCount: number; followingCount: number }, Error>({
+    queryKey: ["profileFollowData", profileId],
+    queryFn: () =>
+      fetchWithAuth("get-profile-follow-data", session.access_token, {
+        profileId,
+      }),
+    initialData: { followersCount: 0, followingCount: 0 },
   });
 };

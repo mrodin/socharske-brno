@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useContext, useState } from "react";
-import { LocationContext } from "./LocationProvider";
-import { DEFAULT_ZOOM } from "@/utils/constants";
+import { createContext, ReactNode, useState } from "react";
+import { useLocationContext } from "./LocationProvider";
+import { noop } from "@/utils/constants";
 
 export const WizardProviderContext = createContext<{
   step: number | null;
@@ -9,14 +9,14 @@ export const WizardProviderContext = createContext<{
   close: () => void;
 }>({
   step: 0,
-  setStep: () => {},
-  show: () => {},
-  close: () => {},
+  setStep: noop,
+  show: noop,
+  close: noop,
 });
 
 export function WizardProvider({ children }: { children: ReactNode }) {
   const [step, setStep] = useState<null | number>(null);
-  const { animateToRegion } = useContext(LocationContext);
+  const { animateToRegion } = useLocationContext();
 
   const handleSetStep = (step: number | null) => {
     if (step === 2) {

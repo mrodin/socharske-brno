@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { View } from "react-native";
-import { SearchIcon } from "./SearchIcon";
+import { SearchIcon } from "@/icons/SearchIcon";
 import { CrownIcon } from "./CrownIcon";
 import { JostStatueIcon } from "./JostStatueIcon";
 import { UserIcon } from "./UserIcon";
@@ -36,7 +36,7 @@ export const Navigation: FC<NavigationProps> = ({
       className={cn("absolute bottom-0 left-0 w-full h-[110px]", className)}
     >
       <View className="relative w-full h-0">
-        <View className="absolute top-4 left-0 w-full h-[102px] bg-gray shadow-[0px_-2px_5px_0px_rgba(0,0,0,0.15)]"></View>
+        <View className="absolute top-4 left-0 w-full h-[102px] bg-gray-darker shadow-[0px_-2px_5px_0px_rgba(0,0,0,0.15)]"></View>
       </View>
       <View className="flex flex-row justify-between items-end px-7">
         <NavigationButton
