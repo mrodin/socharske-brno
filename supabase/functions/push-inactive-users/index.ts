@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
 
   // --- 2b. Get profiles that have opted out of this notification type ---
   const { data: optedOut, error: prefError } = await supabase
-    .from("notification_preferences")
+    .from("push_notification_prefs")
     .select("profile_id")
     .eq("notification_type", NOTIFICATION_TYPE)
     .eq("enabled", false);

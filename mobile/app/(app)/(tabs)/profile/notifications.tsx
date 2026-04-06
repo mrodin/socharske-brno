@@ -56,7 +56,7 @@ const Notifications = () => {
     if (!userInfo?.id) return;
     const load = async () => {
       const { data } = await supabase
-        .from("notification_preferences")
+        .from("push_notification_prefs")
         .select("notification_type, enabled")
         .eq("profile_id", userInfo.id);
       if (data) {
@@ -74,7 +74,7 @@ const Notifications = () => {
   const handleToggle = async (type: NotificationType, value: boolean) => {
     setPreferences((prev) => ({ ...prev, [type]: value }));
     setSavingType(type);
-    const { error } = await supabase.from("notification_preferences").upsert(
+    const { error } = await supabase.from("push_notification_prefs").upsert(
       {
         profile_id: userInfo!.id,
         notification_type: type,
