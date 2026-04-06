@@ -5,11 +5,11 @@ import { usePushNotifications } from "../hooks/usePushNotifications";
 import { Alert } from "react-native";
 
 type UserInfo = {
+  id: string;
   username: string;
   avatarUrl: string;
   email: string;
   provider?: string;
-  id: string;
   devMode: boolean;
 };
 
