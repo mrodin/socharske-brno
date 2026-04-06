@@ -21,67 +21,81 @@ const PasswordReset = () => {
   const router = useRouter();
   const { setSession } = useContext(UserSessionContext);
 
-  useEffect(() => {
-    const call = async () => {
-      const url = await Linking.getInitialURL();
-      if (!url) {
-        return;
-      }
-      const transformedUrl = parseSupabaseUrl(url);
-      const queryParams = Linking.parse(transformedUrl).queryParams as {
-        error_description: string;
-        access_token?: string;
-        refresh_token?: string;
-      };
-
-      console.log(queryParams); // Keep for debugging
-
-      if (queryParams.error_description) {
-        track("Password Reset Failed", {
-          method: "Email",
-          error: queryParams.error_description,
-        });
-        Alert.alert("Něco se pokazilo: " + queryParams.error_description);
-        router.navigate("/auth");
-      } else {
-        const access_token = queryParams?.access_token;
-        const refresh_token = queryParams?.refresh_token;
-        if (
-          typeof access_token === "string" &&
-          typeof refresh_token === "string"
-        ) {
-          // Set the user session
-          await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-          //
-          await supabase.auth.refreshSession();
-          const newSession = await supabase.auth.getSession();
-          setSession(newSession.data.session);
-
-          track("Password Reset Success", { method: "Email" });
-          Alert.alert("Jste přihlášen, nyní můžete změnit heslo");
-          // Redirect to the profile page to change the password
-        } else {
-          console.log('"Invalid tokens", queryParams);');
-          track("Password Reset Failed", {
-            method: "Email",
-            error: "Invalid tokens",
-          });
-          Alert.alert("Něco se pokazilo");
-          router.navigate("/auth");
-        }
-      }
+  const handleUrl = async (url: string) => {
+    const transformedUrl = parseSupabaseUrl(url);
+    const queryParams = Linking.parse(transformedUrl).queryParams as {
+      error_description: string;
+      access_token?: string;
+      refresh_token?: string;
     };
 
-    call().catch((err) => {
-      // Handle other errors
-      console.log("Unknown error", err);
-      track("Password Reset Failed", { method: "Email", error: err });
-      Alert.alert("Něco se pokazilo");
+    console.log(queryParams); // Keep for debugging
+
+    if (queryParams.error_description) {
+      track("Password Reset Failed", {
+        method: "Email",
+        error: queryParams.error_description,
+      });
+      Alert.alert("Něco se pokazilo: " + queryParams.error_description);
       router.navigate("/auth");
+    } else {
+      const access_token = queryParams?.access_token;
+      const refresh_token = queryParams?.refresh_token;
+      if (
+        typeof access_token === "string" &&
+        typeof refresh_token === "string"
+      ) {
+        // Set the user session
+        await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        //
+        await supabase.auth.refreshSession();
+        const newSession = await supabase.auth.getSession();
+        setSession(newSession.data.session);
+
+        track("Password Reset Success", { method: "Email" });
+        Alert.alert("Jste přihlášen, nyní můžete změnit heslo");
+        // Redirect to the profile page to change the password
+      } else {
+        console.log('"Invalid tokens", queryParams);');
+        track("Password Reset Failed", {
+          method: "Email",
+          error: "Invalid tokens",
+        });
+        Alert.alert("Něco se pokazilo");
+        router.navigate("/auth");
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Try getting the URL that opened the app
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleUrl(url).catch((err) => {
+          console.log("Unknown error", err);
+          track("Password Reset Failed", { method: "Email", error: err });
+          Alert.alert("Něco se pokazilo");
+          router.navigate("/auth");
+        });
+      }
     });
+
+    // Also listen for incoming URLs (e.g. when app is already open)
+    const subscription = Linking.addEventListener("url", (event) => {
+      handleUrl(event.url).catch((err) => {
+        console.log("Unknown error", err);
+        track("Password Reset Failed", { method: "Email", error: err });
+        Alert.alert("Něco se pokazilo");
+        router.navigate("/auth");
+      });
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return <View className="bg-gray h-full w-full"></View>;
