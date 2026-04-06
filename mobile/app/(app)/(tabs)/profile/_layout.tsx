@@ -15,6 +15,7 @@ export default function RootLayout() {
       <Stack.Screen options={{ title: "Upravit profil" }} name="edit-profile" />
       <Stack.Screen options={{ title: "Smazat účet" }} name="delete-profile" />
       <Stack.Screen options={{ title: "Nastavení" }} name="settings" />
+      <Stack.Screen options={{ title: "Upozornění" }} name="notifications" />
     </Stack>
   );
 }

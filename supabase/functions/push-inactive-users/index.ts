@@ -62,6 +62,22 @@ Deno.serve(async (req) => {
     recentlyNotifiedIds = recentlyNotified.map((r) => r.profile_id);
   }
 
+  // --- 2b. Get profiles that have opted out of this notification type ---
+  const { data: optedOut, error: prefError } = await supabase
+    .from("notification_preferences")
+    .select("profile_id")
+    .eq("notification_type", NOTIFICATION_TYPE)
+    .eq("enabled", false);
+
+  if (prefError) {
+    return new Response(JSON.stringify({ error: prefError.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const optedOutIds = optedOut.map((r) => r.profile_id);
+
   // --- 3. Get candidate profiles ---
   // Must have: a push token, an account older than 7 days, and not been notified recently.
   let profileQuery = supabase
@@ -78,6 +94,14 @@ Deno.serve(async (req) => {
       "id",
       "in",
       `(${recentlyNotifiedIds.join(",")})`,
+    );
+  }
+
+  if (optedOutIds.length > 0) {
+    profileQuery = profileQuery.not(
+      "id",
+      "in",
+      `(${optedOutIds.join(",")})`,
     );
   }
 

@@ -7,6 +7,7 @@ import { UserInfoContext } from "@/providers/UserInfo";
 import { Close } from "@/icons/Close";
 import { cn } from "@/utils/cn";
 import { UndiscoveredStatueIcon } from "@/icons/UndiscoveredStatueIcon";
+import * as Notifications from "expo-notifications";
 
 type TooltipProps = {
   onNext: () => void;
@@ -168,6 +169,13 @@ const TooltipStep6: FC<TooltipProps> = ({ onNext }) => {
     onNext();
   };
 
+  const handleDeny = async () => {
+    // Trigger the iOS dialog so the app appears in iOS Settings.
+    // We ignore the result — user decides in the iOS dialog.
+    await Notifications.requestPermissionsAsync();
+    onNext();
+  };
+
   return (
     <WizardWrapper className="my-auto mx-auto relative z-40 w-[340px]">
       <WizardContent>
@@ -181,7 +189,7 @@ const TooltipStep6: FC<TooltipProps> = ({ onNext }) => {
             variant="secondary"
             className="flex-1"
             title="Zakázat"
-            onPress={onNext}
+            onPress={handleDeny}
           />
           <Button
             variant="primary"
