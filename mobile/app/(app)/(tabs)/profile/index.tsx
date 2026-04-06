@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 import * as Linking from "expo-linking";
 
 import { UserInfoContext } from "@/providers/UserInfo";
-import { useGetCollectedStatues } from "@/api/queries";
+import { useGetCollectedStatues, useGetProfileFollowData } from "@/api/queries";
 import { useUserStatistics } from "@/hooks/useUserStatistics";
 import { ProfileDetail } from "@/components/ProfileDetail";
 import Menu from "@/components/Menu";
@@ -14,8 +14,9 @@ const Profile = () => {
   const { userInfo } = useContext(UserInfoContext);
   const { data: collectedStatues } = useGetCollectedStatues();
   const userStatistics = useUserStatistics();
+  const { data: profileFollowData } = useGetProfileFollowData();
 
-  if (!userInfo || !userStatistics)
+  if (!userInfo || !userStatistics || !profileFollowData)
     return <View className="bg-gray h-full w-full" />;
 
   return (
@@ -25,6 +26,8 @@ const Profile = () => {
           score={userStatistics.score}
           rank={userStatistics.rank}
           avatarUrl={userInfo.avatarUrl}
+          followersCount={profileFollowData.followersCount}
+          followingCount={profileFollowData.followingCount}
           collectedStatuesCount={collectedStatues.length}
           onPressScore={() => router.replace("/leaderboard")}
           onPressCollectedStatues={() => router.replace("/my-statues")}
