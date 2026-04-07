@@ -30,7 +30,7 @@
     <p>Pokud se aplikace neotevřela, <a id="fallback" href="#">klikněte zde</a>.</p>
   </div>
   <script>
-    var customSchemeUrl = 'lovci-soch://auth/email-signin' + window.location.hash;
+    var customSchemeUrl = 'lovci-soch://auth/signin' + window.location.hash;
     document.getElementById('fallback').href = customSchemeUrl;
     window.location.replace(customSchemeUrl);
   </script>
