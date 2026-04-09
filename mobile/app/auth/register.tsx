@@ -28,7 +28,7 @@ const AuthRegister = () => {
       email: email,
       password: password,
       options: {
-        emailRedirectTo: `${process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL}/auth/signin`,
+        emailRedirectTo: new URL("/auth/signin", process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL).toString(),
       },
     });
     setLoading(false);

@@ -24,7 +24,7 @@ const PasswordReset = () => {
   const handleUrl = async (url: string) => {
     const transformedUrl = parseSupabaseUrl(url);
     const queryParams = Linking.parse(transformedUrl).queryParams as {
-      error_description: string;
+      error_description?: string;
       access_token?: string;
       refresh_token?: string;
     };
@@ -59,7 +59,7 @@ const PasswordReset = () => {
         Alert.alert("Jste přihlášen, nyní můžete změnit heslo");
         // Redirect to the profile page to change the password
       } else {
-        console.log('"Invalid tokens", queryParams);');
+        console.log("Invalid tokens", queryParams);
         track("Password Reset Failed", {
           method: "Email",
           error: "Invalid tokens",

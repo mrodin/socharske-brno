@@ -51,7 +51,7 @@ The folder contains:
 
 Deploy: `cd universal-links && npx vercel --prod` (Pepe only)
 
-Add `https://lovci-soch-universal-links.vercel.app/auth/password-reset` and `https://lovci-soch-universal-links.vercel.app/auth/email-signin` to Redirect URLs in Supabase Authentication
+Add `https://lovci-soch-universal-links.vercel.app/**` to Redirect URLs in Supabase Authentication
 ````
 
 ### Android Studio

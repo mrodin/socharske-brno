@@ -14,7 +14,7 @@ const PasswordResetRequest = () => {
 
   const handleResetPassword = async () => {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL}/auth/password-reset`,
+      redirectTo: new URL("/auth/password-reset", process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL).toString(),
     });
 
     if (error) {
