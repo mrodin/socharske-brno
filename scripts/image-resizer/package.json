@@ -1,0 +1,12 @@
+{
+  "name": "image-resizer",
+  "version": "1.0.0",
+  "description": "Resize statue images into multiple thumbnail sizes",
+  "main": "resize_images.js",
+  "scripts": {
+    "start": "node resize_images.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
+  }
+}
