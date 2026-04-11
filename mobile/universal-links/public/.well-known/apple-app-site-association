@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["6743340624.com.kulturnilenochodi.socharske-brno"],
+        "paths": ["/auth/*"]
+      }
+    ]
+  }
+}

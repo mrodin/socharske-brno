@@ -3,6 +3,9 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+const universalLinksHost = new URL(process.env.EXPO_PUBLIC_UNIVERSAL_LINKS_URL!)
+  .hostname;
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "Lovci Soch",
@@ -20,6 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: "./assets/icon.png",
     supportsTablet: true,
     usesAppleSignIn: true,
+    associatedDomains: [`applinks:${universalLinksHost}`],
     infoPlist: {
       NSLocationWhenInUseUsageDescription:
         "Lovci Soch uses your location to show nearby statues on the map and to verify you are within reach of a statue before you can collect it. For example, you must be within 20 meters of a statue to mark it as collected.",
@@ -37,6 +41,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#DF3F34",
     },
     package: "com.kulturnilenochodi.socharskebrno",
+    intentFilters: [
+      {
+        action: "VIEW",
+        autoVerify: true,
+        data: [
+          {
+            scheme: "https",
+            host: universalLinksHost,
+            pathPrefix: "/auth",
+          },
+        ],
+        category: ["BROWSABLE", "DEFAULT"],
+      },
+    ],
   },
   web: {
     favicon: "./assets/favicon.png",

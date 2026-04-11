@@ -35,8 +35,23 @@ EXPO_PUBLIC_SUPABASE_URL=<<SUPABASE_URL>>
 EXPO_PUBLIC_AMPLITUDE_API_KEY=<<AMPLITUDE_API_KEY>>
 EXPO_PUBLIC_IMAGES_STORAGE_URL=<<GOOGLE_STORAGE_URL>>
 EXPO_IOS_URL_SCHEME=<<IOS_URL_SCHEME>>
+EXPO_PUBLIC_UNIVERSAL_LINKS_URL=<<UNIVERSAL_LINKS_URL>>
 ```
 
+## Universal Links (`universal-links/`)
+
+A minimal static site hosted on Vercel that enables opening deep links in the app on real devices (password reset, email verification after registration).
+
+Mobile browsers block custom URL schemes (`lovci-soch://`) from HTTP redirects for security reasons. Universal links solve this — they are HTTPS URLs that the operating system automatically hands off to the app instead of the browser.
+
+The folder contains:
+- `.well-known/apple-app-site-association` — iOS configuration (Apple Universal Links)
+- `.well-known/assetlinks.json` — Android configuration (App Links)
+- `auth/*/index.html` — fallback pages that redirect to the custom scheme if the universal link doesn't work
+
+Deploy: `cd universal-links && npx vercel --prod` (Pepe only)
+
+Add `https://lovci-soch-universal-links.vercel.app/**` to Redirect URLs in Supabase Authentication
 ````
 
 ### Android Studio
